@@ -109,7 +109,7 @@
 
         .main-holder {
             font: normal 13px/18px "Trebuchet MS", Arial, Helvetica, sans-serif;
-            color: #ababab;
+            color: #000000;
         }
 
         .logo_h__txt, .logo_link {

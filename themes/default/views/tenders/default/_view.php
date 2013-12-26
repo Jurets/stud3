@@ -5,24 +5,31 @@
 
                 <div class="post_author">
                     <i class="icon-user"></i>
-                    <a href="../author/alone/index.html" title="Заказчик user" rel="author">user</a>
+                    <a href="../author/alone/index.html" title="Заказчик " rel="author"><?= $data->userdata->nickname ?></a>
                 </div>
                 <div class="post_date">
                     <i class="icon-calendar"></i>
-                    <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 12:23</time>
+                    <time datetime="2013-02-14T20:26:57"><?= $data->dateLong ?></time>
+                    <!--<time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 12:23</time>-->
                 </div>
 
             </div>
 
             <h4><?= $data->title ?></h4>
 
-            <p><b class="btno"><strong>Описание:</strong></b> <?= $data->descr ?></p>
+            <p>
+                <b class="btno">
+                    <strong>Описание:</strong>
+                </b> 
+                <?= $data->descr ?>
+            </p>
 
             <p>&nbsp;</p>
             <table width="100%">
                 <tr>
                     <td width="40%">
-                        <p><b class="btno"><strong>Тип работы:</strong></b> дипломная</p>
+                        <!--<p><b class="btno"><strong>Тип работы:</strong></b> дипломная</p>-->
+                        <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->typeStrValue ?></p>
                     </td>
                     <td width="60%">
                         <p><b class="btno"><strong>Специализаця:</strong></b> бухучёт</p>

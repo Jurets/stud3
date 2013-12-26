@@ -16,10 +16,8 @@ class DefaultController extends Controller
 	public function actionIndex($type = '', $category = '')
 	{
 		$model = Tenders::model()->opened();
-
-
 		$criteria = new CDbCriteria;
-			 
+		
 		$dataProvider = new CActiveDataProvider($model, array( 
 			'criteria' => $criteria,
 			'sort' => array(

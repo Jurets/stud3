@@ -57,19 +57,23 @@ class Tenders extends Model
     public function getTypeList()
     {
         return array(
-            self::TYPE_PROJECT > 'Проект',
+            self::TYPE_PROJECT => 'Проект',
             self::TYPE_TENDER  => 'Конкурс',
             self::TYPE_VACANCY => 'Вакансия',
         );
     }
 
-    public function getType()
-    {
+    //получить типа работы
+    public function getType() {
         $data = $this->getTypeList();
-
         return array_key_exists($this->type, $data) ? $data[$this->type] : '*неизвестно*';
     }
 
+    //получить типа работы (свойство)
+    public function getTypeStrValue() {
+        return $this->getType();
+    }
+    
     public function getPricebyList()
     {
         return array(
@@ -121,34 +125,24 @@ class Tenders extends Model
         );
     }
 
-    public function getStatus()
-    {
+    public function getStatus() {
         $data = $this->getStatusList();
-
         return array_key_exists($this->status, $data) ? $data[$this->status] : '*неизвестно*';
     }
 
-    public function relations()
-    {
+    public function relations()  {
         return array(
             'userdata'      => array(self::BELONGS_TO, 'User', 'user_id'),
-
             'bidslist'      => array(self::HAS_MANY, 'Bids', 'project_id'),
-
             'winner'        => array(self::HAS_ONE, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
-
             'ActiveCount'   => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACTIVE),
-
             'DeclinedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_DECLINE),
-
             'AcceptedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
-
             'RejectedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_REJECT),
         );
     }
 
-    public function scopes()
-    {
+    public function scopes() {
         return array(
             'opened'  => array(
                 'condition' => 'status = :status',
@@ -193,8 +187,7 @@ class Tenders extends Model
         return Bids::model()->find('project_id = :project_id and status =  :status', array(':project_id' => $this->id, ':status' => Bids::STATUS_ACCEPT));
     }
 
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return array(
             'title'    => 'Тема работы',
             'category' => 'Категория',
@@ -207,7 +200,6 @@ class Tenders extends Model
             'font'     => 'Размер шрифта',
             'file'     => 'Добавление файлов',
             'spec'     => 'Специализация',
-
         );
     }
 
@@ -297,5 +289,13 @@ class Tenders extends Model
         ));
 		
         return $model;
+    }
+    
+    /**
+    * дата в широком (развёрнутом) формате
+    * 
+    */
+    public function getDateLong() {
+        return Yii::app()->dateFormatter->formatDateTime($this->date, 'long', null);
     }
 }

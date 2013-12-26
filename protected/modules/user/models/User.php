@@ -746,4 +746,10 @@ class User extends Model
 
         $this->_online = self::getOnline();
     }
+    
+    public function getNickName() {
+        $nick = trim($this->name . ' ' . $this->surname);
+        $nick = !empty($nick) ? $nick : $this->username;
+        return $nick;
+    }
 }

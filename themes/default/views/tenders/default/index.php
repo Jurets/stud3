@@ -19,7 +19,7 @@
                  data-motopress-loop-file="loop/loop-testi.php">
 
 
-                <?php
+                <?php 
                 $this->widget('zii.widgets.CListView',
                     array(
                         'dataProvider'       => $dataProvider,
