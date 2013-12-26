@@ -1,0 +1,70 @@
+/*--
+	Theme Name: theme45716
+	Theme URI: http://template-help.com/
+	Description: A theme for Wordpress 3.5.x + from Template-Help.com Collection
+	Author: Template_Help.com
+	Author URL: http://www.Template-Help.com/
+	Template: CherryFramework
+	Version: 2.0
+	MotoPress Version: 1.0
+--*/
+@import url("main-style.css");
+@import url("main-style_l.css");
+
+/* ----------------------------------------
+	Please, You may put custom css here
+---------------------------------------- */
+
+label
+{
+    color: #0a7f5f;
+    text-decoration: underline;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+form a {
+    text-decoration: underline;
+}
+
+.none
+{
+    color: #ff0000;
+}
+h3
+{
+    color: rgb(7, 90, 68);
+}
+.green-submit {
+    width: 60% !important;
+    text-align: center;
+    border: none;
+    height: 48px !important;
+    line-height: 40px;
+    /*border-radius: 9px;*/
+    font-size: 20px;
+    text-transform : uppercase;
+    cursor: pointer;
+    color: white;
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+    background-image: linear-gradient(rgb(17, 106, 82) 0%, rgb(7, 90, 68) 100%);
+}
+#yw1_button {
+    display: block;
+    margin-top: -15px;
+    color: #ababab;
+    font-size: 10px;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.row-fluid [class*="span"] {
+    min-height: 20px !important;
+}
+
+form select {
+    width: 167px !important;
+}
+form select {
+    padding: 5px;
+}
