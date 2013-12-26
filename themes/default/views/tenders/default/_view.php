@@ -23,12 +23,12 @@
                 </b> 
                 <?= $data->descr ?>
             </p>
-
+            
             <p>&nbsp;</p>
             <table width="100%">
                 <tr>
                     <td width="40%">
-                        <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->typeStrValue ?></p>
+                        <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->tendercategory->name ?></p>
                     </td>
                     <td width="60%">
                         <p><b class="btno"><strong>Специализаця:</strong></b> бухучёт</p>

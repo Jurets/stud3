@@ -63,17 +63,12 @@ class Tenders extends Model
         );
     }
 
-    //получить типа работы
+    //получить тип работы
     public function getType() {
         $data = $this->getTypeList();
         return array_key_exists($this->type, $data) ? $data[$this->type] : '*неизвестно*';
     }
 
-    //получить типа работы (свойство)
-    public function getTypeStrValue() {
-        return $this->getType();
-    }
-    
     public function getPricebyList()
     {
         return array(
@@ -133,6 +128,7 @@ class Tenders extends Model
     public function relations()  {
         return array(
             'userdata'      => array(self::BELONGS_TO, 'User', 'user_id'),
+            'tendercategory'=> array(self::BELONGS_TO, 'TendersCategories', 'category'),
             'bidslist'      => array(self::HAS_MANY, 'Bids', 'project_id'),
             'winner'        => array(self::HAS_ONE, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
             'BidCount'      => array(self::STAT, 'Bids', 'project_id'),
