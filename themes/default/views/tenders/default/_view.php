@@ -28,7 +28,6 @@
             <table width="100%">
                 <tr>
                     <td width="40%">
-                        <!--<p><b class="btno"><strong>Тип работы:</strong></b> дипломная</p>-->
                         <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->typeStrValue ?></p>
                     </td>
                     <td width="60%">
@@ -38,7 +37,7 @@
             </table>
             <p>&nbsp;</p>
 
-            <p>12 предложений</p>
+            <p>предложений: <?= $data->BidCount ?></p>
 
             <p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>
         </div>

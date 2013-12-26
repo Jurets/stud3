@@ -135,6 +135,7 @@ class Tenders extends Model
             'userdata'      => array(self::BELONGS_TO, 'User', 'user_id'),
             'bidslist'      => array(self::HAS_MANY, 'Bids', 'project_id'),
             'winner'        => array(self::HAS_ONE, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
+            'BidCount'      => array(self::STAT, 'Bids', 'project_id'),
             'ActiveCount'   => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACTIVE),
             'DeclinedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_DECLINE),
             'AcceptedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
@@ -203,21 +204,16 @@ class Tenders extends Model
         );
     }
 
-    public function rules()
-    {
+    public function rules() {
         return array(
             array('title, text, category', 'required'),
-
             array('budget, pages, font', 'numerical'),
-
-
             array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end', 'safe'),
         );
     }
 
 
-    public function Category()
-    {
+    public function Category() {
         return TendersCategories::model()->findByPk($this->category)->name;
     }
 
