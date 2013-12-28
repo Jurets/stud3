@@ -59,44 +59,45 @@ class DefaultController extends Controller
     /**
      * Просмотр
      */
-	public function actionShow($id = '', $type = '') {
-		if( $type == 'accepted' ) {
+	public function actionShow($id = '', $type = '') {// DebugBreak();
+		if ($type == 'accepted') {
 			$type = ':accepted';
-		} elseif( $type == 'declined' ) {
+		} elseif ($type == 'declined') {
 			$type = ':declined';
-		} elseif( $type == 'rejected' ) {
+		} elseif ($type == 'rejected') {
 			$type = ':rejected';
-		} elseif( $type == 'active' ) {
+		} elseif ($type == 'active') {
 			$type = ':active';
 		} else {
 			$type = '';
 		}
     	$model = Tenders::model()->with('bidslist'.$type.'')->findByPk($id);
-    	if( !$model ) {
+    	if (!$model) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-		if( Yii::app()->user->id == $model->user_id ) {
+		if (Yii::app()->user->id == $model->user_id) {
 			if( $model->checkNewBids() ) {
 				$model->readingBids();// переводим заявки в прочитанные
 			}
 		}
-		if( Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN  )// если не будет переменной bid то в отображении не выведется форма добавления
-		{
+        
+        // если не будет переменной bid то в отображении не выведется форма добавления
+		if (Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN) {
 			$bid = FALSE;
-			if( $_GET['action'] == 'edit'  )// если редактировать
-			{
-				if( $model->checkBid() ) {
+			if ($_GET['action'] == 'edit') {// если редактировать
+				if ($model->checkBid()) {
 					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
 				}
 			} else {
-				if( $model->checkBid() ) {
+				if ($model->checkBid()) {
 					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
 				} else {
 				    $bid = new Bids;
 				}
 			}
 		}
-		if( Yii::app()->request->isPostRequest && !empty($_POST['Bids']) ) {
+        
+		if (Yii::app()->request->isPostRequest && !empty($_POST['Bids'])) {
 			$bid->setAttributes($_POST['Bids']);
 			if( $bid->validate() ) {
 				if( $bid->isNewRecord ) {
