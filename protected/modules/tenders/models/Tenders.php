@@ -203,7 +203,7 @@ class Tenders extends Model
             array('title, text, category', 'required'),
             array('speciality', 'required', 'on'=>'insert'),
             array('budget, pages, font', 'numerical'),
-            array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end, speciality', 'safe'),
+            array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end, speciality, percent', 'safe'),
         );
     }
 
