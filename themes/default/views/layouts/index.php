@@ -172,7 +172,10 @@
 <div id="motopress-main" class="main-holder">
 <!--Begin #motopress-main-->
 <header class="motopress-wrapper header">
+    
+
     <div class="light-header"></div>
+    
     <div class="container">
         <div class="row">
             <div class="span12" data-motopress-wrapper-file="wrapper/wrapper-header.php"
@@ -252,12 +255,26 @@
             </div>
         </div>
     </div>
+    
 </header>
 
 <div class="motopress-wrapper content-holder clearfix">
     <div class="bg-home">
         <div class="light-home"></div>
         <div class="container">
+        
+            <div id="auth" style="width: auto; height: auto; float: left; position: absolute; z-index: 999; margin-left: 600px;">
+                <?php 
+                if (!Yii::app()->user->isGuest)  {
+                    $user = User::model()->findByPk(Yii::app()->user->id);
+                ?>
+                    <p>Пользователь: <?= $user->username?></p>
+                    <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>
+                <? } else { ?>
+                    <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('login') ?>">Вход</a>
+                <?php } ?>
+            </div>        
+        
             <div class="row">
                 <div class="span12 slider-wrap" data-motopress-type="static"
                      data-motopress-static-file="static/static-slider.php">
