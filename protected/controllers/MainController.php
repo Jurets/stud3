@@ -290,9 +290,12 @@ class MainController extends Controller
                 }
             }
         }
+        $specialities = TendersSpeciality::model()->findAll();
+        $specialities = CHtml::listData($specialities, 'id', 'name');
         $this->render('more', array(
             'model'  => $model,
             'rmodel' => $rmodel,
+            'specialities'=>$specialities,
         ));
     }
 

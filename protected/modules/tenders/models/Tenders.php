@@ -29,7 +29,7 @@ class Tenders extends Model
     //self::closeTenders();
     //}
 
-    public $persent;
+    public $percent = 90; //временно
     public $spec;
 
     /**
@@ -129,6 +129,7 @@ class Tenders extends Model
         return array(
             'userdata'      => array(self::BELONGS_TO, 'User', 'user_id'),
             'tendercategory'=> array(self::BELONGS_TO, 'TendersCategories', 'category'),
+            'tenderspeciality'=> array(self::BELONGS_TO, 'TendersSpeciality', 'speciality'),
             'bidslist'      => array(self::HAS_MANY, 'Bids', 'project_id'),
             'winner'        => array(self::HAS_ONE, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
             'BidCount'      => array(self::STAT, 'Bids', 'project_id'),
@@ -190,21 +191,21 @@ class Tenders extends Model
             'category' => 'Категория',
             'text'     => 'Текст заявки',
             'budget'   => 'Бюджет',
-            'spec'     => 'Специализация',
-            'persent'  => 'Процент на Антиплагиате',
+            'percent'  => 'Процент на Антиплагиате',
             'pages'    => 'Кол-во страниц',
             'day'      => 'Срок сдачи',
             'font'     => 'Размер шрифта',
             'file'     => 'Добавление файлов',
             'spec'     => 'Специализация',
+            'speciality'=> 'Специализация',
         );
     }
 
     public function rules() {
         return array(
-            array('title, text, category', 'required'),
+            array('title, text, category, speciality', 'required'),
             array('budget, pages, font', 'numerical'),
-            array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end', 'safe'),
+            array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end, speciality', 'safe'),
         );
     }
 
@@ -289,5 +290,17 @@ class Tenders extends Model
     */
     public function getDateLong() {
         return Yii::app()->dateFormatter->formatDateTime($this->date, 'long', null);
+    }
+
+    public function getDateEndMedium() {
+        return Yii::app()->dateFormatter->formatDateTime($this->date_end, 'medium', null);
+    }
+    
+    /**
+    * строка специализации
+    * 
+    */
+    public function getSpecialityString() {
+        return isset($this->tenderspeciality) ? $this->tenderspeciality->name : '*неизвестно*';
     }
 }

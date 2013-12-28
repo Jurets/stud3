@@ -59,136 +59,76 @@ class DefaultController extends Controller
     /**
      * Просмотр
      */
-	public function actionShow($id = '', $type = '')
-	{
-		if( $type == 'accepted' )
-		{
+	public function actionShow($id = '', $type = '') {
+		if( $type == 'accepted' ) {
 			$type = ':accepted';
-		}
-		elseif( $type == 'declined' )
-		{
+		} elseif( $type == 'declined' ) {
 			$type = ':declined';
-		}
-		elseif( $type == 'rejected' )
-		{
+		} elseif( $type == 'rejected' ) {
 			$type = ':rejected';
-		}
-		elseif( $type == 'active' )
-		{
+		} elseif( $type == 'active' ) {
 			$type = ':active';
-		}
-		else
-		{
+		} else {
 			$type = '';
 		}
-
     	$model = Tenders::model()->with('bidslist'.$type.'')->findByPk($id);
-
-
-    	if( !$model )
-		{
+    	if( !$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		if( Yii::app()->user->id == $model->user_id )
-		{
-			if( $model->checkNewBids() )
-			{
+		if( Yii::app()->user->id == $model->user_id ) {
+			if( $model->checkNewBids() ) {
 				$model->readingBids();// переводим заявки в прочитанные
 			}
 		}
-
 		if( Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN  )// если не будет переменной bid то в отображении не выведется форма добавления
 		{
 			$bid = FALSE;
-	
 			if( $_GET['action'] == 'edit'  )// если редактировать
 			{
-				if( $model->checkBid() )
-				{
+				if( $model->checkBid() ) {
 					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
 				}
-			}
-			else
-			{
-				if( $model->checkBid() )
-				{
+			} else {
+				if( $model->checkBid() ) {
 					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
-				}
-				else
-				{
-				$bid = new Bids;
+				} else {
+				    $bid = new Bids;
 				}
 			}
 		}
-
-		if( Yii::app()->request->isPostRequest && !empty($_POST['Bids']) )
-        {
+		if( Yii::app()->request->isPostRequest && !empty($_POST['Bids']) ) {
 			$bid->setAttributes($_POST['Bids']);
-      
-			if( $bid->validate() )
-            {
-				if( $bid->isNewRecord )
-				{
+			if( $bid->validate() ) {
+				if( $bid->isNewRecord ) {
 					new Events_helper($model->user_id, $bid->user_id, Events_helper::BID_PROJECTS, $id);
-
 					$model->saveCounters(array('bids' => 1));
 				}
-
 				$bid->project_id = $id;
-
 				$bid->save();
-
-
 				$attachments = CUploadedFile::getInstancesByName('attachments');
-	
-
-				if( isset($attachments) && count($attachments) > 0 )
-				{
-					foreach ($attachments as $attachment => $row)
-					{
+				if( isset($attachments) && count($attachments) > 0 ) {
+					foreach ($attachments as $attachment => $row)	{
 						$sourcePath = pathinfo($row->name);	
-	
 						$fileName = md5(time()).'.'.$sourcePath['extension'];
-
 						$path = '.'.Yii::app()->getModule('tenders')->previewAttachmentsDir.$fileName;
-
-
-
-						if( $row->saveAs($path) )
-						{
+						if( $row->saveAs($path) ) {
 							$image = Yii::app()->image->load($path);
-
 							// миниатюра
 							$thumbnailPath = '.'.Yii::app()->getModule('tenders')->previewAttachmentsDir.'small_'.$fileName;
-	
 							$image->resize(100, NULL, Image::AUTO)->quality(100);
-		
 							$image->save($thumbnailPath);
-
-
-
 							$attachment_add = new TendersPreview();
-
 							$attachment_add->bid_id = $bid->id;
-
 							$attachment_add->preview = 'small_'.$fileName;
-
 							$attachment_add->image = $fileName;
-
 							$attachment_add->save();
 						}
-	
 					}
 				}
-
-				
 				$this->redirect('/tenders/'.$id.'.html');
 			}
 		}
-
 		$this->pageTitle = $model->title;
-
     	$this->render('show', array('model' => $model, 'bid' => $bid));
 	}
 
@@ -430,4 +370,38 @@ class DefaultController extends Controller
 
 		$this->render('publication', array('model' => $model, 'categories' => $categories, 'model' => $model, 'rmodel' => $rmodel));
 	}
+    
+    public function actionAddSpecialities() {DebugBreak();
+        $root = new TendersSpeciality;
+        $root->name = 'Дошкольное образование';
+        $root->saveNode();
+        //$root = TendersSpeciality::model()->findByPk(0);
+        
+        $node = new TendersSpeciality;
+        $node->name = 'Воспитатель детского сада';
+        $node->appendTo($root);
+        $node = new TendersSpeciality;
+        $node->name = 'Няня';
+        $node->appendTo($root);
+        $node = new TendersSpeciality;
+        $node->name = 'Логопед';
+        $node->appendTo($root);
+        $node = new TendersSpeciality;
+        $node->name = 'Преподаватель курсов (подготовка к школе)';
+        $node->appendTo($root);
+        
+        $node2 = new TendersSpeciality;
+        $node2->name = 'Ищу работу';
+        $node2->appendTo($node);
+        $node2 = new TendersSpeciality;
+        $node2->name = 'Ищу подработку';
+        $node2->appendTo($node);
+        $node2 = new TendersSpeciality;
+        $node2->name = 'Не ищу работу';
+        $node2->appendTo($node);
+                
+        /*$root = new TendersSpeciality;
+        $root->title = 'Начальное образование';
+        $root->saveNode();*/
+    }
 }

@@ -58,8 +58,8 @@
         <div class="row-fluid">
             <div class="span12">
                 <p class="pull-right">!!!!!!!!!!!!!!!!!!!!!!</p>
-                <?php echo $form->label($model, 'spec'); ?>
-                <?php echo $form->dropDownList($model, 'spec', array()); ?>
+                <?php echo $form->label($model, 'speciality'); ?>
+                <?php echo $form->dropDownList($model, 'speciality', $specialities, array('empty'=>'Выберите специализацию')); ?>
             </div>
         </div>
 
@@ -91,7 +91,7 @@
         </div>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $form->label($model, 'persent'); ?>
+                <?php echo $form->label($model, 'percent'); ?>
                 <?php echo $form->textField($model, 'persent', array('class' => 'inp_text', 'placeholder' => '')); ?>
             </div>
         </div>
