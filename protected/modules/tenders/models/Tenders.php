@@ -24,12 +24,7 @@ class Tenders extends Model
     public $notify;
 	public $tender_id;
 
-    //function __construct()
-    //{
-    //self::closeTenders();
-    //}
-
-    public $percent = 90; //временно
+    //public $percent = 90; //временно
     public $spec;
 
     /**
