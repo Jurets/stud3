@@ -203,7 +203,8 @@ class Tenders extends Model
 
     public function rules() {
         return array(
-            array('title, text, category, speciality', 'required'),
+            array('title, text, category', 'required'),
+            array('speciality', 'required', 'on'=>'insert'),
             array('budget, pages, font', 'numerical'),
             array('status, notify, priceby, descr, agreement, type, country, city, date_start, date_end, speciality', 'safe'),
         );

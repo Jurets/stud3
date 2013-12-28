@@ -170,19 +170,14 @@ class MainController extends Controller
     public function actionIndex()
     {
         $this->layout = '//layouts/index';
-
         Yii::app()->getModule('tenders');
-
         $criteria = new CDbCriteria;
-
         $criteria->limit = 5;
-
         $criteria->order = 'date desc';
-
         $paidplace = User::model()->pro()->findAll();
 
         $model = new Tenders;
-
+        $model->scenario = 'insertfirst';
         $rmodel = new FastRegistrationForm;
 
         if (isset($_POST['ajax'])) {
@@ -192,42 +187,29 @@ class MainController extends Controller
         }
 
 //        $rmodel->setScenario();
-
         if (Yii::app()->request->isPostRequest && !empty($_POST['Tenders'])) {
-
             $model->setAttributes($_POST['Tenders']);
-
             $validate = $model->validate();
-
             if (!Yii::app()->user->isAuthenticated()) {
                 $rmodel->setAttributes($_POST['FastRegistrationForm']);
-
                 $validate = $rmodel->validate() && $validate;
             }
-
-
             if ($validate) {
 //                Yii::app()->session['user_id'] = $user['id'];
 //                Yii::app()->session['user'] = $user;
                 Yii::app()->session['post'] = serialize($_POST);
-
-
 //                if ($model->save()) {
                 $this->redirect(array('main/more', array()));
 //                }
-
             }
         }
-
         $renderdata = array(
             'model'      => $model,
             'rmodel'     => $rmodel,
             'categories' => Categories::model()->findAll(),
             'projects'   => Tenders::model()->opened()->recently()->findAll($criteria),
         );
-
         $this->pageTitle = 'Сеть удаленных специалистов. Поиск удаленной работы.';
-
         $this->render('index', $renderdata);
     }
 

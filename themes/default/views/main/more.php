@@ -92,7 +92,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <?php echo $form->label($model, 'percent'); ?>
-                <?php echo $form->textField($model, 'persent', array('class' => 'inp_text', 'placeholder' => '')); ?>
+                <?php echo $form->textField($model, 'percent', array('class' => 'inp_text', 'placeholder' => '')); ?>
             </div>
         </div>
         <div class="row-fluid">
