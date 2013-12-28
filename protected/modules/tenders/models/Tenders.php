@@ -20,6 +20,8 @@ class Tenders extends Model
     const CURRENCY_RUB  = 1;
     const CURRENCY_USD  = 2;
     const CURRENCY_EURO = 3;
+    
+    const STR_UNKNOWN = '*неизвестно*';
 
     public $notify;
 	public $tender_id;
@@ -61,7 +63,7 @@ class Tenders extends Model
     //получить тип работы
     public function getType() {
         $data = $this->getTypeList();
-        return array_key_exists($this->type, $data) ? $data[$this->type] : '*неизвестно*';
+        return array_key_exists($this->type, $data) ? $data[$this->type] : self::STR_UNKNOWN;
     }
 
     public function getPricebyList()
@@ -78,7 +80,7 @@ class Tenders extends Model
     {
         $data = $this->getPricebyList();
 
-        return array_key_exists($this->priceby, $data) ? $data[$this->priceby] : '*неизвестно*';
+        return array_key_exists($this->priceby, $data) ? $data[$this->priceby] : self::STR_UNKNOWN;
     }
 
     public function getTenderCurrencyList()
@@ -103,7 +105,7 @@ class Tenders extends Model
     {
         $data = $this->getCurrencyList();
 
-        return array_key_exists($this->currency, $data) ? $data[$this->currency] : '*неизвестно*';
+        return array_key_exists($this->currency, $data) ? $data[$this->currency] : self::STR_UNKNOWN;
     }
 
     public function getStatusList()
@@ -117,7 +119,7 @@ class Tenders extends Model
 
     public function getStatus() {
         $data = $this->getStatusList();
-        return array_key_exists($this->status, $data) ? $data[$this->status] : '*неизвестно*';
+        return array_key_exists($this->status, $data) ? $data[$this->status] : self::STR_UNKNOWN;
     }
 
     public function relations()  {
@@ -285,11 +287,19 @@ class Tenders extends Model
     * 
     */
     public function getDateLong() {
-        return Yii::app()->dateFormatter->formatDateTime($this->date, 'long', null);
+        if ($this->date)
+            $str = Yii::app()->dateFormatter->formatDateTime($this->date, 'long', null);
+        else
+            $str = self::STR_UNKNOWN;
+        return $str;
     }
 
     public function getDateEndMedium() {
-        return Yii::app()->dateFormatter->formatDateTime($this->date_end, 'medium', null);
+        if ($this->date_end)
+            $str = Yii::app()->dateFormatter->formatDateTime($this->date_end, 'medium', null);
+        else
+            $str = self::STR_UNKNOWN;
+        return $str;
     }
     
     /**
@@ -297,6 +307,6 @@ class Tenders extends Model
     * 
     */
     public function getSpecialityString() {
-        return isset($this->tenderspeciality) ? $this->tenderspeciality->name : '*неизвестно*';
+        return isset($this->tenderspeciality) ? $this->tenderspeciality->name : self::STR_UNKNOWN;
     }
 }

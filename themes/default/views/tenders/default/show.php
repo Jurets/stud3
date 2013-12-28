@@ -101,102 +101,104 @@
                     <? } ?>
 
                     <? //------------- Отображение предложения исполнителей (если текущий юзер - заказчик) -------------?>
-                    <? if (Yii::app()->user->id == $model->user_id) { ?>
-                    <h2 class="post-title">Оценка и предложения исполнителей</h2>
                     <div class="fon_mess">
-                    <? if (Yii::app()->user->id == $model->user_id && !empty($model->bidslist)) { 
-                        foreach($model->bidslist as $row) {?>
-                            <article class="post-67 post type-post status-publish format-standard hentry category-ut-tellus-dolor-dapibus-eget tag-lorem tag-sit-amet post__holder cat-44-id" id="post-67">
-                                <figure class="featured-thumbnail thumbnail">
-                                    <a href="../ut-tellus-dolor-dapibus-eget/etiam-dictum-egestas/index.html">
-                                        <!--<img width="200" height="150" alt="Фото исполнителя" class="attachment-post-thumbnail wp-post-image" src="">-->
-                                        <img src="<?=Yii::app()->getModule('user')->userpicsDir?><?=$row->userdata->userpic?>" alt="Фото исполнителя" class="attachment-post-thumbnail wp-post-image">
-                                    </a>
-                                    <div class="post_meta meta_type_line">
-                                        <div class="post_like">
-                                            <a date-type="like" title="Only registered users can vote!" class="not_voting ">
-                                                <i class="icon-thumbs-up"></i>
-                                                <span class="voting_count">0</span>
-                                            </a>
-                                        </div>
-                                        <div class="post_dislike">
-                                            <a date-type="dislike" title="Only registered users can vote!" class="not_voting ">
-                                                <i class="icon-thumbs-down"></i>
-                                                <span class="voting_count">0</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </figure>
-                                <!-- Post Content -->
-                                <div class="post_content">
-                                    <div class="excerpt">
+                    <? if (Yii::app()->user->id == $model->user_id) { ?>
+                        <h2 class="post-title">Оценка и предложения исполнителей</h2>
+                        <? if (Yii::app()->user->id == $model->user_id && !empty($model->bidslist)) { 
+                            foreach($model->bidslist as $row) {?>
+                                <article class="post-67 post type-post status-publish format-standard hentry category-ut-tellus-dolor-dapibus-eget tag-lorem tag-sit-amet post__holder cat-44-id" id="post-67">
+                                    <figure class="featured-thumbnail thumbnail">
+                                        <a href="../ut-tellus-dolor-dapibus-eget/etiam-dictum-egestas/index.html">
+                                            <!--<img width="200" height="150" alt="Фото исполнителя" class="attachment-post-thumbnail wp-post-image" src="">-->
+                                            <img src="<?=Yii::app()->getModule('user')->userpicsDir?><?=$row->userdata->userpic?>" alt="Фото исполнителя" class="attachment-post-thumbnail wp-post-image">
+                                        </a>
                                         <div class="post_meta meta_type_line">
-
-                                            <div class="post_author">
-                                                <i class="icon-user"></i>
-                                                <a rel="author" title="Автор Professor" href="/users/<?=$row->userdata->username?>"><?=$row->userdata->username?></a>                                
+                                            <div class="post_like">
+                                                <a date-type="like" title="Only registered users can vote!" class="not_voting ">
+                                                    <i class="icon-thumbs-up"></i>
+                                                    <span class="voting_count">0</span>
+                                                </a>
                                             </div>
-                                            <div class="post_date">
-                                                <i class="icon-calendar"></i>
-                                                <time datetime="2013-02-14T20:26:57"><?=$row->date()?></time>
+                                            <div class="post_dislike">
+                                                <a date-type="dislike" title="Only registered users can vote!" class="not_voting ">
+                                                    <i class="icon-thumbs-down"></i>
+                                                    <span class="voting_count">0</span>
+                                                </a>
                                             </div>
-                                            <b class="btno"><strong>Стоимость</strong></b> <?=$row->budget()?><p></p>
                                         </div>
+                                    </figure>
+                                    <!-- Post Content -->
+                                    <div class="post_content">
+                                        <div class="excerpt">
+                                            <div class="post_meta meta_type_line">
 
-                                        <p><b class="btno"><strong>Описание</strong></b> <?=$row->text?></p>
-                                    </div>
-                                </div>            
-                            </article>
+                                                <div class="post_author">
+                                                    <i class="icon-user"></i>
+                                                    <a rel="author" title="Автор Professor" href="/users/<?=$row->userdata->username?>"><?=$row->userdata->username?></a>                                
+                                                </div>
+                                                <div class="post_date">
+                                                    <i class="icon-calendar"></i>
+                                                    <time datetime="2013-02-14T20:26:57"><?=$row->date()?></time>
+                                                </div>
+                                                <b class="btno"><strong>Стоимость</strong></b> <?=$row->budget()?><p></p>
+                                            </div>
 
-                            <? if (Yii::app()->user->id == $row->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
-                                <i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> 
-                                <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказать от проекта</a>
-                            <? } ?>
+                                            <p><b class="btno"><strong>Описание</strong></b> <?=$row->text?></p>
+                                        </div>
+                                    </div>            
+                                </article>
 
-                            <? if (Yii::app()->user->id == $model->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
-                                <div class="payd-link">
-                                    <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
-                                    <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
-                                </div>
-                            <? } ?>
-                            
-                            <div class="post-author clearfix">
-                                <h4 class="post-author_h">Обсуждение проекта</h4>    
-                                <p><b class="btn"><strong>Задать вопрос исполнителю</strong></b></p>
-                                <p class="nocomments">Комментариев еще нет.</p>    
-                                <div class="post_meta meta_type_line">        
-                                    <div class="post_author">
-                                        <i class="icon-user"></i>
-                                        <a rel="author" title="Заказчик user" href="../author/alone/index.html">user</a>                                
+                                <? if (Yii::app()->user->id == $row->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
+                                    <i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> 
+                                    <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказать от проекта</a>
+                                <? } ?>
+
+                                <? if (Yii::app()->user->id == $model->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
+                                    <div class="payd-link">
+                                        <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
+                                        <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
                                     </div>
-                                    <div class="post_date">
-                                        <i class="icon-calendar"></i>
-                                        <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 13:03</time>
+                                <? } ?>
+                                
+                                <div class="post-author clearfix">
+                                    <h4 class="post-author_h">Обсуждение проекта</h4>    
+                                    <p><b class="btn"><strong>Задать вопрос исполнителю</strong></b></p>
+                                    <p class="nocomments">Комментариев еще нет.</p>    
+                                    <div class="post_meta meta_type_line">        
+                                        <div class="post_author">
+                                            <i class="icon-user"></i>
+                                            <a rel="author" title="Заказчик user" href="../author/alone/index.html">user</a>                                
+                                        </div>
+                                        <div class="post_date">
+                                            <i class="icon-calendar"></i>
+                                            <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 13:03</time>
+                                        </div>
+                                    </div>
+                                    <div class="post-author_desc">
+                                        Вопрос: вы успеете написать работу раньше сроки на три дня?
+                                    </div>
+                                    <p>&nbsp;</p>
+                                    <div class="post_meta meta_type_line">        
+                                        <div class="post_author">
+                                            <i class="icon-user"></i>
+                                            <a rel="author" title="Заказчик user" href="../author/alone/index.html">Profesor</a>                                
+                                        </div>
+                                        <div class="post_date">
+                                            <i class="icon-calendar"></i>
+                                            <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 15:17</time>
+                                        </div>
+                                    </div>
+                                    <div class="post-author_desc">
+                                        Да, усепю, можете выбрать меня.
                                     </div>
                                 </div>
-                                <div class="post-author_desc">
-                                    Вопрос: вы успеете написать работу раньше сроки на три дня?
-                                </div>
-                                <p>&nbsp;</p>
-                                <div class="post_meta meta_type_line">        
-                                    <div class="post_author">
-                                        <i class="icon-user"></i>
-                                        <a rel="author" title="Заказчик user" href="../author/alone/index.html">Profesor</a>                                
-                                    </div>
-                                    <div class="post_date">
-                                        <i class="icon-calendar"></i>
-                                        <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 15:17</time>
-                                    </div>
-                                </div>
-                                <div class="post-author_desc">
-                                    Да, усепю, можете выбрать меня.
-                                </div>
-                            </div>
-                        </div>
-                    <? } 
-                    } else { ?>
-                        <p><strong>Заявки отсутствуют.</strong></p>
-                    <? } } ?> 
+                            <!--</div>-->
+                        <? } 
+                        } else { ?>
+                            <p><strong>Заявки отсутствуют.</strong></p>
+                        <?  } ?> 
+                    <? }  ?> 
+                    </div>
                 </div>
                 
                 
