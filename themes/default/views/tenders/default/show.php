@@ -86,6 +86,13 @@
                         </div>
                     <? } ?>
                     
+                    <p>
+                        юзер ид: <? echo Yii::app()->user->id ?><br>
+                        ид юзера модели <? echo $model->user_id ?><br>
+                        бидс: <? echo $bid ?><br>
+                        бидс лист: <? echo count($model->bidslist) ?><br>
+                    </p>
+                    
                     <? //------------- Проверить: отображать ли форму добавления -------------?>
                     <? if ($bid) { ?>
                     <div id="respond">
