@@ -496,11 +496,9 @@ class User extends Model
     {
         return array(
 //            array('username', 'form_validation', 'rule' => 'alpha_numeric'),
-
             array('username, name, surname, gender', 'required', 'on' => 'profile'), // редактирование профиля
-
+            array('username', 'unique'),
             //array('short_descr, full_descr', 'form_validation', 'rule' => 'nospecial'),
-
             array('userpic', 'file',
                 'types'      => 'jpg, gif, png',
                 'maxSize'    => 1024 * 1024 * 5, // 5 MB
@@ -508,7 +506,6 @@ class User extends Model
                 'tooLarge'   => 'Файл весит больше 5 MB. Пожалуйста, загрузите файл меньшего размера.',
                 'on'         => 'userpic'
             ),
-
             array('logo', 'file',
                 'types'      => 'jpg, gif, png',
                 'maxSize'    => 1024 * 1024 * 5, // 5 MB
@@ -516,21 +513,13 @@ class User extends Model
                 'tooLarge'   => 'Файл весит больше 5 MB. Пожалуйста, загрузите файл меньшего размера.',
                 'on'         => 'logo'
             ),
-
             array('email', 'required', 'on' => 'contact'), // редактирование контактных данных
-
             array('icq, skype, telephone', 'length', 'max' => 16),
-
             array('full_descr', 'length', 'max' => 10000),
-
             array('email, username', 'email'),
-
 //            array('username', 'unique'),
-
 //            array('email', 'unique'),
-
             array('website', 'url'),
-
             array('username, specialization, old_password, password, password2, email, name, surname, userpic, userpic_f, gender, country, city, dob, short_descr, full_descr, full_descr_v, status, email_confirm, role, age, logo, tariff', 'safe')
         );
     }

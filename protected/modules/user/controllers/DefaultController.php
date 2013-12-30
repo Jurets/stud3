@@ -143,24 +143,18 @@ class DefaultController extends Controller
     public function actionRegistration()
     {
         //throw new CHttpException("404", '<div class="alert alert-error">Извините регистрация только по <a href="/registration/invite">приглашению</a>. Приглашение можете получить у друзей которые уже зарегистрированы у нас или <a href="/support">написать администрации</a> чем Вы будете полезны для сервиса если получите приглашение. Приглашения ни когда не продавались и не будут продаваться, если Вам кто то предлагает его купить, известите пожалуйста нас об этом. Всем кто будет замечен в продаже приглашений будет бессрочно заблокирован доступ на сайт.</div>');
-
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
         }
-
         $form = new RegistrationForm;
-
         if (Yii::app()->request->isPostRequest && !empty($_POST['RegistrationForm'])) {
             $form->setAttributes($_POST['RegistrationForm']);
-
             if ($form->validate()) {
                 $transaction = Yii::app()->db->beginTransaction();
 
                 try {
                     $user = new User;
-
                     $user->setScenario('onRegistration');
-
                     $data = array(
                         'username' => $form->username,
                         'email'    => strtolower($form->email),
@@ -175,38 +169,25 @@ class DefaultController extends Controller
                         Yii::log("Создана учетная запись " . $user->username . "!", CLogger::LEVEL_INFO);
 
                         Email_helper::send($user->email, 'Регистрация на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
-
                         $transaction->commit();
-
                         //Yii::app()->user->setFlash(FlashMessages::INFO, 'Регистрация успешно завершена, проверьте почту');
-
-
                         // автоматический вход
                         $identity = new UserIdentity($form->username, $form->password);
-
                         $identity->authenticate();
-
                         Yii::app()->user->login($identity);
-
-
                         $this->redirect('/activation');
                     } else {
                         $transaction->rollBack();
-
                         Yii::log("Ошибка при создании  учетной записи!", CLogger::LEVEL_ERROR);
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
-
                     Yii::log("При регистрации произошла ошибка!", CLogger::LEVEL_ERROR);
-
                     $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
                 }
             }
         }
-
         $this->pageTitle = 'Регистрация';
-
         $this->render('registration', array('model' => $form));
     }
 
@@ -216,9 +197,7 @@ class DefaultController extends Controller
     public function actionLogout()
     {
         Yii::log('Пользователь ' . Yii::app()->user->getState('username') . ' вышел', CLogger::LEVEL_INFO);
-
         Yii::app()->user->logout();
-
         $this->redirect(Yii::app()->getModule('user')->logoutSuccess);
     }
 
