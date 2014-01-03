@@ -26,7 +26,7 @@ class Model extends CActiveRecord
 		return $this;
 	}
 
-	// ïåğåêîíâåğòèğîâàííàÿ äàòà
+	// Ğ¿ĞµÑ€ĞµĞºĞ¾Ğ½Ğ²ĞµÑ€Ñ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ½Ğ°Ñ Ğ´Ğ°Ñ‚Ğ°
 	public function date()
 	{
 		return Date_helper::date_smart($this->date);

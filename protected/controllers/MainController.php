@@ -295,4 +295,19 @@ class MainController extends Controller
             ),
         );
     }
+    
+    //достать список городов страны
+    public function actionDynamiccities() {
+        $country_id = (int)$_POST['RegistrationForm2']['country'];
+        $data = City::model()->findAll('country_id = :country_id', array(':country_id'=>$country_id));
+        $data = CHtml::listData($data, 'city_id', 'name');
+        echo CHtml::tag('option', array('value' => ''), '--Выберите город--', true);
+          
+        foreach($data as $value => $name) {
+            $options = array('value' => $value);
+            //if (isset($id) && $value == $id)
+            //    $options['selected'] = 'selected';
+            echo CHtml::tag('option', $options, CHtml::encode($name), true);
+        }
+    }
 }
