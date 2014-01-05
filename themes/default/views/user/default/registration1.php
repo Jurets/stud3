@@ -22,15 +22,6 @@
                 echo $form->hiddenField($model, 'step'); ?>
                 
 	            <table>
-                    <!--<thead>
-                        <th width="20%">Фамилия *:</th>
-                        <th width="50%"></th>
-                    </thead>-->
-
-		            <!--<tr>
-                        <th width="30%">Фамилия *:</th>
-			            <th width="70%"></th>
-                    </tr>-->
 		            <tr>
 			            <td width="20%">Фамилия *:</td>
                         <td width="30%">
@@ -40,10 +31,6 @@
 			            <td width="50%"><p>Возможно использовать только кириллицу и латиницу </p></td>		
 		            </tr>
 
-                    <!--<tr>
-                        <th width="30%">Имя *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Имя *:</td>
                         <td>
@@ -53,10 +40,6 @@
                         <td><p>Возможно использовать только кириллицу и латиницу </p></td>        
                     </tr>
                     
-                    <!--<tr>
-                        <th width="30%">Страна:</th>
-                        <th width="70%"></th>
-                    </tr> -->
                     <tr>
                         <td width="20%">Страна *:</td>
                         <td>
@@ -73,26 +56,19 @@
                         <td><p>Выберите страну из списка</p></td>        
                     </tr>
 
-                    <!--<tr>
-                        <th width="30%">Город:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Город *:</td>
                         <td>
-                            <?php echo $form->dropDownList($model, 'city', array(), array(
+                            <?php $cities = !empty($model->country)? CHtml::listData(City::model()->findAll('country_id = :country_id', array(':country_id'=>$model->country)), 'city_id', 'name') : array();
+                                  echo $form->dropDownList($model, 'city', $cities, array(
                                            'class' => 'inp_text',
                                            'empty' => '--Выберите город--',
-                                           ));  ?>
-                            <?php echo $form->error($model,'city'); ?>
+                                           ));  
+                                  echo $form->error($model,'city'); ?>
                         </td>
                         <td><p>Выберите город из списка</p></td>        
                     </tr>
 
-                    <!--<tr>
-                        <th width="30%">Email *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Email *:</td>
                         <td>
@@ -102,10 +78,6 @@
                         <td><p> Третьи лица не имеют доступ к этой информации </p></td>        
                     </tr>
                     
-                    <!--<tr>
-                        <th width="30%">Телефон *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Телефон *:</td>
                         <td>
@@ -115,10 +87,6 @@
                         <td><p> Номер телефона необходим для связи администрации сайта с Вами </p></td>        
                     </tr>
                     
-                    <!--<tr>
-                        <th width="30%">Вуз *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
 		            <tr>
                         <td width="20%">Вуз *:</td>
                         <td>
@@ -128,10 +96,6 @@
 			            <td><p> Укажите учебное заведение, которое вы закончили </p></td>		
 		            </tr>
                     
-		            <!--<tr>
-                        <th width="30%">Год окончания ВУЗа *:</th>
-			            <th width="70%"></th>
-                    </tr>-->
 		            <tr>
                         <td width="20%">Год окончания ВУЗа *:</td>
                         <td>
@@ -149,10 +113,6 @@
                         <td><input type="submit" class="inp_sub" value="ЗАГРУЗИТЬ ФАЙЛ" /></td>
 		            </tr> -->
 
-                    <!--<tr>
-                        <th width="30%">Пол *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Пол *:</td>
                         <td>
@@ -165,10 +125,6 @@
                         <td><p></p></td>        
                     </tr>
 
-                    <!--<tr>
-                        <th width="30%">Псевдоним *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Псевдоним *:</td>
                         <td>
@@ -178,10 +134,6 @@
                         <td><p>Будет так же являться адресом вашей страницы (от 3 до 15 символов)</p></td>        
                     </tr>
                     
-                    <!--<tr>
-                        <th width="30%">Пароль *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Пароль *:</td>
                         <td>
@@ -191,10 +143,6 @@
                         <td><p>Минимальное количество символов 6. Максимальное количество символов 20 </p></td>        
                     </tr>
                     
-                    <!--<tr>
-                        <th width="30%">Повтор пароля *:</th>
-                        <th width="70%"></th>
-                    </tr>-->
                     <tr>
                         <td width="20%">Повтор пароля *:</td>
                         <td>

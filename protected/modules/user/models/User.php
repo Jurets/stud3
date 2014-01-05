@@ -570,16 +570,17 @@ class User extends Model
         $password = $this->hashPassword($password);
         $module = Yii::app()->getModule('user');
         $this->setAttributes(array(
-            'username'      => $email,
+            'username'      => $username,
             'name'          => $name,
             'surname'       => $surname,
             'email'         => $email,
             'password'      => $password,
-            'name'          => $name,
 
             'gender'        => $gender,
             'country'       => $country,
             'city'          => $city,
+            'telephone'     => $telephone,
+            
             'tariff'        => Tariffs::START,
             'userpic_f'     => $module->standartUserpic_f,
             'userpic'       => $module->standartUserpic,
@@ -589,6 +590,26 @@ class User extends Model
         return $this->save(false);
     }
 
+    /**
+     * Регистрация пользователя-исполнителя
+     * @param $data массив с данными
+     */
+    public function createPerformer($data, $status = self::STATUS_NOT_ACTIVE)
+    {
+        //$password = $this->hashPassword($password);
+        $module = Yii::app()->getModule('user');
+        $this->setAttributes(CMap::mergeArray($data, array(
+            'password'      => $this->hashPassword($data['password']),
+            'tariff'        => Tariffs::START,
+            'userpic_f'     => $module->standartUserpic_f,
+            'userpic'       => $module->standartUserpic,
+            'status'        => $status,
+            'email_confirm' => self::EMAIL_CONFIRM_NO
+        )), false);
+        $this->usertype = 2;
+        return $this->save(false);
+    }
+    
     /**
      * Изменение пароля
      */

@@ -25,8 +25,8 @@
 		            'validateOnType' => false,
 	            ),
             ));  
-                echo $form->hiddenField($model, 'step'); 
-                
+                //echo $form->hiddenField($model, 'step'); 
+                echo $form->error($model, 'specializations');
                 $specializations = Yii::app()->db->createCommand('select * from ci_specialization')->queryAll();
                 ?>
                 <? foreach ($specializations as $key => $item) { ?>

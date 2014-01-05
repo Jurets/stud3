@@ -2,6 +2,7 @@
 class PerformerRegForm extends RegistrationForm
 {
     const STEP_COUNT = 6;
+    const SPECIALIZATIONS_MAXCOUNT = 10;
     
     public $surname;
     public $country;
@@ -40,15 +41,25 @@ class PerformerRegForm extends RegistrationForm
         return CMap::mergeArray(parent::rules(), array(
             array('surname', 'filter', 'filter' => 'trim'),// очищаем пробелы
             array('surname, country, city, telephone, educationplace, educationyear', 'required'),// обязательные поля
+            array('specializations', 'checkSpecializations'),// фамилия, имя максимальная длина
             array('surname', 'length', 'max' => 20),// фамилия, имя максимальная длина
             array('surname', 'match', 'pattern' => '/^[A-Za-zАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя0-9\s,]+$/', 
                   'message' => 'Неверный формат поля "{attribute}" допустимы только символы кириллицы и латиницы'),
-            array('step, specializations', 'safe'), //безопасные поля
-            array('is_cources, is_studentsworks, is_home, home_mapplace, home_pricehour, is_studenthome, studenthome_pricehour, is_weblearning, weblearning_pricehour', 'safe'), //безопасные поля
-            array('cources_forchild, cources_forschoolchild, cources_forstudents, cources_foradults, categories', 'safe'), //безопасные поля
+            //безопасные поля
+            array('step, specializations, is_cources, is_studentsworks, is_home, home_mapplace, home_pricehour, is_studenthome, studenthome_pricehour, is_weblearning, weblearning_pricehour, cources_forchild, cources_forschoolchild, cources_forstudents, cources_foradults, categories', 'safe'), //безопасные поля
         ));
     }
 
+    /**
+    * проверка существования логина
+    */
+    public function checkSpecializations($attribute, $params) {
+        $count = count($this->specializations);
+        if ($count > self::SPECIALIZATIONS_MAXCOUNT) {
+            $this->addError('specializations', 'Разрешен выбор не более ' . self::SPECIALIZATIONS_MAXCOUNT . ' специализаций. Выбрано: ' . $count);
+        }
+    }
+    
     /**
     * метки
     */
@@ -82,6 +93,11 @@ class PerformerRegForm extends RegistrationForm
                 if ($this->is_cources)
                     $this->step = 4;
                 else if ($this->is_studentsworks)
+                    $this->step = 5;
+                else
+                    $this->step = 6;
+            } else if ($this->step == 4) {
+                if ($this->is_studentsworks)
                     $this->step = 5;
                 else
                     $this->step = 6;
