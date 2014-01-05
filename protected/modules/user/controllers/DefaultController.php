@@ -74,7 +74,7 @@ class DefaultController extends Controller
     * 
     */
     public function actionRegistration2()
-    {DebugBreak();
+    {//DebugBreak();
         //throw new CHttpException("404", '<div class="alert alert-error">Извините регистрация только по <a href="/registration/invite">приглашению</a>. Приглашение можете получить у друзей которые уже зарегистрированы у нас или <a href="/support">написать администрации</a> чем Вы будете полезны для сервиса если получите приглашение. Приглашения ни когда не продавались и не будут продаваться, если Вам кто то предлагает его купить, известите пожалуйста нас об этом. Всем кто будет замечен в продаже приглашений будет бессрочно заблокирован доступ на сайт.</div>');
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
@@ -89,21 +89,37 @@ class DefaultController extends Controller
         if (Yii::app()->request->isPostRequest && !empty($_POST['PerformerRegForm'])) {
             $form->setAttributes($_POST['PerformerRegForm'], false);
             if ($form->validate()) 
-            {
+            {//DebugBreak();
+                $form->nextStep();       //следующий шаг регистрации
                 if ($form->step >= PerformerRegForm::STEP_COUNT - 1)
-                {DebugBreak();
+                {
                     $transaction = Yii::app()->db->beginTransaction();
-                    try {
+                    try { //запись в таблицу юзеров
                         $user = new User;
                         $user->setScenario('onRegistration');
                         //$user->setAttributes($form->attributes, false);
                         //$success = $user->save(false);
-                        $success = $user->createAccount($form->attributes);
-                        if ($success) {
+                        //$success = $user->createAccount($form->attributes);
+                        $success = $user->createPerformer($form->attributes);
+                        if ($success) {  //запись в связанную таблицу исполнителей
                             $perfomer = new Perfomer;
                             $perfomer->setAttributes($form->attributes, false);
                             $perfomer->user_id = $user->id;
                             $success = $perfomer->save(false);
+                            if ($success) {  //сохранить специализации
+                                foreach($form->specializations as $item) {
+                                    Yii::app()->db->createCommand()->insert('ci_performer_specializations', array(
+                                        'performer_id'=>$perfomer->id,
+                                        'specialization_id'=>$item,
+                                    ));
+                                } //сохранить категории
+                                foreach($form->categories as $item) {
+                                    Yii::app()->db->createCommand()->insert('ci_performer_categories', array(
+                                        'performer_id'=>$perfomer->id,
+                                        'category_id'=>$item,
+                                    ));
+                                }
+                            }
                         }
                         
                         //if ($user && $success && !$user->hasErrors()) {
@@ -131,7 +147,7 @@ class DefaultController extends Controller
                 } else {
                     Yii::app()->user->setState('userPerformer', $form);
                 }
-                $form->nextStep();
+                //$form->nextStep();
             }
         } else {
             $form->step = 1;
