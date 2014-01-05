@@ -340,55 +340,35 @@ class User extends Model
         {
             // таблица для хранение параметров поиска пользователей
             $search = new UsersSearch;
-
             $search->user_id = $this->id;
-
             $search->save();
-
             // таблица для статичных данных
             $static = new UsersStatic;
-
             $static->user_id = $this->id;
-
             $static->save();
-
             // таблица для данных о тарифе
             $tariff = new UsersTariff;
-
             $tariff->user_id = $this->id;
-
             $tariff->save();
-
             // таблица для данных о рейтинге пользователя
             $rating = new UsersRating;
-
             $rating->user_id = $this->id;
-
             $rating->save();
-
             Yii::app()->getModule('tenders');
-
             // таблица для данных о рейтинге пользователя
             $tender = new TendersSearch;
-
             $tender->user_id = $this->id;
-
             $tender->save();
-
             // оповещения
             $notify = new UsersNotify;
-
             $notify->user_id = $this->id;
-
             $notify->save();
-
             if ($this->scenario == 'onRegistrationInvite') {
                 if ($this->invitecode) {
                     Invites::model()->update($this->invitecode, $this->id);
                 }
             }
         }
-
         return parent::afterSave();
     }
 
@@ -524,7 +504,7 @@ class User extends Model
         );
     }
 
-    function behaviors()
+    public function behaviors()
     {
         return array(
             'tags' => array(
@@ -540,12 +520,9 @@ class User extends Model
         );
     }
 
-    public function beforeValidate()
-    {
-        $this->username = $this->email;
-
+    public function beforeValidate() {
+        //$this->username = $this->email;  //не заносим емейл в логин
         return parent::beforeValidate();
-
     }
 
     /**
@@ -590,12 +567,8 @@ class User extends Model
     public function createAccount($data, $status = self::STATUS_NOT_ACTIVE)
     {
         extract($data); // Импортировать переменные из массива в текущую символьную таблицу.
-
         $password = $this->hashPassword($password);
-
         $module = Yii::app()->getModule('user');
-
-
         $this->setAttributes(array(
             'username'      => $email,
             'name'          => $name,
@@ -613,9 +586,7 @@ class User extends Model
             'status'        => $status,
             'email_confirm' => self::EMAIL_CONFIRM_NO
         ));
-
-        $this->save(false);
-
+        return $this->save(false);
     }
 
     /**
@@ -634,13 +605,9 @@ class User extends Model
     public function activate()
     {
         $this->activation_ip = Yii::app()->request->userHostAddress;
-
         $this->status = self::STATUS_ACTIVE;
-
         $this->email_confirm = self::EMAIL_CONFIRM_YES;
-
         $this->save();
-
         return $this->save();
     }
 
@@ -671,44 +638,32 @@ class User extends Model
     public function cat($search)
     {
         $criteria = new CDbCriteria;
-
         $criteria->order = 'tariff DESC'; // пользователи с pro тарифом сверху
-
         if ($search->status != UsersSearch::STATUS_ON) {
             return $this;
         }
-
         if ($search->keywords) {
             $criteria->addCondition('username = :keywords', 'AND');
-
             $criteria->params += array(':keywords' => $search->keywords);
         }
-
         if ($search->username) {
             $criteria->addCondition('username = :username', 'AND');
-
             $criteria->params += array(':username' => $search->keywords);
         }
-
         if ($search->favorite) // у меня в подписчиках
         {
             $criteria->addCondition('`id` IN (SELECT favorite FROM {{users_favorites}} WHERE {{users_favorites}}.`user_id` = :user_id)', 'AND');
-
             $criteria->params[':user_id'] = Yii::app()->user->id;
         }
-
         if ($search->portfolio) {
             $criteria->addCondition("portfolio > 0", 'AND');
         }
-
         if ($search->reviews) {
             $criteria->addCondition("reviews_positive > 0", 'AND');
         }
-
         if ($search->interests) {
             $this->withTags($search->interests);
         }
-
         $this->getDbCriteria()->mergeWith($criteria);
 
         return $this;

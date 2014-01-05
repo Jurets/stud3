@@ -5,13 +5,13 @@ class RegistrationForm2 extends CFormModel
     public $email;
     public $password;
     public $password2;
-    public $country;
-    public $city;
     public $name;
-    public $surname;
     public $gender;
     public $agree;
     public $verifyCode;
+    public $surname;
+    public $country;
+    public $city;
 
 	/**
 	* правила валидации

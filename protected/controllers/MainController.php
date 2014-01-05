@@ -298,7 +298,7 @@ class MainController extends Controller
     
     //достать список городов страны
     public function actionDynamiccities() {
-        $country_id = (int)$_POST['RegistrationForm2']['country'];
+        $country_id = (int)$_POST['PerformerRegForm']['country'];
         $data = City::model()->findAll('country_id = :country_id', array(':country_id'=>$country_id));
         $data = CHtml::listData($data, 'city_id', 'name');
         echo CHtml::tag('option', array('value' => ''), '--Выберите город--', true);

@@ -1,6 +1,8 @@
 <?php
 class DefaultController extends Controller
 {
+    
+    
     public function filters()
     {
         return array(
@@ -67,54 +69,75 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+    * Регистрация исполнителя
+    * 
+    */
     public function actionRegistration2()
-    {
+    {DebugBreak();
         //throw new CHttpException("404", '<div class="alert alert-error">Извините регистрация только по <a href="/registration/invite">приглашению</a>. Приглашение можете получить у друзей которые уже зарегистрированы у нас или <a href="/support">написать администрации</a> чем Вы будете полезны для сервиса если получите приглашение. Приглашения ни когда не продавались и не будут продаваться, если Вам кто то предлагает его купить, известите пожалуйста нас об этом. Всем кто будет замечен в продаже приглашений будет бессрочно заблокирован доступ на сайт.</div>');
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
         }
-        $form = new RegistrationForm2;
-        if (Yii::app()->request->isPostRequest && !empty($_POST['RegistrationForm'])) {
-            $form->setAttributes($_POST['RegistrationForm']);
-            if ($form->validate()) {
-                $transaction = Yii::app()->db->beginTransaction();
-                try {
-                    $user = new User;
-                    $user->setScenario('onRegistration');
-                    $data = array(
-                        'username' => $form->username,
-                        'email'    => strtolower($form->email),
-                        'password' => $form->password,
-                        'name'     => $form->name,
-                        'gender'   => $form->gender
-                    );
-                    
-                    $user->createAccount($data);
-                    
-                    if ($user && !$user->hasErrors()) {
-                        Yii::log("Создана учетная запись " . $user->username . "!", CLogger::LEVEL_INFO);
-                        Email_helper::send($user->email, 'Регистрация на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
-                        $transaction->commit();
-                        //Yii::app()->user->setFlash(FlashMessages::INFO, 'Регистрация успешно завершена, проверьте почту');
-
-                        // автоматический вход
-                        $identity = new UserIdentity($form->username, $form->password);
-                        $identity->authenticate();
-                        Yii::app()->user->login($identity);
-                        $this->redirect('/activation');
-                    } else {
-                        $transaction->rollBack();
-                        Yii::log("Ошибка при создании  учетной записи!", CLogger::LEVEL_ERROR);
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollback();
-                    Yii::log("При регистрации произошла ошибка!", CLogger::LEVEL_ERROR);
-                    $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
-                }
-            }
+        if (Yii::app()->user->hasState('userPerformer')) {
+            $form = Yii::app()->user->getState('userPerformer');
+        } else {
+            $form = new PerformerRegForm;
+            $form->step = 1;
         }
+        //если есть пришедшие данные с формы
+        if (Yii::app()->request->isPostRequest && !empty($_POST['PerformerRegForm'])) {
+            $form->setAttributes($_POST['PerformerRegForm'], false);
+            if ($form->validate()) 
+            {
+                if ($form->step >= PerformerRegForm::STEP_COUNT - 1)
+                {DebugBreak();
+                    $transaction = Yii::app()->db->beginTransaction();
+                    try {
+                        $user = new User;
+                        $user->setScenario('onRegistration');
+                        //$user->setAttributes($form->attributes, false);
+                        //$success = $user->save(false);
+                        $success = $user->createAccount($form->attributes);
+                        if ($success) {
+                            $perfomer = new Perfomer;
+                            $perfomer->setAttributes($form->attributes, false);
+                            $perfomer->user_id = $user->id;
+                            $success = $perfomer->save(false);
+                        }
+                        
+                        //if ($user && $success && !$user->hasErrors()) {
+                        if ($success) {
+                            $transaction->commit();    //подтвердить транзакцию
+                            Yii::app()->user->setState('userPerformer', null); //стереть сессию
+                            
+                            Yii::log("Создана учетная запись " . $user->username . "!", CLogger::LEVEL_INFO);
+                            //Email_helper::send($user->email, 'Регистрация на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
+                            //Yii::app()->user->setFlash(FlashMessages::INFO, 'Регистрация успешно завершена, проверьте почту');
+                            // автоматический вход
+                            $identity = new UserIdentity($form->username, $form->password);
+                            $identity->authenticate();
+                            Yii::app()->user->login($identity);
+                            //$this->redirect('/activation');   //не редиректим на активацию (?)
+                        } else {
+                            $transaction->rollBack();
+                            Yii::log("Ошибка при создании  учетной записи!", CLogger::LEVEL_ERROR);
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollback();
+                        Yii::log("При регистрации произошла ошибка!", CLogger::LEVEL_ERROR);
+                        $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
+                    }
+                } else {
+                    Yii::app()->user->setState('userPerformer', $form);
+                }
+                $form->nextStep();
+            }
+        } else {
+            $form->step = 1;
+        } 
         $this->pageTitle = 'Регистрация';
-        $this->render('registration2', array('model' => $form));
+        $this->render('registration' . $form->step, array('model' => $form));
     }
 
     /**
