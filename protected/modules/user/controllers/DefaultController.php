@@ -81,7 +81,9 @@ class DefaultController extends Controller
         }
         if (Yii::app()->user->hasState('userPerformer')) {//DebugBreak();
             $sform = Yii::app()->user->getState('userPerformer');
-            $form = unserialize($sform);
+            //$form = unserialize($sform);
+            $form = new PerformerRegForm;
+            $form->setAttributes($sform);
         } else {
             $form = new PerformerRegForm;
             $form->step = 1;
@@ -146,7 +148,8 @@ class DefaultController extends Controller
                         $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
                     }
                 } else {//DebugBreak();
-                    $sform = serialize($form);
+                    //$sform = serialize($form);
+                    $sform = $form->attributes;
                     Yii::app()->user->setState('userPerformer', $sform);
                 }
                 //$form->nextStep();
