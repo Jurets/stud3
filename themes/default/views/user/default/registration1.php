@@ -19,7 +19,10 @@
 		            'validateOnType' => false,
 	            ),
             ));  
-                echo $form->hiddenField($model, 'step'); ?>
+                echo $form->hiddenField($model, 'step'); 
+                //print_r($form); 
+                //echo  $model->surname;
+                ?>
                 
 	            <table>
 		            <tr>

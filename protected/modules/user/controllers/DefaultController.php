@@ -79,8 +79,9 @@ class DefaultController extends Controller
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
         }
-        if (Yii::app()->user->hasState('userPerformer')) {
-            $form = Yii::app()->user->getState('userPerformer');
+        if (Yii::app()->user->hasState('userPerformer')) {//DebugBreak();
+            $sform = Yii::app()->user->getState('userPerformer');
+            $form = unserialize($sform);
         } else {
             $form = new PerformerRegForm;
             $form->step = 1;
@@ -89,9 +90,9 @@ class DefaultController extends Controller
         if (Yii::app()->request->isPostRequest && !empty($_POST['PerformerRegForm'])) {
             $form->setAttributes($_POST['PerformerRegForm'], false);
             if ($form->validate()) 
-            {//DebugBreak();
+            {
                 $form->nextStep();       //следующий шаг регистрации
-                if ($form->step >= PerformerRegForm::STEP_COUNT - 1)
+                if ($form->step >= PerformerRegForm::STEP_COUNT)
                 {
                     $transaction = Yii::app()->db->beginTransaction();
                     try { //запись в таблицу юзеров
@@ -144,8 +145,9 @@ class DefaultController extends Controller
                         Yii::log("При регистрации произошла ошибка!", CLogger::LEVEL_ERROR);
                         $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
                     }
-                } else {
-                    Yii::app()->user->setState('userPerformer', $form);
+                } else {//DebugBreak();
+                    $sform = serialize($form);
+                    Yii::app()->user->setState('userPerformer', $sform);
                 }
                 //$form->nextStep();
             }
