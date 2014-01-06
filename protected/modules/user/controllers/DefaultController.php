@@ -229,25 +229,18 @@ class DefaultController extends Controller
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
         }
-
         $form = new LoginForm;
-
         if (Yii::app()->request->isPostRequest && !empty($_POST['LoginForm'])) {
             $form->setAttributes($_POST['LoginForm']);
-
             if ($form->validate()) {
                 Yii::log('Пользователь ' . $form->username . ' авторизовался!', CLogger::LEVEL_INFO);
-
                 $redirect = (Yii::app()->user->isSuperUser()) ? '/administrator/default/pages' : '/users/' . $form->username;
-
                 $this->redirect('/account/profile');
             } else {
                 Yii::log('Ошибка авторизации! email => ' . $form->username . ', password => ' . $form->password . '!', CLogger::LEVEL_ERROR);
             }
         }
-
         $this->pageTitle = 'Авторизация';
-
         $this->render('login', array('model' => $form));
     }
 
@@ -263,37 +256,25 @@ class DefaultController extends Controller
 
             if ($form->validate()) {
                 $user = $form->getUser();
-
                 $recovery = new RecoveryPassword;
-
                 $recovery->setAttributes(array(
                     'user_id' => $user->id,
                     'code'    => $recovery->generateRecoveryCode($user->id)
                 ));
-
                 if ($recovery->save()) {
                     // отправить письмо с сылкой на сброс пароля
                     Yii::log('Заявка на автоматическое восстановление пароля.', CLogger::LEVEL_INFO);
-
                     Yii::app()->user->setFlash(FlashMessages::INFO, 'Запрос на восстановление забытого логина или пароля для e-mail ' . $user->email . ' отправлен на e-mail');
-
                     Email_helper::send($user->email, 'Запрос на восстановление забытого логина или пароля - ' . Yii::app()->name . '', 'recovery', array('data' => $user, 'recovery' => $recovery));
-
-
                     $this->redirect(Yii::app()->getModule('user')->loginUrl);
                 } else {
                     Yii::log('Ошибка при создании заявки на автоматическое восстановление пароля', CLogger::LEVEL_ERROR);
-
                     Yii::app()->user->setFlash(FlashMessages::ERROR, 'При восстановлении пароля произошла ошибка! Повторите попытку позже!!!');
-
                     $this->redirect(Yii::app()->getModule('user')->recoveryUrl);
                 }
-
             }
         }
-
         $this->pageTitle = 'Восстановление пароля';
-
         $this->render('recovery', array('model' => $form));
     }
 

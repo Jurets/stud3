@@ -1,5 +1,5 @@
-<div id="authform" class="yui-g">
-  <h1>Вход в систему</h1>
+<div id="authform" class="yui-g" style="margin-top: 100px;">
+  <h1 style="text-align: center;">Вход в систему</h1>
 
 <?php $this->widget('FlashMessages'); ?>
 
@@ -7,6 +7,9 @@
 	'id'=>'login-form',
 	'enableClientValidation'=>true,
 	'errorMessageCssClass'=>'alert alert-error',
+    'htmlOptions'=>array(
+        'style'=>'margin: 0 auto 18px; width: 300px;',
+    )
 )); 
 ?>
     <div class="rnd">
