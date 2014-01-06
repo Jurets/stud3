@@ -1,3 +1,11 @@
+<style type="text/css">
+    .page.selected a {
+        color: #999999;
+        cursor: default;   
+        background-color: #F5F5F5     
+    }
+</style>
+
 <div class="row">
     <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
         <div class="row">
@@ -7,7 +15,7 @@
                         Лента заказов </h1>
                     <!-- BEGIN BREADCRUMBS-->
                     <ul class="breadcrumb breadcrumb__t">
-                        <li><a href="index.html">Ленна заказов</a></li>
+                        <li><a href="index.html">Лента заказов</a></li>
                         <li class="divider"></li>
                         <li><a href="../index.html">Дипломы</a></li>
                 </section>
@@ -31,7 +39,6 @@
 <div class="span6">
 {sorter}
 </div><div class="span6">
-{pager}
 </div>
 </div>
 {items}
@@ -40,15 +47,22 @@
                         'sorterCssClass'     => 'offers-stateline',
                         'sorterHeader'       => 'Сортировать по: ',
                         'pager'              => array(
-                            'maxButtonCount' => 0,
+                            'maxButtonCount' => 8,
                             'nextPageLabel'  => 'Следующая',
                             'prevPageLabel'  => 'Предыдущая',
+                            'lastPageLabel'  => 'Последняя',
+                            'firstPageLabel' => 'Первая',
+                            
                             'header'         => '',
+                            //'selectedPageCssClass' => 'active',
+                            //'previousPageCssClass' => '',
                             'htmlOptions' => array(
+                                'class' => '',
                                 'style' => 'margin:0;'
                             )
-
                         ),
+                        'pagerCssClass' => 'pagination pagination__posts',
+                        
                         'sortableAttributes' => array(
                             'date'   => 'Дате',
                             'budget' => 'Бюджету',
