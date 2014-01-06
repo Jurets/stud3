@@ -11,6 +11,10 @@ class User extends Model
     const TYPE_CUSTOMER  = 'customer';
     const TYPE_PERFORMER = 'performer';
 
+    //new
+    const USERTYPE_CUSTOMER  = 1;
+    const USERTYPE_PERFORMER = 2;
+    
     const GENDER_MALE   = 1;
     const GENDER_FEMALE = 2;
     const GENDER_THING  = 0;

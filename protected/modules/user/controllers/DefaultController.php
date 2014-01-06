@@ -304,49 +304,38 @@ class DefaultController extends Controller
     {
         if (!$code) {
             Yii::app()->user->setFlash(FlashMessages::ERROR, 'Код восстановления пароля не найден! Попробуйте еще раз!');
-
             $this->redirect(Yii::app()->getModule('user')->recoveryUrl);
         }
-
         $recovery = RecoveryPassword::model()->with('user')->find('code = :code', array(':code' => $code));
-
         if (!$recovery) {
             Yii::log('Код восстановления пароля ' . $code . ' не найден!', CLogger::LEVEL_ERROR);
-
             Yii::app()->user->setFlash(FlashMessages::ERROR, 'Код восстановления пароля не найден! Попробуйте еще раз!');
-
             $this->redirect(Yii::app()->getModule('user')->recoveryUrl);
         }
-
         $newPassword = User::model()->generateRandomPassword();
-
         $recovery->user->password = User::model()->hashPassword($newPassword);
-
         $transaction = Yii::app()->db->beginTransaction(); // начинаем транзакцию
-
         try {
             if ($recovery->user->save() && RecoveryPassword::model()->deleteAll('user_id = :user_id', array(':user_id' => $recovery->user->id))) {
                 $transaction->commit(); // конец транзакции
-
                 Email_helper::send($recovery->user->email, 'Временный пароль на ' . Yii::app()->name . '', 'recoverySuccess', array('data' => $recovery->user, 'password' => $newPassword));
-
                 Yii::app()->user->setFlash(FlashMessages::INFO, 'Новый пароль отправлен Вам на email!');
-
                 Yii::log('Успешное восстановление пароля!', CLogger::LEVEL_ERROR);
-
                 $this->redirect(Yii::app()->getModule('user')->loginUrl);
             }
         } catch (CDbException $e) {
             $transaction->rollback(); // если ошибка, откатываем изменения
-
             Yii::app()->user->setFlash(FlashMessages::ERROR, 'Ошибка при смене пароля!');
-
             Yii::log('Ошибка при автоматической смене пароля ' . $e->getMessage() . '!', CLogger::LEVEL_ERROR);
-
             $this->redirect(Yii::app()->getModule('user')->recoveryUrl);
         }
     }
 
+    /**
+    * put your comment there...
+    * 
+    * @param mixed $code
+    */
     public function actionConfirmation($code = '')
     {
         Yii::app()->getModule('tenders');

@@ -1,3 +1,20 @@
+<?php
+    //инициализация параметров
+    $userBid = $model->checkBid();     //есть ли заявка от текущего юзера (если он исполнитель) (вернёт ИД)
+    $acceptBid = $model->checkABid();  //есть ли принятая заявка
+
+    $isLoggedUser = !Yii::app()->user->isGuest;  //текущий юзер - не гость
+    if ($isLoggedUser) {
+        $user = User::model()->findByPk(Yii::app()->user->id);  //найти текущего юзера
+        $is_customer = ($user->usertype == User::USERTYPE_CUSTOMER);    //признак юзер=заказчик
+        $is_performer = ($user->usertype == User::USERTYPE_PERFORMER);  //признак юзер=исполнитель
+        $is_owner = (Yii::app()->user->id == $model->user_id);  //признак, что это хозяин заказа
+    } else {
+        $user = null;  
+        $is_performer = false;
+    }
+?>
+
 <div class="container">
     <div class="row">
         <div data-motopress-wrapper-type="content" data-motopress-wrapper-file="page-testi.php" class="span12">
@@ -78,11 +95,11 @@
                     </article>
                     
                     <? //------------- Проверить наличие исполнителя -------------?>
-                    <? if ($accept = $model->checkABid()) {?>
+                    <? if ($acceptBid) {?>
                         <br />
                         <div class="alert alert-block">
                             <h4>Исполнитель определен</h4>
-                        <font class="frlname11"><a href="/users/<?=$accept->userdata->username?>"><?=$accept->userdata->username?></a></font>
+                        <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
                         </div>
                     <? } ?>
                     
@@ -94,7 +111,8 @@
                     </p>-->
                     
                     <? //------------- Проверить: отображать ли форму добавления -------------?>
-                    <? if ($bid) { ?>
+                    <? //проверка: не определен ли исполнитель ($acceptBid), не гость ли юзер и является ли он исполнителем 
+                    if (!$acceptBid && $isLoggedUser && $is_performer) { ?>
                     <div id="respond">
                         <h3>Оставьте своё предложение</h3>
                         <form id="commentform" amethod="post">
@@ -109,10 +127,14 @@
 
                     <? //------------- Отображение предложения исполнителей (если текущий юзер - заказчик) -------------?>
                     <div class="fon_mess">
-                    <? if (Yii::app()->user->id == $model->user_id) { ?>
+                    <? //проверка: юзер - не гость и это юзер - хозяин заказа или исполнитель, который ответил ?>
+                    <? if ($isLoggedUser && ($is_owner || ($is_performer && $userBid))) { ?>
                         <h2 class="post-title">Оценка и предложения исполнителей</h2>
-                        <? if (Yii::app()->user->id == $model->user_id && !empty($model->bidslist)) { 
-                            foreach($model->bidslist as $row) {?>
+                        <?  //если список заявок непустой
+                            if (!empty($model->bidslist)) { 
+                            foreach($model->bidslist as $row) 
+                            { //Пройтись по списку 
+                                if ($is_owner || ($user->id == $row->user_id)) { //если хозяин заказа или автор ответа - показать ответ ?>
                                 <article class="post-67 post type-post status-publish format-standard hentry category-ut-tellus-dolor-dapibus-eget tag-lorem tag-sit-amet post__holder cat-44-id" id="post-67">
                                     <figure class="featured-thumbnail thumbnail">
                                         <a href="../ut-tellus-dolor-dapibus-eget/etiam-dictum-egestas/index.html">
@@ -155,6 +177,7 @@
                                     </div>            
                                 </article>
 
+                                <? // ---------------- Кнопки управления ответом исполнителя на заказ ----------?>
                                 <? if (Yii::app()->user->id == $row->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
                                     <i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> 
                                     <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказать от проекта</a>
@@ -199,8 +222,8 @@
                                         Да, усепю, можете выбрать меня.
                                     </div>
                                 </div>
-                            <!--</div>-->
-                        <? } 
+                        <?      } 
+                            }
                         } else { ?>
                             <p><strong>Заявки отсутствуют.</strong></p>
                         <?  } ?> 

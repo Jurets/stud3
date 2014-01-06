@@ -85,13 +85,16 @@ class DefaultController extends Controller
 		if (Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN) {
 			$bid = FALSE;
 			if ($_GET['action'] == 'edit') {// если редактировать
-				if ($model->checkBid()) {
-					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
+				if ($model->checkBid()) {  //проверяем - есть ли заявка на этот проект у текущего юзера
+					//если да - выбираем заявку текущего юзера на данный проект
+                    $bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
 				}
 			} else {
-				if ($model->checkBid()) {
+				if ($model->checkBid()) {  //проверяем - есть ли заявка на этот проект у текущего юзера
+                    //если да - выбираем заявку текущего юзера на данный проект
 					$bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
 				} else {
+                    //иначе создаем новый объект заявки
 				    $bid = new Bids;
 				}
 			}

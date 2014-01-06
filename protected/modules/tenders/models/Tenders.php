@@ -163,7 +163,7 @@ class Tenders extends Model
     }
 
     /**
-     * Проверка на существование заявки в проекте
+     * Проверка на существование заявки (от текущего юзера) в проекте (возвращается ИД ответа)
      */
     public function checkBid()
     {
@@ -175,11 +175,11 @@ class Tenders extends Model
     }
 
     /**
-     * Проверка на существование заявки в проекте
+     * Проверка на существование ПРИНЯТОЙ заявки в проекте (возвращается модель)
      */
     public function checkABid()
     {
-        return Bids::model()->find('project_id = :project_id and status =  :status', array(':project_id' => $this->id, ':status' => Bids::STATUS_ACCEPT));
+        return Bids::model()->find('project_id = :project_id and status = :status', array(':project_id' => $this->id, ':status' => Bids::STATUS_ACCEPT));
     }
 
     public function attributeLabels() {
@@ -215,12 +215,9 @@ class Tenders extends Model
     public function getModerated($user = '')
     {
         $tender = self::model()->find('user_id = :user_id and status =  :status', array(':user_id' => ($user == '') ? Yii::app()->user->id : $user, ':status' => self::STATUS_MODERATION));
-
         if (!$tender)
             return false;
-
         $tender->status = self::STATUS_OPEN;
-
         $tender->update();
     }
 
@@ -229,16 +226,12 @@ class Tenders extends Model
         if ($this->isNewRecord) {
             if (!isset($this->user_id))
                 $this->user_id = Yii::app()->user->id;
-
             $this->date = time();
-
             //Static_helper::change(Static_helper::PROJECTS);
         } else {
             $this->update = time();
         }
-
         $this->descr = Text_helper::character_limiter($this->text, 500);
-
         return parent::beforeSave();
     }
 
