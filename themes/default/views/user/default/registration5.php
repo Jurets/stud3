@@ -14,6 +14,8 @@
 		            'validateOnType' => false,
 	            ),
             )); 
+                //echo $form->hiddenField($model, 'step');
+                
                 $categories = Yii::app()->db->createCommand('select * from ci_categories')->queryAll();
                 ?>
                 <? foreach ($categories as $key => $item) { ?>

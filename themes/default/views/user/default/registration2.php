@@ -3,6 +3,7 @@
         margin-top: 10px;
         text-transform: uppercase;
         text-decoration: underline;
+        cursor: pointer;
     }
     .spec-subheader {
         margin-top: 10px;
@@ -27,20 +28,32 @@
             ));  
                 //echo $form->hiddenField($model, 'step'); 
                 echo $form->error($model, 'specializations');
+                
                 $specializations = Yii::app()->db->createCommand('select * from ci_specialization')->queryAll();
-                ?>
-                <? foreach ($specializations as $key => $item) { ?>
-                    <div class="catline" style="margin-left: <?=24*($item['level']-1)?>px;">
-                        <? if ($item['ischeck']) { ?>
-                            <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[specializations][]" value="<?=$item['id']?>" type="checkbox" <? if (in_array($item['id'], $model->specializations)) { ?> checked="checked"<? } ?>>
-                            <label style="font-weight: normal; text-decoration: none; text-transform: none; overflow: hidden;" for="category_<?=$item['id']?>"><?=$item['name']?></label>
-                        <? } else if ($item['level'] == 1) {?>
+                $is_subtree = false;
+                foreach ($specializations as $key => $item) { 
+                    if ($item['level'] == 1) { 
+                        $is_subtree = true; 
+                        if ($is_subtree) { 
+                            $is_subtree = false; ?>
+                            </div>
+                        <? } ?>
+                        <div class="tree-header" style="margin-left: <?=24*($item['level']-1)?>px;">
                             <p class="spec-header"><?=$item['name']?></p>
-                        <? } else {?>
-                            <p class="spec-subheader"><?=$item['name']?></p>
-                        <? }?>
-                    </div>
+                        </div>
+                        <div id="subtree_<?=$item['id']?>" style=" display: none;">
+                    <? } else { ?>
+                        <div class="catline" style="margin-left: <?=24*($item['level']-1)?>px;">
+                            <? if ($item['ischeck']) { ?>
+                                <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[specializations][]" value="<?=$item['id']?>" type="checkbox" <? if (in_array($item['id'], $model->specializations)) { ?> checked="checked"<? } ?>>
+                                <label style="font-weight: normal; text-decoration: none; text-transform: none; overflow: hidden;" for="category_<?=$item['id']?>"><?=$item['name']?></label>
+                            <? } else {?>
+                                <p class="spec-subheader"><?=$item['name']?></p>
+                            <? } ?>
+                        </div>
+                        <? } ?>
                 <? } ?>
+                </div>
                 
 	            <table>
 		            <tr>
@@ -61,3 +74,31 @@
 			
            
 </div><!-- .sidebar#sideLeft -->
+
+<?
+$str = <<<BLOCK
+$('.tree-header')
+    .on('click', function() {
+        elem = $(this).next();
+//        list = elem.children();
+//        list.each(
+//            function(indx, element) {
+//                if ($(element).css('display') == 'none') {
+//                    $(element).slideDown();
+//                } else {
+//                    input = $(element).children('input');
+//                    if (!input.checked) {
+//                        $(element).slideUp();
+//                    }
+//                }
+//            }
+//        );
+        
+        if (elem.css('display') == 'none')
+            elem.slideDown();
+        else
+            elem.slideUp();
+    });
+BLOCK;
+    Yii::app()->clientScript->registerScript('tree-slide', $str, CClientScript::POS_READY);
+?>

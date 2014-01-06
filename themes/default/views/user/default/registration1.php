@@ -19,11 +19,7 @@
 		            'validateOnType' => false,
 	            ),
             ));  
-                echo $form->hiddenField($model, 'step'); 
-                //print_r($form); 
-                //echo  $model->surname;
-                ?>
-                
+                //echo $form->hiddenField($model, 'step'); ?>
 	            <table>
 		            <tr>
 			            <td width="20%">Фамилия *:</td>

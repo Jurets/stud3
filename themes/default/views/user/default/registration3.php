@@ -14,7 +14,7 @@
 		            'validateOnType' => false,
 	            ),
             ));  
-                echo $form->hiddenField($model, 'step'); ?>
+                //echo $form->hiddenField($model, 'step'); ?>
                 
                 <div class="row">
                     <? echo $form->checkBox($model, 'is_cources'); ?>

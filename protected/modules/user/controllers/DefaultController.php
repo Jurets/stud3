@@ -74,12 +74,12 @@ class DefaultController extends Controller
     * 
     */
     public function actionRegistration2()
-    {//DebugBreak();
+    {
         //throw new CHttpException("404", '<div class="alert alert-error">Извините регистрация только по <a href="/registration/invite">приглашению</a>. Приглашение можете получить у друзей которые уже зарегистрированы у нас или <a href="/support">написать администрации</a> чем Вы будете полезны для сервиса если получите приглашение. Приглашения ни когда не продавались и не будут продаваться, если Вам кто то предлагает его купить, известите пожалуйста нас об этом. Всем кто будет замечен в продаже приглашений будет бессрочно заблокирован доступ на сайт.</div>');
         if (Yii::app()->user->isAuthenticated()) {
             $this->redirect(Yii::app()->getModule('user')->loginSuccess);
         }
-        if (Yii::app()->user->hasState('userPerformer')) {//DebugBreak();
+        if (Yii::app()->user->hasState('userPerformer')) {
             $sform = Yii::app()->user->getState('userPerformer');
             //$form = unserialize($sform);
             $form = new PerformerRegForm;
@@ -89,7 +89,7 @@ class DefaultController extends Controller
             $form->step = 1;
         }
         //если есть пришедшие данные с формы
-        if (Yii::app()->request->isPostRequest && !empty($_POST['PerformerRegForm'])) {
+        if (Yii::app()->request->isPostRequest && !empty($_POST['PerformerRegForm'])) {//DebugBreak();
             $form->setAttributes($_POST['PerformerRegForm'], false);
             if ($form->validate()) 
             {
@@ -100,9 +100,6 @@ class DefaultController extends Controller
                     try { //запись в таблицу юзеров
                         $user = new User;
                         $user->setScenario('onRegistration');
-                        //$user->setAttributes($form->attributes, false);
-                        //$success = $user->save(false);
-                        //$success = $user->createAccount($form->attributes);
                         $success = $user->createPerformer($form->attributes);
                         if ($success) {  //запись в связанную таблицу исполнителей
                             $perfomer = new Perfomer;
@@ -131,13 +128,13 @@ class DefaultController extends Controller
                             Yii::app()->user->setState('userPerformer', null); //стереть сессию
                             
                             Yii::log("Создана учетная запись " . $user->username . "!", CLogger::LEVEL_INFO);
-                            //Email_helper::send($user->email, 'Регистрация на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
                             //Yii::app()->user->setFlash(FlashMessages::INFO, 'Регистрация успешно завершена, проверьте почту');
                             // автоматический вход
                             $identity = new UserIdentity($form->username, $form->password);
                             $identity->authenticate();
                             Yii::app()->user->login($identity);
                             //$this->redirect('/activation');   //не редиректим на активацию (?)
+                            Email_helper::send($user->email, 'Регистрация на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
                         } else {
                             $transaction->rollBack();
                             Yii::log("Ошибка при создании  учетной записи!", CLogger::LEVEL_ERROR);
@@ -147,12 +144,11 @@ class DefaultController extends Controller
                         Yii::log("При регистрации произошла ошибка!", CLogger::LEVEL_ERROR);
                         $form->addError('username', $e->getMessage() . 'При регистрации пользователя произошла ошибка!');
                     }
-                } else {//DebugBreak();
+                } else {
                     //$sform = serialize($form);
                     $sform = $form->attributes;
                     Yii::app()->user->setState('userPerformer', $sform);
                 }
-                //$form->nextStep();
             }
         } else {
             $form->step = 1;
