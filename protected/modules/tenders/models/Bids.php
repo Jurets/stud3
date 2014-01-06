@@ -111,15 +111,10 @@ class Bids extends Model
     {
         return array(
             'userdata' => array(self::BELONGS_TO, 'User', 'user_id'),
-
 			'preview' => array(self::HAS_MANY, 'TendersPreview', 'bid_id'),
-
 			'letters' => array(self::HAS_MANY, 'BidLetters', 'bid_id'),
-
 			'count' => array(self::STAT, 'TendersPreview', 'bid_id'),
-
             'tender' => array(self::BELONGS_TO, 'Tenders', 'project_id'),
-
 			'LettersCount' => array(self::STAT, 'BidLetters', 'bid_id'),
         );
     }
@@ -137,21 +132,16 @@ class Bids extends Model
 	{
 		return array(
 			array('text', 'required'),
-
 			array('currency', 'currency'),
-
 			array('periodby', 'periodby'),
-
 			array('budget_start, budget_end, period_start, period_end', 'numerical')
 		);
 	}
 
 	public function currency($attribute, $params)
 	{
-		if( $this->budget_start or $this->budget_end )
-		{
-			if( !$this->currency )
-			{
+		if( $this->budget_start or $this->budget_end ) {
+			if( !$this->currency ) {
 				$this->addError('currency', 'Выберите валюту');
 			}
 		}
@@ -159,10 +149,8 @@ class Bids extends Model
 
 	public function periodby($attribute, $params)
 	{
-		if( $this->period_start or $this->period_end )
-		{
-			if( !$this->periodby )
-			{
+		if( $this->period_start or $this->period_end ) {
+			if( !$this->periodby ) {
 				$this->addError('periodby', 'Выберите вид');
 			}
 		}
@@ -171,66 +159,46 @@ class Bids extends Model
 	public function getMax()
 	{
 		$max = TendersPreview::MAX;
-
-		if( $this->id )// если заявка существует, то проверяем сколько изображений уже загружено
-		{
+		if( $this->id ) {// если заявка существует, то проверяем сколько изображений уже загружено
 			$max = $max - $this->count;
 		}
-
 		return $max;
 	}
 
 	public function period()
     {
 		if( !$this->period_start && !$this->period_end ) return FALSE;
-
-		if( $this->period_start )
-		{
+		if( $this->period_start ) {
 			$period = 'от '.$this->period_start;
 		}
-
-		if( $this->period_end )
-		{
+		if( $this->period_end ) {
 			$period .= ' до '.$this->period_end;
 		}
-
 		$period .= ' '.$this->getPeriodby();
-
 		return $period;
 	}
 
 	public function budget()
     {
 		if( !$this->budget_start && !$this->budget_end ) return FALSE;
-
-		if( $this->budget_start )
-		{
+		if( $this->budget_start ) {
 			$budget = 'от '.$this->budget_start;
 		}
-
-		if( $this->budget_end )
-		{
+		if( $this->budget_end ) {
 			$budget .= ' до '.$this->budget_end;
 		}
-
 		$budget .= ' '.$this->getCurrency();
-
 		return $budget;
 	}
 
 	protected function beforeSave()
     {
-		if( $this->isNewRecord )
-		{
+		if( $this->isNewRecord ) {
 			$this->user_id = Yii::app()->user->id; 
-
 			$this->status = self::STATUS_ACTIVE; 
-
 			$this->date = time();
-
     		$this->text = htmlspecialchars($this->text);
 		}
-
 		return parent::beforeSave();
     }
 

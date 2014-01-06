@@ -26,7 +26,6 @@ class BidLetters extends CActiveRecord
 	{
 		return array(
 			array('text', 'required'),
-
 			array('bid_id', 'safe')
 		);
 	}
@@ -34,15 +33,11 @@ class BidLetters extends CActiveRecord
 
 	protected function beforeSave()
     {
-		if( $this->isNewRecord )
-		{
+		if( $this->isNewRecord ) {
 			$this->user_id = Yii::app()->user->id; 
-
 			$this->date = time();
-
     		$this->text = htmlspecialchars($this->text);
 		}
-
 		return parent::beforeSave();
     }
 }

@@ -24,7 +24,7 @@
                         <h1 class="title-header">
                             Страница заказа    </h1>
                         <!-- BEGIN BREADCRUMBS-->
-                        <ul class="breadcrumb breadcrumb__t"><li><a href="index.html">Лента заказов</a></li><li class="divider"></li><li><a href="../index.html">Заказ 07564</a></li> 
+                        <ul class="breadcrumb breadcrumb__t"><li><a href="<?=Yii::app()->createAbsoluteUrl('tenders')?>">Лента заказов</a></li><li class="divider"></li><li><?=$model->title?></li> 
                         </ul></section><!-- .title-section -->
                 </div>
             </div>
@@ -37,7 +37,7 @@
 
                                     <div class="post_author">
                                         <i class="icon-user"></i>
-                                        <a rel="author" title="Заказчик user" href="../author/alone/index.html"><?= $model->userdata->nickname ?></a>                                
+                                        <a rel="author" title="<?= $model->userdata->nickname ?>" href="<?=Yii::app()->createAbsoluteUrl('users/'.$model->userdata->username)?>"><?= $model->userdata->nickname ?></a>                                
                                     </div>
                                     <div class="post_date">
                                         <i class="icon-calendar"></i>
@@ -102,13 +102,6 @@
                         <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
                         </div>
                     <? } ?>
-                    
-                    <!--<p>
-                        юзер ид: <? //echo Yii::app()->user->id ?><br>
-                        ид юзера модели <? //echo $model->user_id ?><br>
-                        бидс: <? //echo $bid ?><br>
-                        бидс лист: <? //echo count($model->bidslist) ?><br>
-                    </p>-->
                     
                     <? //------------- Проверить: отображать ли форму добавления -------------?>
                     <? //проверка: не определен ли исполнитель ($acceptBid), не гость ли юзер и является ли он исполнителем 
@@ -192,35 +185,36 @@
                                 
                                 <div class="post-author clearfix">
                                     <h4 class="post-author_h">Обсуждение проекта</h4>    
+                                    
                                     <p><b class="btn"><strong>Задать вопрос исполнителю</strong></b></p>
-                                    <p class="nocomments">Комментариев еще нет.</p>    
-                                    <div class="post_meta meta_type_line">        
-                                        <div class="post_author">
-                                            <i class="icon-user"></i>
-                                            <a rel="author" title="Заказчик user" href="../author/alone/index.html">user</a>                                
-                                        </div>
-                                        <div class="post_date">
-                                            <i class="icon-calendar"></i>
-                                            <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 13:03</time>
-                                        </div>
-                                    </div>
-                                    <div class="post-author_desc">
-                                        Вопрос: вы успеете написать работу раньше сроки на три дня?
-                                    </div>
-                                    <p>&nbsp;</p>
-                                    <div class="post_meta meta_type_line">        
-                                        <div class="post_author">
-                                            <i class="icon-user"></i>
-                                            <a rel="author" title="Заказчик user" href="../author/alone/index.html">Profesor</a>                                
-                                        </div>
-                                        <div class="post_date">
-                                            <i class="icon-calendar"></i>
-                                            <time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 15:17</time>
-                                        </div>
-                                    </div>
-                                    <div class="post-author_desc">
-                                        Да, усепю, можете выбрать меня.
-                                    </div>
+                                    
+                                    
+                                    <?  //если текущий юзер = хозяин заказа или текущий юзер-исполнитель = автор данногоответа
+                                    if ($is_owner || $row->user_id == Yii::app()->user->id) 
+                                    {
+                                        if ($row->LettersCount) 
+                                        { // если колво писем есть
+                                             foreach($row->letters as $letter) 
+                                             { //пройтись по письмам ?>
+                                                <div class="post_meta meta_type_line">        
+                                                    <div class="post_author">
+                                                        <i class="icon-user"></i>
+                                                        <a rel="author" title="<?=$letter->userdata->username?>" href="<?=Yii::app()->createAbsoluteUrl('users/'.$letter->userdata->username)?>"><?=$letter->userdata->username?></a>
+                                                    </div>
+                                                    <div class="post_date">
+                                                        <i class="icon-calendar"></i>
+                                                        <time datetime="2013-02-14T20:26:57"><?=Date_helper::date_smart($letter->date)?></time>
+                                                    </div>
+                                                </div>
+                                                <div class="post-author_desc">
+                                                    <?=$letter->text?>
+                                                </div>
+                                                
+                                        <? } 
+                                        } else { ?>
+                                            <p class="nocomments">Комментариев еще нет.</p>
+                                    <? } 
+                                    } ?>
                                 </div>
                         <?      } 
                             }
