@@ -32,7 +32,7 @@
                     array(
                         'dataProvider'       => $dataProvider,
                         'itemView'           => '_view',
-                        'ajaxUpdate'         => true,
+                        'ajaxUpdate'         => false, //отключаем обновлениея аяксом (так хочет PM )))
                         'emptyText'          => '<div class="alert alert-error">Ничего не найдено</div>',
                         'template'           => '
 <div class="row-fluid">
