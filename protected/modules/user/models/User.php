@@ -496,7 +496,8 @@ class User extends Model
             array('email', 'required', 'on' => 'contact'), // редактирование контактных данных
             array('icq, skype, telephone', 'length', 'max' => 16),
             array('full_descr', 'length', 'max' => 10000),
-            array('email, username', 'email'),
+            //array('email, username', 'email'),   //не проверяем, чтобы логин был как емейл
+            array('email', 'email'),
 //            array('username', 'unique'),
 //            array('email', 'unique'),
             array('website', 'url'),
@@ -628,7 +629,7 @@ class User extends Model
         $this->activation_ip = Yii::app()->request->userHostAddress;
         $this->status = self::STATUS_ACTIVE;
         $this->email_confirm = self::EMAIL_CONFIRM_YES;
-        $this->save();
+        //$this->save();
         return $this->save();
     }
 

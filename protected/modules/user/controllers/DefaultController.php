@@ -374,16 +374,14 @@ class DefaultController extends Controller
     public function actionActivation($code = '', $action = '')
     {
         Yii::app()->getModule('tenders');
-
         $form = new ActivationForm;
-		$tenders  = new Tenders();
-
+		//$tenders = new Tenders();   //это непонятно! наверно не нужно ))
+        //находим юзера по коду активации... TODO! ускорить поиск по этому коду
         $user = User::model()->find('activation_code = :activation_code', array(':activation_code' => ($action == '') ? $code : Yii::app()->user->id));
 
         if ($action == 'send') {
             Email_helper::send($user->email, 'Активация учетной записи на ' . Yii::app()->name . '', 'needActivation', array('data' => $user));
             Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Код активации отправлен.');
-
             $this->redirect('/activation');
         }
 
@@ -418,7 +416,7 @@ class DefaultController extends Controller
 	public function actionActivated($user_id)
     {
         Yii::app()->getModule('tenders');
-        $tenders  = new Tenders();
+        $tenders = new Tenders();
         $tender = $tenders->getLastTenderByUserId($user_id);
         $this->render('activated',array('tender'=>$tender));
     }
