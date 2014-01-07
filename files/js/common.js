@@ -1,4 +1,4 @@
-﻿var ajaxloader = true;
+var ajaxloader = true;
 
 $(document).ready(function(){
 
@@ -244,70 +244,47 @@ function messages(a, string)
 		alert('error')
 	}
 }
-function letters(id, el)// свернуть / развернуть переписку
+
+// свернуть / развернуть переписку
+function letters(id, el)
 {
 	bids = $('.bids_' + id);
-
 	$(el).hide()
-
 	bids.show();
 }
-function send(id, el)// отправка сообщения
+
+// отправка сообщения
+function send(id, el)
 {
-	bids = $('.bids_' + id)
-
+	bids = $('#bids_' + id)
 	list = $('.list_' + id)
-
-	if( list.text() )
-	{
+	if( list.text() ) {
 		list.hide();
-		
 		bids.show();
 	}
-
 	form = $('#bid_' + id)
-
 	inputtext = form.find(':input[name$="text"]');
-
 	text = inputtext.val();
-
-
-    if( text.length > 256 )
-	{
+    if( text.length > 256 ) {
         alert('Текст сообщения не должен содержать больше 1000 символов');
-
 		return false;
 	}
-
-    if( text.length == 0 )
-	{
+    if( text.length == 0 ) {
         alert('Текст сообщения не должен быть пустым');
-
 		return false;
 	}
-
 	$.ajax({
 		type: "POST",
 		url: "/tenders/default/addletter",
 		data: 'id='+ id +'&text='+ text +'&csrf='+ $('meta[name="csrf"]').attr('content'),
 		cache: false,
-		success: function(result)
-		{
+		success: function(result) {
 			var result = jQuery.parseJSON(result);	
-
-			ans ='                  <li>\
-                                    	<div class="text">\
-                                        	<div class="line">\
-                                            	<a href="#" title="' + result.user + '">' + result.user + '</a>\
-                                                <span class="date">' + result.date + '</span>\
-                                            </div><!-- end_line -->\
-                                        	<p>' + result.text + '</p>\
-                                        </div><!-- end_text -->\
-                                    </li>';
-
-			bids.append(ans);
-			
-			inputtext.val('');
+            if (result.success) {
+                ans = result.html;
+			    bids.append(ans);
+			    inputtext.val('');
+            }
 		}
 	});
 }

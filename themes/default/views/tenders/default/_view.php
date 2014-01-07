@@ -31,7 +31,7 @@
                         <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->tendercategory->name ?></p>
                     </td>
                     <td width="60%">
-                        <p><b class="btno"><strong>Специализаця:</strong></b> <?= $data->specialityString ?></p>
+                        <p><b class="btno"><strong>Специализация:</strong></b> <?= $data->specialityString ?></p>
                     </td>
                 </tr>
             </table>

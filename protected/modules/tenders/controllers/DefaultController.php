@@ -276,47 +276,41 @@ class DefaultController extends Controller
 		$this->redirect('/account/tenders');
 	}
 
+    /**
+    * добавить сообщение в переписке
+    * 
+    */
 	public function actionAddLetter()
 	{
 		$model = new BidLetters;
-
 		$id = $_POST['id'];
-		
 		$text = $_POST['text'];
-
 		$bid = Bids::model()->findByPk($id);
-
-		if( $id and $text )
-        {
+		if( $id and $text ) {
 			$model->setAttributes(array(
 				'bid_id' => $id,
 				'text' => $text
 			)); 
-      
-			if( $model->validate() )
-            {
-				$model->save();
+			if( $model->validate() ) {
+				$success = $model->save();
+				$result = array('success' => $success);
+                if ($success) {
+					$html = $this->renderPartial('_bidletter', array('letter'=>$model), true);
+                    $result = array_merge($result,array(
+                        'user' => $model->userdata->username,
+					    'date' => Date_helper::date_smart(time()),
+					    'text' => htmlspecialchars($text),
+                        'html' => $html,
+				    ));
+                }
 
-				$result = array(
-					'success' => TRUE,
-					'user' => $model->userdata->username,
-					'date' => Date_helper::date_smart(time()),
-					'text' => htmlspecialchars($text)
-				);
-
-				if( Yii::app()->user->id != $bid->tender->user_id )// если сообщение отправляет не автор
-				{
+				if( Yii::app()->user->id != $bid->tender->user_id ) {// если сообщение отправляет не автор
 					$user_id = $bid->tender->user_id;// автор проекта
-
 					new Events_helper($user_id, $bid->user_id, Events_helper::LETTER_PROJECTS, $bid->project_id);
-				}
-				else
-				{
+				} else {
 					$user_id = $bid->user_id;
-
 					new Events_helper($user_id, $bid->tender->user_id, Events_helper::LETTER_PROJECTS, $bid->project_id);
 				}
-
 				echo json_encode($result);
 			}
 		}

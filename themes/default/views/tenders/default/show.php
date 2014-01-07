@@ -190,37 +190,27 @@
                                     </div>
                                 <? } ?>
                                 
-                                <div class="post-author clearfix">
+                                <div id="bids_<?=$row->id?>" class="post-author clearfix">
                                     <h4 class="post-author_h">Обсуждение проекта</h4>    
-                                    <?  //если текущий юзер = хозяин заказа или текущий юзер-исполнитель = автор данногоответа
+                                    <?  //если текущий юзер = хозяин заказа или текущий юзер-исполнитель = автор данного ответа
                                     if ($is_owner || $row->user_id == Yii::app()->user->id) 
                                     {
-                                        if ($row->LettersCount) 
-                                        { // если колво писем есть
-                                             foreach($row->letters as $letter) 
-                                             { //пройтись по письмам ?>
-                                                <div class="post_meta meta_type_line">        
-                                                    <div class="post_author">
-                                                        <i class="icon-user"></i>
-                                                        <a rel="author" title="<?=$letter->userdata->username?>" href="<?=Yii::app()->createAbsoluteUrl('users/'.$letter->userdata->username)?>"><?=$letter->userdata->username?></a>
-                                                    </div>
-                                                    <div class="post_date">
-                                                        <i class="icon-calendar"></i>
-                                                        <time datetime="2013-02-14T20:26:57"><?=Date_helper::date_smart($letter->date)?></time>
-                                                    </div>
-                                                </div>
-                                                <div class="post-author_desc">
-                                                    <?=$letter->text?>
-                                                </div>
-                                                
-                                        <? } 
+                                        if ($row->LettersCount) { // если колво писем есть
+                                             foreach($row->letters as $letter)  { //пройтись по письмам 
+                                                $this->renderPartial('_bidletter', array('letter'=>$letter));
+                                             } 
                                         } else { ?>
-                                            <p class="nocomments">Комментариев еще нет.</p>
+                                            <p class="nocomments">Комментариев еще нет</p>
                                     <? } 
                                     } ?>
                                 </div>   
                                 
-                                <p><a class="btn" href="javascript:void()" onclick="$('#bid_' + <?=$row->id?>).slideDown()"><strong>Задать вопрос исполнителю</strong></a></p>
+                                <p>
+                                    <b class="btn" href="" onclick="$('#bid_' + <?=$row->id?>).slideDown()">
+                                        <strong>Написать сообщение</strong>
+                                    </b>
+                                </p>
+                                
                                 <form action="#" method="post" accept-charset="cp-1251" id="bid_<?=$row->id?>" style="display: none;">                                            <fieldset class="publish">
                                         <label>Ответ:</label>
                                         <div class="bo">
