@@ -192,10 +192,6 @@
                                 
                                 <div class="post-author clearfix">
                                     <h4 class="post-author_h">Обсуждение проекта</h4>    
-                                    
-                                    <p><b class="btn"><strong>Задать вопрос исполнителю</strong></b></p>
-                                    
-                                    
                                     <?  //если текущий юзер = хозяин заказа или текущий юзер-исполнитель = автор данногоответа
                                     if ($is_owner || $row->user_id == Yii::app()->user->id) 
                                     {
@@ -222,7 +218,23 @@
                                             <p class="nocomments">Комментариев еще нет.</p>
                                     <? } 
                                     } ?>
-                                </div>
+                                </div>   
+                                
+                                <p><a class="btn" href="javascript:void()" onclick="$('#bid_' + <?=$row->id?>).slideDown()"><strong>Задать вопрос исполнителю</strong></a></p>
+                                <form action="#" method="post" accept-charset="cp-1251" id="bid_<?=$row->id?>" style="display: none;">                                            <fieldset class="publish">
+                                        <label>Ответ:</label>
+                                        <div class="bo">
+                                            <textarea name="text" style="height: 70px; margin-left: 10px; width: 738px;"></textarea>
+                                            <div class="button_b left">
+                                                <div>
+                                                    <input type="button" value="Отправить" onclick="send(<?=$row->id?>);" />
+                                                    <span></span>
+                                                </div>
+                                            </div><!-- end_button -->
+                                        </div><!-- end_box -->
+                                    </fieldset>
+                                </form><br />
+                                
                         <?      } 
                             }
                         } else { ?>
