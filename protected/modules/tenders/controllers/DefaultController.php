@@ -100,6 +100,7 @@ class DefaultController extends Controller
 			}
 		}
         
+        //обработка ввода ответа на заявку
 		if (Yii::app()->request->isPostRequest && !empty($_POST['Bids'])) {
 			$bid->setAttributes($_POST['Bids']);
 			if( $bid->validate() ) {
@@ -142,28 +143,18 @@ class DefaultController extends Controller
 	function actionDelete($id)
 	{
 		$model = TendersPreview::model()->findByPk($id);
-
-		if( !$model )
-		{
+		if( !$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
 		$bid_id = $model->bid_id;
-
 		$bid = Bids::model()->findByPk($bid_id);
-
-		if( !$bid )
-		{
+		if( !$bid ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
 		@unlink('.'.Yii::app()->getModule('tenders')->previewAttachmentsDir.$model->preview);
-
 		@unlink('.'.Yii::app()->getModule('tenders')->previewAttachmentsDir.$model->image);
-
 		// удаляем
 		$model->delete();
-
 		$this->redirect('/tenders/'.$bid->project_id.'.html');
 	}
 
@@ -173,69 +164,42 @@ class DefaultController extends Controller
 	function actionBidManagement($id, $action)
 	{
 		$bid = Bids::model()->findByPk($id);
-
-		if( !$bid )
-		{
+		if( !$bid ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		if( $bid->status != Bids::STATUS_ACTIVE )
-		{
+		if( $bid->status != Bids::STATUS_ACTIVE ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		$model = Tenders::model()->findByPk($bid->project_id);
-
-		if( !$model )
-		{
+		
+        $model = Tenders::model()->findByPk($bid->project_id);
+		if( !$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		if( $action == 'decline' )// заявка отклонена
-		{
-			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) )
-			{
+		if( $action == 'decline' ) {// заявка отклонена
+			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) ) {
 				throw new CHttpException(404, 'The requested page does not exist.');
 			}
-
 			new Events_helper($bid->user_id, $model->user_id, Events_helper::DECLINED_PROJECTS, $id);
-
 			$bid->status = Bids::STATUS_DECLINE;
-		}
-		elseif( $action == 'accept' )// заявка принята
-		{
-			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) )
-			{
+		} elseif( $action == 'accept' ) {// заявка принята
+			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) ) {
 				throw new CHttpException(404, 'The requested page does not exist.');
 			}
-
-			if( $accept = $model->checkABid() )// если уже была принята заявка, то прошлую заявку в статус актив
-			{
+			if( $accept = $model->checkABid() ) {// если уже была принята заявка, то прошлую заявку в статус актив
 				$accept->status = Bids::STATUS_ACTIVE;
-				
 				$accept->save();
 			}
-
 			new Events_helper($bid->user_id, $model->user_id, Events_helper::ACCEPTED_PROJECTS, $id);
-
 			$bid->status = Bids::STATUS_ACCEPT;
-		}
-		elseif( $action == 'reject' )
-		{
-			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $bid)) )
-			{
+		} elseif( $action == 'reject' ) {
+			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $bid)) ) {
 				throw new CHttpException(404, 'The requested page does not exist.');
 			}
-
 			$bid->status = Bids::STATUS_REJECT;
-		}
-		else
-		{
+		} else {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
 		$bid->update();
-
 		$this->redirect('/tenders/'.$model->id.'.html');
 	}
 
@@ -245,34 +209,21 @@ class DefaultController extends Controller
 	function actionManagement($id, $action)
 	{
 		$model = Tenders::model()->findByPk($id);
-
-		if( !$model )
-		{
+		if( !$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) )
-		{
+		if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $model)) ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
-		if( $action == 'open' )
-		{
+		if( $action == 'open' ) {
 			$model->status = Tenders::STATUS_OPEN;
-		}
-		elseif( $action == 'close' )
-		{
+		} elseif( $action == 'close' ) {
 			$model->status = Tenders::STATUS_CLOSE;
-		}
-		else
-		{
+		} else {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-
 		$model->update();
-
 		Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
-
 		$this->redirect('/account/tenders');
 	}
 
@@ -322,54 +273,34 @@ class DefaultController extends Controller
 	public function actionPublication($id = '', $type = '')
 	{
 		Yii::app()->getClientScript()->registerScriptFile( $assetUrl.'/files/js/tenders.js' );
-
 		Yii::app()->getClientScript()->registerCssFile( $assetUrl.'/files/daterangepicker/daterangepicker.css' );
-
 		Yii::app()->getClientScript()->registerScriptFile( $assetUrl.'/files/daterangepicker/date.js' );
-
 		Yii::app()->getClientScript()->registerScriptFile( $assetUrl.'/files/daterangepicker/daterangepicker.js' );
-
-		if( Yii::app()->request->isPostRequest && !empty($_POST['Tenders']) )
-        {
-
+		if( Yii::app()->request->isPostRequest && !empty($_POST['Tenders']) ) {
 			$model->setAttributes($_POST['Tenders']);       
-
 			$validate = $model->validate();
-
-				if( !Yii::app()->user->isAuthenticated() )
-				{
+				if( !Yii::app()->user->isAuthenticated() ) {
 					$rmodel->setAttributes($_POST['FastRegistrationForm']);  
-
 					$validate = $rmodel->validate() && $validate;
 		 		}
-				
-
-			if( $validate )
-            {
-				if( !Yii::app()->user->isAuthenticated() )
-				{
+			if( $validate ) {
+				if( !Yii::app()->user->isAuthenticated() ) {
 					$model->status = Tenders::STATUS_MODERATION;
 					$this->createUser($rmodel);
-				}
-				else
-				{
+				} else {
 					$model->status = Tenders::STATUS_OPEN;
 				}
-
-				if( $model->save() )
-				{
+				if( $model->save() ) {
 					$this->redirect('/');
 				}
-	
 			}
 		}
-
 		$this->pageTitle = 'Опубликовать проект';
-
 		$this->render('publication', array('model' => $model, 'categories' => $categories, 'model' => $model, 'rmodel' => $rmodel));
 	}
     
-    public function actionAddSpecialities() {DebugBreak();
+    //
+    public function actionAddSpecialities() {//DebugBreak();
         $root = new TendersSpeciality;
         $root->name = 'Дошкольное образование';
         $root->saveNode();

@@ -115,13 +115,37 @@
                     if (!$acceptBid && $isLoggedUser && $is_performer) { ?>
                     <div id="respond">
                         <h3>Оставьте своё предложение</h3>
-                        <form id="commentform" amethod="post">
-                            <p><b class="btn"><strong>Введите стоимость</strong></b></p>
-                            <p class="field"><input type="text" tabindex="3" onblur="if(this.value==''){this.value='Стоимость за работу'}" onfocus="if(this.value=='Стоимость за работу'){this.value=''}" value="Стоимость за работу" id="url" name="url"></p>
-
+                        <!--<form id="commentform" method="post">-->
+                        <?php $form = $this->beginWidget('CActiveForm', array(
+                            'id' => 'bid', 
+                            'enableClientValidation'=>true,
+                            'errorMessageCssClass'=>'alert alert-error',
+                            'clientOptions'=>array(
+                                'validateOnSubmit'=>true,
+                                'validateOnChange'=>true,
+                                'validateOnType' => false,
+                            ),
+                            'htmlOptions' => array('enctype' => 'multipart/form-data'),
+                        )); ?>
+                            <?php echo $form->errorSummary($bid); ?>
+                            <p><b class="btn"><strong>Стоимость</strong></b></p>
+                                от <?php echo $form->textField($bid, 'budget_start', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_start'); ?>
+                                до <?php echo $form->textField($bid, 'budget_end', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_end'); ?>
+                                <?php echo $form->dropDownList($bid, 'currency', $bid->getTenderCurrencyList(), array('style' => 'width:150px')); ?>
+                            <p><b class="btn"><strong>Срок</strong></b></p>
+                                от <?php echo $form->textField($bid, 'period_start', array('class' => 'text', 'size' => 3)); ?>
+                                до <?php echo $form->textField($bid, 'period_end', array('class' => 'text', 'size' => 3)); ?>
+                                 <?php echo $form->dropDownList($bid, 'periodby', $bid->getPeriodbyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Введите сообщение</strong></b></p>
-                            <p><textarea onblur="if(this.value==''){this.value='Ваш комментарий*'}" onfocus="if(this.value=='Ваш комментарий*'){this.value=''}" tabindex="4" rows="8" cols="58" id="comment" name="comment">Ваш комментарий*</textarea></p>
-                        </form>
+                            <?php echo $form->textArea($bid, 'text', array(
+                                'class' => 'area',
+                                'rows' => '8',
+                                'cols' => '58',
+                                'style' => 'width: 758px;',
+                            )); ?>
+                            <?php echo $form->error($bid,'text'); ?>
+                            <input type="submit" class="inp_sub" value="<?=($bid->isNewRecord) ? 'Добавить' : 'Сохранить'?>" />
+                        <?php $this->endWidget(); ?>
                     </div>
                     <? } ?>
 
@@ -211,7 +235,8 @@
                                     </b>
                                 </p>
                                 
-                                <form action="#" method="post" accept-charset="cp-1251" id="bid_<?=$row->id?>" style="display: none;">                                            <fieldset class="publish">
+                                <form action="#" method="post" accept-charset="cp-1251" id="bid_<?=$row->id?>" style="display: none;">
+                                    <fieldset class="publish">
                                         <label>Ответ:</label>
                                         <div class="bo">
                                             <textarea name="text" style="height: 70px; margin-left: 10px; width: 738px;"></textarea>
