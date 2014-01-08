@@ -136,14 +136,15 @@ class DefaultController extends Controller
                 
                 if( $isNewRecord ) {  //если новый ответ на проект
                     //отослать сообщение на почту заказчика
-                    $result = Email_helper::send($model->userdata->email, 'Новый ответ на Ваш проект на сайте ' . Yii::app()->name . '', 'newBid', array(
+                    //$result = 
+                    Email_helper::send($model->userdata->email, 'Новый ответ на Ваш проект на сайте ' . Yii::app()->name . '', 'newBid', array(
                         'customer'=>$model->userdata, 
                         'bid'=>$bid, 
                         'url'=>$url,
                     ));
-                    echo $model->userdata->email;
-                    CVarDumper::dump($result, 20, true);
-                    Yii::app()->end(); 
+                    //echo $model->userdata->email;
+                    //CVarDumper::dump($result, 20, true);
+                    //Yii::app()->end(); 
                 }
 				$this->redirect($url/*'/tenders/'.$id.'.html'*/);
 			}
