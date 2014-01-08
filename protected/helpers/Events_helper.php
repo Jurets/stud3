@@ -126,67 +126,36 @@ class Events_helper
 	// создать событие
     public function create($user_id, $object, $title, $id = '')
 	{
-		if( $id )
-		{
+		if( $id ) {
 			$this->id = $id;
 		}
-
 		$user = User::getbyPk($object);
-
 		$event = new Events;
-
 		$event->user_id = $user_id;
-
 		$event->object = $object;
-
 		$event->title = 'Пользователь '.$user['name'].' '.$user['surname'].' '.$title;
-
 		$event->status = Events::STATUS_OPEN;
-
 		$event->type = self::getType($title);
-
-
 		$event->location = self::getLocation($title);
-
 		$event->link = self::getLink($title);
 
-
 		$event->save();
-
 		$user = User::getbyPk($user_id);
-
-
 		$notify = UsersNotify::model()->user($user_id)->find();
-
-
-
-		if( $event->type == Events::TYPE_INVITE )
-		{
+		if( $event->type == Events::TYPE_INVITE ) {
 			$notify = $notify->invite;
-		}
-		elseif( $event->type == Events::TYPE_BLOGS )
-		{
+		} elseif( $event->type == Events::TYPE_BLOGS ) {
 			$notify = $notify->blogs;
-		}
-		elseif( $event->type == Events::TYPE_PROJECTS )
-		{
+		} elseif( $event->type == Events::TYPE_PROJECTS ) {
 			$notify = $notify->projects;
-		}
-		elseif( $event->type == Events::TYPE_ITEMS )
-		{
+		} elseif( $event->type == Events::TYPE_ITEMS ) {
 			$notify = $notify->items;
-		}
-		elseif( $event->type == Events::TYPE_MESSAGES )
-		{
-			$notify = $notify->messages;
-		}
-		else
-		{
+		} elseif( $event->type == Events::TYPE_MESSAGES ) {
+			$notify = $notify->messages; 
+		} else {
 			$notify = FALSE;
 		}
-
-		if( $notify )
-		{
+		if( $notify ) {
 			//отправка события на email, если у пользователя в опциях разрешена отправка
 			Email_helper::send($user['email'], 'Уведомления о событие', 'NewEvent', array('user' => $user, 'title' => $event->title));
 		}

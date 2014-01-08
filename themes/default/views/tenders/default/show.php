@@ -155,7 +155,7 @@
                     <? if ($isLoggedUser && ($is_owner || ($is_performer && $userBid))) { ?>
                         <h2 class="post-title">Оценка и предложения исполнителей</h2>
                         <?  //если список заявок непустой
-                            if (!empty($model->bidslist)) { 
+                            if (!empty($model->bidslist)) {
                             foreach($model->bidslist as $row) 
                             { //Пройтись по списку 
                                 if ($is_owner || ($user->id == $row->user_id)) { //если хозяин заказа или автор ответа - показать ответ ?>

@@ -21,71 +21,54 @@ class MainController extends Controller
         }
     }
 
+    //
     public function actionMessages()
     {
         Yii::app()->getModule('contacts');
-
-        if ($id = $_POST['id']) {
+        if (isset($_POST['id']) && $id = $_POST['id']) {
             $message = Messages::model()->findByPk($id);
-
             $message->notification = 1;
-
             $message->save();
-
             Yii::app()->end();
         }
-
         $messages = new Messages;
-
         $msg = $messages->count('reading = :reading and recipient_id = :recipient_id', array('reading' => 0, 'recipient_id' => Yii::app()->user->id));
-
-
         if ($msg > 0) {
-
             $data = array(
                 'success' => true,
                 'msg'     => $msg
             );
-
             echo CJSON::encode($data);
-
             Yii::app()->end();
         } else {
             $result = array(
                 'error' => true
             );
         }
-
         echo json_encode($result);
     }
 
+    //
     public function actionEvents()
     {
-        if ($id = $_POST['id']) {
+        if (isset($_POST['id']) && $id = $_POST['id']) {
             $event = Events::model()->findByPk($id);
-
             $event->status = Events::STATUS_CLOSE;
-
             $event->save();
-
             Yii::app()->end();
         }
-
         $data['events'] = Yii::app()->db->createCommand()
                                         ->select('{{events}}.*, username, userpic')
                                         ->join('{{users}}', '{{users}}.id = {{events}}.object')
                                         ->from('{{events}}')
                                         ->where('user_id = :user_id and {{events}}.status = :status', array('user_id' => Yii::app()->user->id, 'status' => Events::STATUS_OPEN))
                                         ->queryAll();
-
-
         if ($data) {
             echo CJSON::encode($data);
         } else {
             $result = array(
                 'error' => true
             );
-
             echo json_encode($result);
         }
     }

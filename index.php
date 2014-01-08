@@ -1,11 +1,15 @@
 <?php
-error_reporting(0);
+//комментируем, если хотим подавить вывод ошибок (например ошибок парсинга php)
+//error_reporting(0);
 
 // change the following paths if necessary
 $yii=dirname(__FILE__).'/framework/yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
 
 date_default_timezone_set("Europe/Moscow");
+
+define('YII_ENABLE_ERROR_HANDLER',true);
+define('YII_ENABLE_EXCEPTION_HANDLER',true);
 
 // remove the following lines when in production mode
  defined('YII_DEBUG') or define('YII_DEBUG',true);

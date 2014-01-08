@@ -61,7 +61,7 @@ class User extends Model
         return '{{users}}';
     }
 
-    function getbyPk($id)
+    public static function getbyPk($id)
     {
         return Yii::app()->db->createCommand()
                              ->select('*')
