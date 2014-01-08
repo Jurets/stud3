@@ -59,7 +59,7 @@ class DefaultController extends Controller
     /**
      * Просмотр
      */
-	public function actionShow($id = '', $type = '') {// DebugBreak();
+	public function actionShow($id = '', $type = '') {
 		if ($type == 'accepted') {
 			$type = ':accepted';
 		} elseif ($type == 'declined') {
@@ -84,7 +84,7 @@ class DefaultController extends Controller
         // если не будет переменной bid то в отображении не выведется форма добавления
 		if (Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN) {
 			$bid = FALSE;
-			if ($_GET['action'] == 'edit') {// если редактировать
+			if (isset($_GET['action']) && $_GET['action'] == 'edit') {// если редактировать
 				if ($model->checkBid()) {  //проверяем - есть ли заявка на этот проект у текущего юзера
 					//если да - выбираем заявку текущего юзера на данный проект
                     $bid = Bids::model()->user()->find('project_id = :project_id', array(':project_id' => $id));
@@ -103,6 +103,7 @@ class DefaultController extends Controller
         //обработка ввода ответа на заявку
 		if (Yii::app()->request->isPostRequest && !empty($_POST['Bids'])) {
 			$bid->setAttributes($_POST['Bids']);
+            $isNewRecord = $bid->isNewRecord;
 			if( $bid->validate() ) {
 				if( $bid->isNewRecord ) {
 					new Events_helper($model->user_id, $bid->user_id, Events_helper::BID_PROJECTS, $id);
@@ -130,7 +131,21 @@ class DefaultController extends Controller
 						}
 					}
 				}
-				$this->redirect('/tenders/'.$id.'.html');
+                //DebugBreak();
+                $url = Yii::app()->request->requestUri;
+                
+                if( $isNewRecord ) {  //если новый ответ на проект
+                    //отослать сообщение на почту заказчика
+                    $result = Email_helper::send($model->userdata->email, 'Новый ответ на Ваш проект на сайте ' . Yii::app()->name . '', 'newBid', array(
+                        'customer'=>$model->userdata, 
+                        'bid'=>$bid, 
+                        'url'=>$url,
+                    ));
+                    echo $model->userdata->email;
+                    CVarDumper::dump($result, 20, true);
+                    Yii::app()->end(); 
+                }
+				$this->redirect($url/*'/tenders/'.$id.'.html'*/);
 			}
 		}
 		$this->pageTitle = $model->title;
@@ -300,7 +315,7 @@ class DefaultController extends Controller
 	}
     
     //
-    public function actionAddSpecialities() {//DebugBreak();
+    /*public function actionAddSpecialities() {//DebugBreak();
         $root = new TendersSpeciality;
         $root->name = 'Дошкольное образование';
         $root->saveNode();
@@ -327,10 +342,10 @@ class DefaultController extends Controller
         $node2->appendTo($node);
         $node2 = new TendersSpeciality;
         $node2->name = 'Не ищу работу';
-        $node2->appendTo($node);
+        $node2->appendTo($node);*/
                 
         /*$root = new TendersSpeciality;
         $root->title = 'Начальное образование';
-        $root->saveNode();*/
-    }
+        $root->saveNode();
+    }   */
 }

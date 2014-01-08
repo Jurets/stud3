@@ -18,7 +18,7 @@ class Email_helper {
 		if( !empty($file) ) {
 			$message->attach(Swift_Attachment::fromPath($_SERVER['DOCUMENT_ROOT'].$file));
 		}
-		Yii::app()->mail->send($message);
+		return Yii::app()->mail->send($message);
 	}
 
 }
