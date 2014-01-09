@@ -349,4 +349,11 @@ class DefaultController extends Controller
         $root->title = 'Начальное образование';
         $root->saveNode();
     }   */
+    
+    public function actionTestdir() {DebugBreak();
+        $dir = File_helper::getTempDir();
+        echo $dir . '<br>';
+        echo is_writable($dir);
+        echo '<br>';
+    }
 }

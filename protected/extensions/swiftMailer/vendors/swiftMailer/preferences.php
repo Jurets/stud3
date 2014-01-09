@@ -12,9 +12,25 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // Without these lines the default caching mechanism is "array" but this uses
 // a lot of memory.
 // If possible, use a disk cache to enable attaching large attachments etc
-if (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir()))
+/*if (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir())) 
 {
   Swift_Preferences::getInstance()
     -> setTempDir(sys_get_temp_dir())
+    -> setCacheType('disk');
+}*/
+
+if (function_exists('sys_get_temp_dir')) {
+    $tmpdir = sys_get_temp_dir();
+}
+
+//задать путь для временных файлов
+//$tmpdir = Yii::app()->basePath . DIRECTORY_SEPARATOR .  'tmp';
+$tmpdir = File_helper::getTempDir();
+//$tmpdir = 'www/free-stud.ru/tmp';
+
+if (is_writable($tmpdir)) 
+{
+  Swift_Preferences::getInstance()
+    -> setTempDir($tmpdir)
     -> setCacheType('disk');
 }
