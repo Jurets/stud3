@@ -397,70 +397,48 @@ class DefaultController extends Controller
     public function actionIndex($category = '', $specialization = '')
     {
         Yii::app()->getModule('portfolio');
-
         $model = User::model()->active()->with('static');
-
         if (Yii::app()->user->isAuthenticated()) // если авторизирован
         {
             $search = UsersSearch::model()->user()->find();;
-
-            if ($_GET['action'] == 'delete') // удаляем фильтр
-            {
+            if ($_GET['action'] == 'delete') {// удаляем фильтр
                 $search->status = UsersSearch::STATUS_OFF;
-
                 $search->save();
-
                 $this->redirect('/users');
             }
-
             if ($_GET['action'] == 'apply') {
                 $search->status = UsersSearch::STATUS_ON;
-
                 $search->save();
-
                 $this->redirect('/users');
             }
-
             if ($search->interests) {
                 $interests = explode(", ", $search->interests); // для вывода
             }
-
             $model->cat($search);
-
             if (Yii::app()->request->isPostRequest && !empty($_POST['UsersSearch'])) {
                 $search->setAttributes($_POST['UsersSearch']);
-
                 if ($search->validate()) {
                     $search->save();
-
                     $this->refresh();
                 }
             }
         }
-
-
         $criteria = new CDbCriteria;
-
         if ($category) {
             $category = Categories::model()->child()->findByPk((int)$category);
-
             if ($category) {
                 $criteria->addCondition('`id` IN (SELECT user_id FROM {{services}} WHERE `category` IN (:category) )');
-
                 $criteria->params[':category'] = $category->id;
             }
         }
-
         if ($specialization) {
             if (array_key_exists($specialization, User::model()->getSpecializationList())) {
                 $criteria->condition = 'specialization = :specialization';
-
                 $criteria->params[':specialization'] = (int)$specialization;
             } else {
                 $specialization = '';
             }
         }
-
         $dataProvider = new CActiveDataProvider($model, array(
             'criteria'   => $criteria,
             'sort'       => array(
@@ -478,7 +456,6 @@ class DefaultController extends Controller
                 'pageSize' => 20,
             ),
         ));
-
         $renderdata = array(
             'dataProvider'   => $dataProvider,
             'category'       => $category,
@@ -486,9 +463,7 @@ class DefaultController extends Controller
             'search'         => $search,
             'interests'      => (isset($interests)) ? $interests : false
         );
-
         $this->pageTitle = 'Все пользователи';
-
         $this->render('index', $renderdata);
     }
 

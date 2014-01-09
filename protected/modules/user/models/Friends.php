@@ -1,18 +1,15 @@
 <?php
 class Friends extends Model
 {
-	public static function model($className = __CLASS__)
-	{
+	public static function model($className = __CLASS__) {
 		return parent::model($className);
 	}
 
-	public function tableName()
-	{
+	public function tableName() {
 		return '{{friends}}';
 	}
 
-	public function relations()
-	{
+	public function relations() {
 		return array(
 			'frienddata' => array(self::BELONGS_TO, 'User', 'friend_id')
 		);
@@ -20,16 +17,13 @@ class Friends extends Model
 
 	public function beforeSave()
 	{        
-		if( $this->isNewRecord )
-		{
+		if( $this->isNewRecord ) {
 			$this->date = time();
 		}
-        
 		return parent::beforeSave();     
 	}
 
-	public function check($friend_id)
-	{
+	public static function check($friend_id) {
 		return Yii::app()->db->createCommand()
 			->select('id')
 			->from('{{friends}}')
@@ -37,8 +31,7 @@ class Friends extends Model
 			->queryScalar();
 	}
 
-	public function getBySpecialization($specialization)
-  	{
+	public function getBySpecialization($specialization) {
 		return Yii::app()->db->createCommand()
 			->select('{{friends}}.friend_id')
 			->join('{{users}}', '{{users}}.id = {{friends}}.friend_id')

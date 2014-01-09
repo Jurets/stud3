@@ -246,3 +246,17 @@
 </div>
 </div>
 </div>
+
+
+            <!--<div id="auth" style="width: auto; height: auto; position: absolute; z-index: 999; margin-left: 600px;">-->
+            <div id="auth" style="width: auto; height: auto; z-index: 999; margin-left: 600px;">
+                <?php 
+                if (!Yii::app()->user->isGuest)  {
+                    $user = User::model()->findByPk(Yii::app()->user->id);
+                ?>
+                    <p>Пользователь: <?= $user->username?></p>
+                    <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>
+                <? } else { ?>
+                    <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('login') ?>">Вход</a>
+                <?php } ?>
+            </div>        

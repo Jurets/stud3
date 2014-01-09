@@ -27,7 +27,6 @@ class Invitations extends Model
 	public function getStatus()
 	{
 		$data = $this->getStatusList();
-
 		return array_key_exists($this->status, $data) ? $data[$this->status] : '*неизвестно*';
 	}
 
@@ -78,19 +77,15 @@ class Invitations extends Model
 
 	public function beforeSave()
 	{        
-		if( $this->isNewRecord )
-		{
+		if( $this->isNewRecord ) {
 			$this->sender_id = Yii::app()->user->id;  
-
 			$this->status = self::STATUS_NEW;
-
 			$this->date = time();
 		}
-        
 		return parent::beforeSave();     
 	}
 
-	public function check($recipient_id)
+	public static function check($recipient_id)
 	{
 		return Yii::app()->db->createCommand()
 			->select('id')

@@ -26,29 +26,20 @@ class ProfileController extends Controller
      * Профиль
      */
 	public function actionIndex()
-	{
+	{//DebugBreak();
 		$data = $this->loadModel();
-
 		// портфолио
 		Yii::app()->getModule('portfolio');
-
 		$criteria = new CDbCriteria();
-		
 		$criteria->order = 'date desc';
-	
 		$criteria->limit = 3;
- 
 		$portfolio = Portfolio::model()->user($data->id)->findAll($criteria);
-
-
 		$renderdata = array(
 			'data' => $data,
 			'favorites' => $favorites,
 			'portfolio' => $portfolio,
 		);
-
 		$this->pageTitle = $data->username.' | Профиль';
-
 		$this->render('index', $renderdata);
 	}
 
@@ -411,40 +402,26 @@ class ProfileController extends Controller
 
 	public function loadModel()
 	{
-		if( $this->_model === null )
-		{
-			if( isset($_GET['username']) )
-			{
+		if( $this->_model === null ) {
+			if( isset($_GET['username']) ) {
 				$this->_model = User::model()->find('username = :username', array(':username' => $_GET['username']));
 			}
-
-			if( $this->_model === null )
-			{
+			if( $this->_model === null ) {
 				throw new CHttpException(404, 'The requested page does not exist.');
 			}
-
-			if( $this->_model->role == User::ROLE_ADMIN and !Yii::app()->user->getState('isAdmin') )// если админ
-			{
+			if( $this->_model->role == User::ROLE_ADMIN and !Yii::app()->user->getState('isAdmin') ) {// если админ
 				throw new CHttpException(403, 'Доступ к этой странице запрещен.');
 			}
-
 			$this->checkFriend = Friends::Check($this->_model->id);
-
 			$this->checkInvite = Invitations::Check($this->_model->id);
-
-			if( $this->_model->is_banned() )// если забанен закрывам профиль
-			{
+			if( $this->_model->is_banned() ) {// если забанен закрывам профиль
 				$this->render('new', array('message' => $this->_model->banned()));
-				
 				Yii::app()->end();
 			}
-
-			if( !Yii::app()->user->getState('isAdmin') && Yii::app()->user->isAuthenticated() && $this->_model->id != Yii::app()->user->id )
-			{
+			if( !Yii::app()->user->getState('isAdmin') && Yii::app()->user->isAuthenticated() && $this->_model->id != Yii::app()->user->id ) {
 				Guests::model()->add($this->_model->id);
 			}
         }
-
         return $this->_model;
     }
 }

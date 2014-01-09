@@ -1,72 +1,184 @@
-		<div id="container">
-			<div id="content">
+    <div class="motopress-wrapper content-holder clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
+                    <div class="row">
+                        <div class="row-fluid"><div class="span6 offset6">
+                                <p>&nbsp;</p>
+                                <p>
+                                    <a href=""><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/05_blog3.jpg"></a>
+                                    <a href=""><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/05_blog.jpg"></a>
+                                </p>
+                            </div></div>
+                        <div class="span12" data-motopress-type="static" data-motopress-static-file="static/static-title.php">
+                            <section class="title-section2">
+                                <h1 class="title-header">Кабинет пользователя    </h1>
+                                <ul class="breadcrumb breadcrumb__t"><li><a href="index.html">Кабинет пользователя</a></li>
+                            </section>
+                            <!-- меню пользователя -->
+                            <div class="filter-wrapper clearfix">
+
+                                <strong>Заказы: </strong>
+                                <ul id="filters" class="filter nav nav-pills">
+                                    <li class="active">
+                                        <a href="index.html#" data-count="13" data-filter>В аукционе (0)</a>
+                                    </li>
+                                    <li>
+                                        <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
+                                    </li>
+                                    <li>
+                                        <a href="index.html#" data-count="4" class="academic">В арбитраже (0)</a>
+                                    </li>
+                                    <li>
+                                        <a href="index.html#" data-count="4" class="academic">Завершенные (0)</a>
+                                    </li>            
+                                </ul>
+                                <div class="clear"></div>
+
+                            </div>
+                            <!-- /меню пользователя -->
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="span8">
+                            <h3>Новости системы</h3>
+
+                            <div class="post_meta meta_type_line">
+                                <div class="post_date">
+                                    <i class="icon-calendar"></i>
+                                    <time datetime="">Февраль 14, 2013, 12:23</time>
+                                </div>                    
+                            </div>
+
+                            <p><span style="color: #127a5e;"><strong>
+                                    Обновили вопросы / ответы
+                                </strong></span><br />
+                            <p>
+                                Раз в месяц мы выкладываем новые вопросы, которые Вы присылаете в нашу поддержку и ответы на них. Сегодня дбавилось 20 вопросов. Самым актуальным оказался пополнения через киви
+                            </p>
+                            <div class="clear"></div><!-- .clear (end) -->
+                            <a href="../portfolio/index.html" title="read more" class="btn btn-default btn-normal btn-inline " target="_self">Читать подробнее</a><!-- .btn -->
+
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+
+                            <div class="post_meta meta_type_line">
+                                <div class="post_date">
+                                    <i class="icon-calendar"></i>
+                                    <time datetime="">Февраль 10, 2013, 12:00</time>
+                                </div>                    
+                            </div>
+
+                            <p><span style="color: #127a5e;"><strong>
+                                    Вывод средств по заявкам до 01 февраля
+                                </strong></span><br />
+                            <p>
+                                По всем заявкам вывода средств поступившим до 01 февраля были произведены выплаты. Если вы создавали заявку и не получили выплату просьба обратиться в техническую поддержку.
+                            </p>
+                            <div class="clear"></div><!-- .clear (end) -->
+                            <a href="../portfolio/index.html" title="read more" class="btn btn-default btn-normal btn-inline " target="_self">Читать подробнее</a><!-- .btn -->
 
 
-            	<div class="page_title"><h1>Профиль пользователя</h1></div>
-                <div class="profile">
-                	<table>
-                        <tr>
-                            <td><img src="<?=Yii::app()->getModule('user')->userpicsDir?><?=$data->userpic_f?>" alt="" /></td>
-                            <td>
-                            	<table>
-                                    <tr>
-                                        <td>Город:</td>
-                                        <td><p><a href="#"></a></p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Положение:</td>
-                                        <td><p><a href="#"</a></p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Учебное заведение:</td>
-                                        <td><p><a href="#">Московский государственный университет экономики статистики и информатики</a></p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Специальность:</td>
-                                        <td><p><a href="#">Наладчик программного обеспечения</a></p></td>
-                                    </tr>
-                                    <tr>
-                                        <td><span>250</span> благодарностей</td>
-                                        <td>&nbsp;</td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
+                        </div>
+
+                        <div class="span4 sidebar" id="sidebar" data-motopress-type="static-sidebar"  data-motopress-sidebar-file="sidebar.php">
+
+                            <div id="categories-2" class="widget">
+                                <h3>Баланс в системе</h3>
+                                <ul>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Свободно (0)
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            На гарантии (0)
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Финансовые события
+                                        </a>
+                                    </li>
+                                </ul>
+                                <a href="" class="btn"><strong>Пополнить</strong></a> / <a href="" class="btn"><strong>Вывести</strong></a>
+
+                                <p>&nbsp;</p>
+                                <h3>Инфоормация</h3>
+                                <ul>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            События (0)
+                                        </a>
+                                    </li>
+
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Личные данные
+                                        </a>
+                                    </li>
+                                </ul>
+
+
+                                <p>&nbsp;</p>
+                                <h3>Партнерка</h3>
+                                <ul>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Описание системы
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Вопрос / ответ
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Рекламные материалы
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Рефералы
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Баланс в системе
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <p>&nbsp;</p>
+                                <h3>Магазин работ</h3>
+                                <ul>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Добавить работу
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Поиск работы
+                                        </a>
+                                    </li>
+                                    <li class="cat-item cat-item-45">
+                                        <a href="">
+                                            Статистика по работам
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-			</div><!-- #content-->
-		</div><!-- #container-->
-
-		<div class="sidebar" id="sideLeft">
-        	<div class="left_menu">
-            	<h3>ТЕМЫ</h3>
-                <ul>
-                	<li><a href="#">Безопасность жизнедеятельности</a></li>
-                    <li><a href="#">Биология и химия</a></li>
-                    <li><a href="#">География, геология и геодезия</a></li>
-                    <li class="active"><a href="#">Иностранный язык</a>
-                    	<ul>
-                        	<li><a href="#">Английский язык</a><span>(100)</span></li>
-                            <li><a href="#">Французкий язык</a><span>(24)</span></li>
-                            <li><a href="#">Немецкий язык</a><span>(41)</span></li>
-                            <li><a href="#">Итальянский язык</a><span>(22)</span></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Информатика и программирование</a></li>
-                    <li><a href="#">Краткое содержание произведений</a></li>
-                    <li><a href="#">Культура и искусство</a></li>
-                    <li><a href="#">Математика, физика, астрономия</a></li>
-                    <li><a href="#">Медицина и здоровье</a></li>
-                    <li><a href="#">Менеджмент и маркетинг</a></li>
-                    <li><a href="#">Москвоведение, краеведение</a></li>
-                    <li><a href="#">Наука и техника</a></li>
-                    <li><a href="#">Новейшая история, политология</a></li>
-                    <li><a href="#">Промышленность, производство</a></li>
-                    <li><a href="#">Психология и педагогика</a></li>
-                    <li><a href="#">Религия и мифология</a></li>
-                    <li><a href="#">СМИ. Издательское дело и полиграфия</a></li>
-                    <li><a href="#">Физкультура и спорт</a></li>
-                    <li><a href="#">Философия, социология</a></li>
-                </ul>
             </div>
-		</div><!-- .sidebar#sideLeft -->
+        </div>
+    </div>
+
+    <!--End #motopress-main-->
+</div>

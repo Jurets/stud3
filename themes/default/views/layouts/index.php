@@ -263,7 +263,8 @@
         <div class="light-home"></div>
         <div class="container">
         
-            <div id="auth" style="width: auto; height: auto; float: left; position: absolute; z-index: 999; margin-left: 600px;">
+            <!--<div id="auth" style="width: auto; height: auto; float: left; position: absolute; z-index: 999; margin-left: 600px;">-->
+            <!--<div id="auth" style="width: auto; height: auto; position: absolute; z-index: 999; margin-left: 600px;">
                 <?php 
                 if (!Yii::app()->user->isGuest)  {
                     $user = User::model()->findByPk(Yii::app()->user->id);
@@ -273,7 +274,7 @@
                 <? } else { ?>
                     <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('login') ?>">Вход</a>
                 <?php } ?>
-            </div>        
+            </div>-->        
         
             <div class="row">
                 <div class="span12 slider-wrap" data-motopress-type="static"
