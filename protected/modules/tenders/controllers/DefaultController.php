@@ -132,7 +132,8 @@ class DefaultController extends Controller
 					}
 				}
                 //DebugBreak();
-                $url = Yii::app()->request->requestUri;
+                $url = Yii::app()->createAbsoluteUrl(Yii::app()->request->requestUri);
+                //$url = Yii::app()->request->requestUri;
                 
                 if( $isNewRecord ) {  //если новый ответ на проект
                     //отослать сообщение на почту заказчика
