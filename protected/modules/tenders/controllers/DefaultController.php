@@ -40,7 +40,7 @@ class DefaultController extends Controller
 			'paidplace' => User::model()->pro()->findAll(),
 			'category' => $category,
 			'dataProvider' => $dataProvider,
-			'search' => $search,
+			//'search' => $search,
 			'type' => $type
 		);
 
@@ -82,8 +82,8 @@ class DefaultController extends Controller
 		}
         
         // если не будет переменной bid то в отображении не выведется форма добавления
+        $bid = FALSE;
 		if (Yii::app()->user->id && $model->user_id != Yii::app()->user->id && $model->status == Tenders::STATUS_OPEN) {
-			$bid = FALSE;
 			if (isset($_GET['action']) && $_GET['action'] == 'edit') {// если редактировать
 				if ($model->checkBid()) {  //проверяем - есть ли заявка на этот проект у текущего юзера
 					//если да - выбираем заявку текущего юзера на данный проект
