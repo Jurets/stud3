@@ -1,9 +1,12 @@
-Уважаемый(ая) <?=$userTo->nickName?>!<br/>
+Уважаемый(ая) <strong><?=$userTo->nickName?>!</strong><br/>
 <br/>
-Вам пришло Новое сообщение по проекту <?=$bidLetter->bid->tender->title?> от пользователя <?=$userFrom->nickName?> 
+Вам пришло Новое сообщение по проекту <strong><?=$bidLetter->bid->tender->title?></strong> от пользователя <strong><?=$userFrom->nickName?></strong> 
 <br/>
+<br/>
+
 Текст сообщения:<br/>
 <?=$bidLetter->text?>
+
 <br/><br/>
 Для того, чтобы просмотреть обсужение проекта и новое сообщение, перейдите по указанной ниже ссылке:<br/>
 <a target="_blank" href="<?=$url?>"><?=$url?></a><br/>
