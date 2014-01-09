@@ -41,7 +41,7 @@ class Bids extends Model
 	{
 		$data = $this->getStatusList();
 
-		return array_key_exists($this->status, $data) ? $data[$this->status] : '*неизвестно*';
+		return array_key_exists($this->status, $data) ? $data[$this->status] : self::STR_UNKNOWN;
 	}
 
 	public function getTenderCurrencyList()
@@ -62,11 +62,11 @@ class Bids extends Model
 		);
 	}
 
+    //вернуть обозначение валюты для ответа
 	public function getCurrency()
 	{
 		$data = $this->getCurrencyList();
-
-		return array_key_exists($this->currency, $data) ? $data[$this->currency] : '*неизвестно*';
+		return array_key_exists($this->currency, $data) ? $data[$this->currency] : self::STR_UNKNOWN;
 	}
 
 	public function getPeriodbyList()
@@ -78,11 +78,11 @@ class Bids extends Model
 		);
 	}
 
+    //вернуть обозначение периода для ответа
 	public function getPeriodby()
 	{
 		$data = $this->getPeriodbyList();
-
-		return array_key_exists($this->periodby, $data) ? $data[$this->periodby] : '*неизвестно*';
+		return array_key_exists($this->periodby, $data) ? $data[$this->periodby] : self::STR_UNKNOWN;
 	}
 
 	public function scopes()

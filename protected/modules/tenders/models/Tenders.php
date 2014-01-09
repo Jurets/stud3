@@ -21,8 +21,6 @@ class Tenders extends Model
     const CURRENCY_USD  = 2;
     const CURRENCY_EURO = 3;
     
-    const STR_UNKNOWN = '*неизвестно*';
-
     public $notify;
 	public $tender_id;
 

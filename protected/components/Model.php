@@ -1,10 +1,12 @@
-﻿<?php
+<?php
 /**
  * Model is the customized base model class.
  * All controller classes for this application should extend from this base class.
  */
 class Model extends CActiveRecord
 {
+    const STR_UNKNOWN = '*неизвестно*';   //строка для вывода неизвестного значения для разных параметров
+    
     public function user($user_id = '')
     {
 		if( !$user_id )
