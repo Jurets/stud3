@@ -12,6 +12,8 @@
 Предложение<br/>
 Стоимость от <?=$bid->budget_start?> до <?=$bid->budget_end?> <?=$bid->getCurrency()?><br/>
 Сроки от <?=$bid->period_start?> до <?=$bid->period_end?> <?=$bid->getPeriodby()?><br/>
+<?=$bid->text?>
+<br/><br/>
 Для того, чтобы просмотреть свой заказ и предложения по нему, перейдите по указанной ниже ссылке:<br/>
 <a target="_blank" href="<?=$url?>"><?=$url?></a><br/>
 <br/>
