@@ -1006,12 +1006,10 @@ class AccountController extends Controller
 	}
 
 
-	public function beforeAction()
+	public function beforeAction($action)
 	{
 		$this->fullness = new Profile_helper;
-
 		$this->guests = Guests::model()->user()->findAll();
-
 		return TRUE;
 	}
 

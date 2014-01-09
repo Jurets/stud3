@@ -92,7 +92,7 @@ class User extends Model
     /**
      * Неправильные попытки авторизации
      */
-    public function getAuthErr()
+    public static function getAuthErr()
     {
         return Yii::app()->db->createCommand()
                              ->select('*')
@@ -104,16 +104,15 @@ class User extends Model
     /**
      * Удаляем ошибки, у которых истек срок
      */
-    function deleteAuthErr()
+    public static function deleteAuthErr()
     {
-        Yii::app()->db->createCommand()
-                      ->delete('{{auth_err}}', 'date < :date', array(':date' => time()));
+        Yii::app()->db->createCommand()->delete('{{auth_err}}', 'date < :date', array(':date' => time()));
     }
 
     /**
      * Обновить количество неудавшихся авторизаций
      */
-    public function updateAuthErr()
+    public static function updateAuthErr()
     {
         $query = self::getAuthErr();
 

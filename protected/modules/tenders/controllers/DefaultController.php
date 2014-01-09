@@ -271,14 +271,29 @@ class DefaultController extends Controller
                         'html' => $html,
 				    ));
                 }
-
-				if( Yii::app()->user->id != $bid->tender->user_id ) {// если сообщение отправляет не автор
+                
+				if( Yii::app()->user->id != $bid->tender->user_id ) {// если сообщение отправляет исполнитель
 					$user_id = $bid->tender->user_id;// автор проекта
 					new Events_helper($user_id, $bid->user_id, Events_helper::LETTER_PROJECTS, $bid->project_id);
-				} else {
+                    //установить отсылку емейла автору (заказику)
+                    $userTo = $bid->tender->userdata;
+                    $userFrom = $bid->userdata;
+				} else { // если сообщение отправляет автор
 					$user_id = $bid->user_id;
 					new Events_helper($user_id, $bid->tender->user_id, Events_helper::LETTER_PROJECTS, $bid->project_id);
+                    //установить отсылку емейла исполнителю
+                    $userTo = $bid->userdata;
+                    $userFrom = $bid->tender->userdata;
 				}
+                $url = Yii::app()->createAbsoluteUrl('tenders/' . $bid->tender->id . 'html');
+                //отсылка емейла
+                Email_helper::send($userTo->email, 'Новое сообщение по проекту на сайте ' . Yii::app()->name . '', 'newBidLetter', array(
+                    'userTo'=>$userTo,
+                    'userFrom'=>$userFrom, 
+                    'bidLetter'=>$model, 
+                    'url'=>$url,
+                ));
+
 				echo json_encode($result);
 			}
 		}

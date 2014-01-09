@@ -1,10 +1,3 @@
-<?php
-    /*$curr_array = Bids::getTenderCurrencyList();
-    if (is_array($curr_array) && !empty($curr_array))
-        $currency = $curr_array[$bid->currency];
-    else
-        $currency = '';*/
-?>
 Уважаемый(ая) <?=$customer->nickName?>!<br/>
 <br/>
 На размещенный Вами заказ поступило новое предложение от пользователя <?=$bid->userdata->nickName?> 
