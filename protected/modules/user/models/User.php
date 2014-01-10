@@ -28,7 +28,6 @@ class User extends Model
     const EMAIL_CONFIRM_NO  = 0;
 
     const AUTH_ATTEMPTS = 5; // максимальное количество допускаемых ошибок авторизаций
-
     const AUTH_REMAINED = 3600; // на сколько после допустимного ошибок авторизаций блокируется ip, в секундах
 
     const SPECIALIZATION_DEVELOPER  = 1;
@@ -41,11 +40,8 @@ class User extends Model
     public $invitecode; // код приглашения
 
     public $_tariff;
-
     public $_online;
-
     public $_userpic; // атрибут для хранения загружаемого юзерпика
-
     public $_logo; // атрибут для хранения загружаемого логотипа
 
     //function __construct()
@@ -76,7 +72,6 @@ class User extends Model
     public function setLastActivity()
     {
         $this->last_activity = time();
-
         $this->online = self::ONLINE;
     }
 
@@ -115,10 +110,8 @@ class User extends Model
     public static function updateAuthErr()
     {
         $query = self::getAuthErr();
-
         if ($query) {
             $count = $query['count'] + 1;
-
             Yii::app()->db->createCommand()
                           ->update('{{auth_err}}', array('count' => $count), 'ip_address = :ip_address', array(':ip_address' => Yii::app()->request->userHostAddress));
         } else {
@@ -127,11 +120,9 @@ class User extends Model
                 'date'       => time() + self::AUTH_REMAINED, // дата окончания блокировки
                 'count'      => 1
             );
-
             Yii::app()->db->createCommand()
                           ->insert('{{auth_err}}', $data);
         }
-
         return false;
     }
 
@@ -143,7 +134,6 @@ class User extends Model
         if ($this->password === $this->hashPassword($password)) {
             return true;
         }
-
         return false;
     }
 
@@ -166,7 +156,6 @@ class User extends Model
     public function getSpecialization()
     {
         $data = $this->getSpecializationList();
-
         return array_key_exists($this->specialization, $data) ? $data[$this->specialization] : false;
     }
 
@@ -191,7 +180,6 @@ class User extends Model
     public function getRole()
     {
         $data = $this->getAccessLevelsList();
-
         return array_key_exists($this->access_level, $data) ? $data[$this->access_level] : 'не найден';
     }
 
@@ -224,7 +212,6 @@ class User extends Model
     public function getStatus()
     {
         $data = $this->getStatusList();
-
         return array_key_exists($this->status, $data) ? $data[$this->status] : 'не найден';
     }
 
@@ -244,7 +231,6 @@ class User extends Model
     public function getTariff()
     {
         $data = $this->getTariffList();
-
         return array_key_exists($this->tariff, $data) ? $data[$this->tariff] : false;
     }
 
@@ -265,7 +251,6 @@ class User extends Model
     public function getOnline()
     {
         $data = $this->getOnlineList();
-
         return array_key_exists($this->online, $data) ? $data[$this->online] : false;
     }
 
@@ -287,7 +272,6 @@ class User extends Model
     public function getIco()
     {
         $data = $this->getIconList();
-
         return array_key_exists($this->role, $data) ? $data[$this->role] : false;
     }
 
@@ -309,7 +293,6 @@ class User extends Model
     public function getGender()
     {
         $data = $this->getGendersList();
-
         return array_key_exists($this->gender, $data) ? $data[$this->gender] : 'не найден';
     }
 
@@ -319,11 +302,9 @@ class User extends Model
                                ->select('*')
                                ->from('{{categories}}')
                                ->queryAll();
-
         foreach ($query as $row) {
             $result[$row['parent_id']][$row['id']] = $row['name'];
         }
-
         return $result;
 
     }
@@ -377,23 +358,16 @@ class User extends Model
 
     public function beforeSave()
     {
-        if ($this->isNewRecord) // если новая запись
-        {
+        if ($this->isNewRecord) { // если новая запись
             $this->role = self::ROLE_USER; // роль по умолчанию
-
             $this->created = time();
-
             //$this->activation_code = $this->generateActivationKey();// код активации
             $this->activation_code = Randomness::randomString(10);
-
             $this->registration_ip = Yii::app()->request->userHostAddress; // ip при регистрации
-        } else // если изменение
-        {
+        } else { // если изменение
             $this->ip_address = Yii::app()->request->userHostAddress; // ip
-
             $this->last_activity = time(); // дата измененния
         }
-
         return parent::beforeSave();
     }
 
@@ -451,7 +425,6 @@ class User extends Model
     public function hashPassword($password)
     {
         $password = md5($password . 'cms');
-
         return $password;
     }
 
@@ -463,7 +436,6 @@ class User extends Model
         if (!$length) {
             $length = Yii::app()->getModule('user')->minPasswordLength;
         }
-
         return substr(md5(uniqid(mt_rand(), true) . time()), 0, $length);
     }
 
@@ -553,7 +525,6 @@ class User extends Model
 
             'age'            => 'Возраст',
 
-
             'created'        => 'Дата регистрации',
             'status'         => 'Статус',
 
@@ -620,7 +591,6 @@ class User extends Model
     public function changePassword($password)
     {
         $this->password = $this->hashPassword($password);
-
         return $this->update(array('password'));
     }
 
@@ -651,7 +621,6 @@ class User extends Model
         if ($this->is_banned == self::IS_BANNED) {
             return true;
         }
-
         return false;
     }
 
@@ -690,7 +659,6 @@ class User extends Model
             $this->withTags($search->interests);
         }
         $this->getDbCriteria()->mergeWith($criteria);
-
         return $this;
     }
 
@@ -699,20 +667,16 @@ class User extends Model
         if (!$this->dob) {
             return false;
         }
-
         if ($data = explode('.', $this->dob)) {
             return Date_helper::date_age($data[0], $data[1], $data[2]);
         }
-
         return false;
     }
 
     public function afterFind()
     {
         parent::afterFind();
-
         $this->_tariff = self::getTariff();
-
         $this->_online = self::getOnline();
     }
     
@@ -720,5 +684,20 @@ class User extends Model
         $nick = trim($this->name . ' ' . $this->surname);
         $nick = !empty($nick) ? $nick : $this->username;
         return $nick;
+    }
+    
+    /**
+    * колиечтсов проектов (заказов) в аукционе
+    * 
+    */
+    public function getBidCountAuction() {
+        //Yii::import('application.modules.tenders.models');
+        $count = Tenders::model()->user($this->id)->auction()->count();
+        /*$count = Tenders::model()->user($this->id)->auction()->count();
+        $cmd = $this->sql->select('count(id)')
+                         ->from('{{bids}}')
+                         ->where('project_id = :project_id and reading = :reading', array(':project_id' => $this->id, 'reading' => 0))
+                         ->queryScalar();*/
+        return $count;
     }
 }

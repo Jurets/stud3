@@ -98,30 +98,20 @@ class AccountController extends Controller
 	public function actionProfile()
 	{
 		$model = $this->loadModel();
-				
 		$model->setScenario('profile');
-
-		if( Yii::app()->request->isPostRequest && !empty($_POST['User']) )
-		{
+		if( Yii::app()->request->isPostRequest && !empty($_POST['User']) ) {
 			$model->attributes = $_POST['User'];
-
-			if( $model->validate() )
-			{
+			if( $model->validate() ) {
 				$model->save();
-
 				Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
-
 				$this->refresh();
 			}
 		}
-
-
-
 		$this->pageTitle = 'Личные данные';
-
 		$this->render('profile', array('model' => $model, 'country' => $country, 'city' => $city));
 	}
 
+    //
 	public function actionJson()
 	{
 		if( isset($_GET['tag']) )
@@ -308,18 +298,12 @@ class AccountController extends Controller
 	public function actionTenders($status = '')
 	{
 		Yii::app()->getModule('tenders');
-	
 		$model = Tenders::model()->user();
-
-		if( $status == Tenders::STATUS_OPEN )
-		{
+		if( $status == Tenders::STATUS_OPEN ) {
 			$model = $model->opened();
-		}
-		elseif( $status == Tenders::STATUS_CLOSE )
-		{
+		} elseif( $status == Tenders::STATUS_CLOSE ) {
 			$model = $model->closed();
 		}
-
 		$dataProvider = new CActiveDataProvider($model, array(
 			'sort' => array(
 				'sortVar' => 's',
@@ -336,23 +320,13 @@ class AccountController extends Controller
 				'pageSize' => 20,
 			),
 		));
-
 		$this->pageTitle = 'Мои проекты';
-
-
 		$countAll = new Tenders;
-
 		$countAll = $countAll->user()->count();
-
 		$countOpened = new Tenders;
-
 		$countOpened = $countOpened->user()->opened()->count();
-
 		$countClosed = new Tenders;
-
 		$countClosed = $countClosed->user()->closed()->count();
-
-
 		$this->render('tenders', array('dataProvider' => $dataProvider, 'countAll' => $countAll, 'countOpened' => $countOpened, 'countClosed' => $countClosed));
 	}
 

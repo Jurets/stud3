@@ -12,7 +12,6 @@ class ProfileController extends Controller
         );
     }
 
-
     /**
      * @var CActiveRecord the currently loaded data model instance.
      */
@@ -26,16 +25,17 @@ class ProfileController extends Controller
      * Профиль
      */
 	public function actionIndex()
-	{//DebugBreak();
-		$data = $this->loadModel();
+	{
+		$model = $this->loadModel();
 		// портфолио
 		Yii::app()->getModule('portfolio');
 		$criteria = new CDbCriteria();
 		$criteria->order = 'date desc';
 		$criteria->limit = 3;
-		$portfolio = Portfolio::model()->user($data->id)->findAll($criteria);
+		$portfolio = Portfolio::model()->user($model->id)->findAll($criteria);
+        //собираем все данные для рендера в массив
 		$renderdata = array(
-			'data' => $data,
+			'model' => $model,
 			'favorites' => $favorites,
 			'portfolio' => $portfolio,
 		);
@@ -49,9 +49,7 @@ class ProfileController extends Controller
 	public function actionFavorites()
 	{
 		$data = $this->loadModel();
-
 		$model = UsersFavorites::model();
-
 		$criteria = new CDbCriteria(array(
 			'condition' => 'favorite = :favorite',
 			'params' => array(':favorite' => $data->id),
@@ -59,7 +57,6 @@ class ProfileController extends Controller
 				'userdata:min'
 			)
 		));
-
 		$dataProvider = new CActiveDataProvider($model, array(   
 			'criteria' => $criteria,
 			'sort' => array(
@@ -77,14 +74,11 @@ class ProfileController extends Controller
 				'pageSize' => 20,
 			),
 		));
-
 		$renderdata = array(
 			'dataProvider' => $dataProvider,
 			'data' => $data
 		);
-
 		$this->pageTitle = $data->username.' | Подписчики';
-
 		$this->render('favorites', $renderdata);
 	}
 

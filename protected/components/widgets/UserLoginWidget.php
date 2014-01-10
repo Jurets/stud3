@@ -6,26 +6,17 @@ class UserLoginWidget extends CWidget
 		if( Yii::app()->user->isAuthenticated() )
 		{
 			Yii::app()->getModule('contacts');
-
 			Yii::app()->getModule('tenders');
-
 			$user = new User;
-
 			$user = $user->with('static')->findbyPk(Yii::app()->user->id);
-
 			$data['user'] = $user;
-
 			$messages = new Messages;
-
 			$bids = new Bids;
-
 			$data['countMessage'] = $messages->count('reading = :reading and recipient_id = :recipient_id', array('reading' => 0, 'recipient_id' => Yii::app()->user->id));
-
-
-			// íîâûå çàÿâêè ê ïğîåêòàì
-			$data['countNewBids'] = $bids->countNewBids();
+			// Ğ½Ğ¾Ğ²Ñ‹Ğµ Ğ·Ğ°ÑĞ²ĞºĞ¸ Ğº Ğ¿Ñ€Ğ¾ĞµĞºÑ‚Ğ°Ğ¼
+            //$data['countNewBids'] = $bids->countNewBids();
+			$data['countNewBids'] = Bids::countNewBids();
 		}
-
         $this->render('auth', $data);
     } 
 }

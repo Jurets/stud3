@@ -7,13 +7,12 @@ class Model extends CActiveRecord
 {
     const STR_UNKNOWN = '*неизвестно*';   //строка для вывода неизвестного значения для разных параметров
     
+    //условия (скоуп) для ограничения выборки по текущему юзеру
     public function user($user_id = '')
     {
-		if( !$user_id )
-		{
+		if( !$user_id ) {
 			$user_id = Yii::app()->user->id;
 		}
-
         $this->getDbCriteria()->mergeWith(array(
             'condition' => 'user_id='.$user_id
         ));
@@ -33,4 +32,8 @@ class Model extends CActiveRecord
 	{
 		return Date_helper::date_smart($this->date);
 	}
+    
+    protected function getSql() {
+        return Yii::app()->db->createCommand();
+    }
 }

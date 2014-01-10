@@ -41,9 +41,10 @@ return array(
         'application.modules.user.models.*',
         'application.modules.user.forms.*',
         'application.modules.user.components.*',  
+        
+        'application.modules.tenders.models.*',
 
 		'application.extensions.swiftMailer.YiiMailMessage',// YiiMailMessage
-
 		'application.extensions.markitup.EMarkitupWidget',// YiiMailMessage
 	),
 

@@ -40,7 +40,6 @@ class Bids extends Model
 	public function getStatus()
 	{
 		$data = $this->getStatusList();
-
 		return array_key_exists($this->status, $data) ? $data[$this->status] : self::STR_UNKNOWN;
 	}
 
@@ -203,7 +202,7 @@ class Bids extends Model
     }
 
 	// количество новых заявок к проектам пользователя
-	public function countNewBids()
+	public static function countNewBids()
 	{
 		return Yii::app()->db->createCommand()
 			->select('COUNT({{bids}}.id) as count')

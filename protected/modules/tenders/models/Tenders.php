@@ -28,15 +28,6 @@ class Tenders extends Model
     public $spec;
 
     /**
-     * Закрываем завершившиеся тендеры
-     */
-    public function closeTenders()
-    {
-        return Yii::app()->db->createCommand()
-                             ->update('{{tenders}}', array('status' => self::STATUS_ENDED), 'date_end < :time and type = :type', array(':time' => time(), ':type' => self::TYPE_TENDER));
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -47,6 +38,15 @@ class Tenders extends Model
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    /**
+     * Закрываем завершившиеся тендеры
+     */
+    public function closeTenders()
+    {
+        return Yii::app()->db->createCommand()
+                             ->update('{{tenders}}', array('status' => self::STATUS_ENDED), 'date_end < :time and type = :type', array(':time' => time(), ':type' => self::TYPE_TENDER));
     }
 
     public function getTypeList()
@@ -77,7 +77,6 @@ class Tenders extends Model
     public function getPriceby()
     {
         $data = $this->getPricebyList();
-
         return array_key_exists($this->priceby, $data) ? $data[$this->priceby] : self::STR_UNKNOWN;
     }
 
@@ -102,7 +101,6 @@ class Tenders extends Model
     public function getCurrency()
     {
         $data = $this->getCurrencyList();
-
         return array_key_exists($this->currency, $data) ? $data[$this->currency] : self::STR_UNKNOWN;
     }
 
@@ -160,6 +158,19 @@ class Tenders extends Model
         );
     }
 
+    /**
+    * условие (скоуп): заказы в аукционе
+    * 
+    */
+    public function auction()
+    {//DebugBreak();
+        $this->getDbCriteria()->mergeWith(array(
+            'condition'=>'not exists(select id from {{bids}} where {{bids}}.project_id = ' . $this->tableAlias . '.id and status = :status)',
+            'params'=>array(':status' => Bids::STATUS_ACCEPT),
+        ));
+        return $this;
+    }    
+    
     /**
      * Проверка на существование заявки (от текущего юзера) в проекте (возвращается ИД ответа)
      */
@@ -269,7 +280,6 @@ class Tenders extends Model
             'order' => 'id DESC',
             'limit' => 1,
         ));
-		
         return $model;
     }
     
