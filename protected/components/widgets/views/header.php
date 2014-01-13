@@ -25,7 +25,7 @@
                 <? } ?>
 
                 <li class="active">
-                    <a href="index.html#" data-count="13" data-filter>В аукционе (<?=$auctionCount?>)</a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders')?>" data-count="13" data-filter>В аукционе (<?=$auctionCount?>)</a>
                 </li>
                 <li>
                     <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
