@@ -19,8 +19,8 @@ class PhpAuthManager extends CPhpAuthManager
 				// связываем роль, заданную в БД с идентификатором пользователя,
 				// возвращаемым UserIdentity.getId().
 				$this->assign(Yii::app()->user->role, Yii::app()->user->id);
-				
-				$this->save();
+				//временно убираем запись в файл "/protected/data/auth.ph"
+				//$this->save();
 			}
 		}
 	}

@@ -310,4 +310,13 @@ class Tenders extends Model
     public function getSpecialityString() {
         return isset($this->tenderspeciality) ? $this->tenderspeciality->name : self::STR_UNKNOWN;
     }
+    
+    //
+    public function adminlink() {
+        if( $this->bids > 0 ) {
+            return $this->bids.' предложений';
+        } else {
+            return 'Нет предложений';
+        }
+    }
 }

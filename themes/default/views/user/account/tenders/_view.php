@@ -10,7 +10,7 @@
 <? endif; ?>
 
 <span class="fr grey">
-<strong><?=$data->budget()?></strong>
+<strong><?=$data->budget?></strong>
 </span>
 
 <div>
