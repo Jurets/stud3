@@ -692,9 +692,9 @@ class User extends Model
     */
     public function getBidCountAuction() {
         //Yii::import('application.modules.tenders.models');
-        $count = Tenders::model()->user($this->id)->auction()->count();
-        /*$count = Tenders::model()->user($this->id)->auction()->count();
-        $cmd = $this->sql->select('count(id)')
+        //$count = Tenders::model()->user($this->id)->auction()->count();
+        $count = Tenders::model()->user($this->id)->opened()->count();
+        /*$cmd = $this->sql->select('count(id)')
                          ->from('{{bids}}')
                          ->where('project_id = :project_id and reading = :reading', array(':project_id' => $this->id, 'reading' => 0))
                          ->queryScalar();*/

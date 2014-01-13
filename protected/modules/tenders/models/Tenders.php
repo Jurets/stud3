@@ -163,11 +163,20 @@ class Tenders extends Model
     * 
     */
     public function auction()
-    {//DebugBreak();
-        $this->getDbCriteria()->mergeWith(array(
-            'condition'=>'not exists(select id from {{bids}} where {{bids}}.project_id = ' . $this->tableAlias . '.id and status = :status)',
-            'params'=>array(':status' => Bids::STATUS_ACCEPT),
-        ));
+    {
+        $criteria = New CDbCriteria;
+        $criteria->addInCondition('status', array(self::STATUS_OPEN, Bids::STATUS_ACCEPT));
+        $criteria->order = 'status DESC, date DESC';
+        //$criteria->scopes = 'opened';
+        //$criteria->addCondition('not exists(select id from {{bids}} where {{bids}}.project_id = ' . $this->tableAlias . '.id and status = :status)');
+        //$criteria->params = array(':status' => Bids::STATUS_ACCEPT);
+        $this->getDbCriteria()->mergeWith( $criteria
+            //array(
+            //'condition'=>'not exists(select id from {{bids}} where {{bids}}.project_id = ' . $this->tableAlias . '.id and status = :status)',
+            //'condition'=>'not exists(select id from {{bids}} where {{bids}}.project_id = ' . $this->tableAlias . '.id and status = :status)',
+            //'params'=>array(':status' => Bids::STATUS_ACCEPT),
+            //)
+        );
         return $this;
     }    
     

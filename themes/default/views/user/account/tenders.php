@@ -12,24 +12,41 @@
 
                         <div><a class="btn" href="/tenders/publication"><strong>Опубликовать проект</strong></a></div><br />
 
-                        <?php 
+                        <?php //DebugBreak();
                         $this->widget('zii.widgets.CListView', 
                         array(
                             'dataProvider' => $dataProvider,
                             'itemView' => 'tenders/_view',
                             'ajaxUpdate' => true,
                             'emptyText' => '<div class="alert alert-error">Ничего не найдено</div>',
-                            'template' => '
-                        <table class="listorder">
-                        {items}
-                        </table>
-                        <br />
-                        {pager}', 
+                            'template'           => '
+                                <div class="row-fluid">
+                                <div class="span6">
+                                {sorter}
+                                </div><div class="span6">
+                                </div>
+                                </div>
+                                {items}
+                                <div class="row-fluid"><div class="span12">
+                                {pager}</div></div>',
                             'sorterCssClass' => 'offers-stateline',
                             'sorterHeader' => 'Сортировать по: ',
-                            'pager' => array(
-                                'header'=>'',
+                            'pager'              => array(
+                                'maxButtonCount' => 8,
+                                'nextPageLabel'  => 'Следующая',
+                                'prevPageLabel'  => 'Предыдущая',
+                                'lastPageLabel'  => 'Последняя',
+                                'firstPageLabel' => 'Первая',
+                                
+                                'header'         => '',
+                                //'selectedPageCssClass' => 'active',
+                                //'previousPageCssClass' => '',
+                                'htmlOptions' => array(
+                                    'class' => '',
+                                    'style' => 'margin:0;'
+                                )
                             ),
+                            'pagerCssClass' => 'pagination pagination__posts',
                             'sortableAttributes'=>array(
                                 'date' => 'Дате'
                             ),

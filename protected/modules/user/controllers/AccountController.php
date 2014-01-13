@@ -296,15 +296,20 @@ class AccountController extends Controller
      * Проекты
      */
 	public function actionTenders($status = '')
-	{
+	{//DebugBreak();
 		Yii::app()->getModule('tenders');
 		$model = Tenders::model()->user();
-		if( $status == Tenders::STATUS_OPEN ) {
+		/*if( $status == Tenders::STATUS_OPEN ) {
 			$model = $model->opened();
 		} elseif( $status == Tenders::STATUS_CLOSE ) {
 			$model = $model->closed();
-		}
+        } elseif( $status == Tenders::STATUS_CLOSE ) {
+            $model = $model->closed();
+        }*/ 
+        $model = $model->auction();
+
 		$dataProvider = new CActiveDataProvider($model, array(
+            'criteria'=>$model->getDBCriteria(),
 			'sort' => array(
 				'sortVar' => 's',
 				'defaultOrder' => array(
@@ -321,13 +326,16 @@ class AccountController extends Controller
 			),
 		));
 		$this->pageTitle = 'Мои проекты';
-		$countAll = new Tenders;
+		/*$countAll = new Tenders;
 		$countAll = $countAll->user()->count();
 		$countOpened = new Tenders;
 		$countOpened = $countOpened->user()->opened()->count();
 		$countClosed = new Tenders;
-		$countClosed = $countClosed->user()->closed()->count();
-		$this->render('tenders', array('dataProvider' => $dataProvider, 'countAll' => $countAll, 'countOpened' => $countOpened, 'countClosed' => $countClosed));
+		$countClosed = $countClosed->user()->closed()->count();*/
+        //DebugBreak();
+		$this->render('tenders', array(
+            'dataProvider' => $dataProvider, //'countAll' => $countAll, 'countOpened' => $countOpened, 'countClosed' => $countClosed
+        ));
 	}
 
     /**

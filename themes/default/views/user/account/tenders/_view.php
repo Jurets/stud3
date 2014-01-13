@@ -1,47 +1,45 @@
-<tr>
-<td class="title">
+<article class="testimonial clearfix">
+    <blockquote class="testimonial_bq">
+        <div class="testimonial_content">
+            <div class="post_meta meta_type_line">
 
-<h3><a href="/tenders/<?=$data->id?>.html"><?=$data->title?></a></h3>
+                <div class="post_author">
+                    <i class="icon-user"></i>
+                    <a href="../author/alone/index.html" title="Заказчик " rel="author"><?= $data->userdata->nickname ?></a>
+                </div>
+                <div class="post_date">
+                    <i class="icon-calendar"></i>
+                    <time datetime="2013-02-14T20:26:57"><?= $data->dateLong ?></time>
+                    <!--<time datetime="2013-02-14T20:26:57">Февраль 14, 2013, 12:23</time>-->
+                </div>
 
-<br />
+            </div>
 
-<? if( $data->status == Tenders::STATUS_OPEN ): ?>
-<a href="/sbs/publication?id=<?=$data->id?>" class="btn btn-mini">Начать СБС</a> 
-<? endif; ?>
+            <h4><?= $data->title ?></h4>
 
-<span class="fr grey">
-<strong><?=$data->budget?></strong>
-</span>
+            <p>
+                <b class="btno">
+                    <strong>Описание:</strong>
+                </b> 
+                <?= $data->descr ?>
+            </p>
+            
+            <p>&nbsp;</p>
+            <table width="100%">
+                <tr>
+                    <td width="40%">
+                        <p><b class="btno"><strong>Тип работы:</strong></b> <?= $data->tendercategory->name ?></p>
+                    </td>
+                    <td width="60%">
+                        <p><b class="btno"><strong>Специализация:</strong></b> <?= $data->specialityString ?></p>
+                    </td>
+                </tr>
+            </table>
+            <p>&nbsp;</p>
 
-<div>
-<br />
-<?=$data->text?>
-<br /><br />
-</div>
+            <p>предложений: <?= $data->BidCount ?></p>
 
-<div class="inf grey">
-Добавил: <a href="/users/<?=$data->userdata->username?>"><?=$data->userdata->username?></a> | <?=$data->category()?> | <?=Date_helper::date_smart($data->date)?>
-</div>
-
-</tr>
-
-<tr>
-<td class="txt-small">
-<a href="/tenders/<?=$data->id?>.html"><?=$data->adminlink()?></a> (<?=$data->getStatus()?>)
-
-<? if( $data->checkNewBids() ): ?>
-<br /><strong><a href="/tenders/<?=$data->id?>.html">Есть новые предложения</a></strong>
-<? endif; ?>
-
-<span class="fr">
-<i class="icon-pencil"></i> <a href="/tenders/publication?id=<?=$data->id?>">Редактировать</a>
-<? if( $data->status == Tenders::STATUS_CLOSE ): ?>
- | <a href="/tenders/management?id=<?=$data->id?>&action=open">Открыть</a>
-<? endif; ?>
-
-<? if( $data->status == Tenders::STATUS_OPEN ): ?>
- | <a href="/tenders/management?id=<?=$data->id?>&action=close">Закрыть</a>
-<? endif; ?>
-</span>
-</td>
-</tr>
+            <p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>
+        </div>
+    </blockquote>
+</article>
