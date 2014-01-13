@@ -4,30 +4,31 @@
         <h3>Баланс в системе</h3>
         <ul>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Свободно (0)
-                </a>
+                <a href="">Свободно (0)</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    На гарантии (0)
-                </a>
+                <a href="">На гарантии (0)</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Финансовые события
-                </a>
+                <a href="">Финансовые события</a>
             </li>
         </ul>
         <a href="" class="btn"><strong>Пополнить</strong></a> / <a href="" class="btn"><strong>Вывести</strong></a>
 
         <p>&nbsp;</p>
-        <h3>Инфоормация</h3>
+        <h3>Информация</h3>
         <ul>
+            <? if ($user->usertype == User::USERTYPE_PERFORMER) { ?>
+                <li class="cat-item cat-item-45">
+                    <a href="">Лента заказов</a>
+                </li>
+                <li class="cat-item cat-item-45">
+                    <a href="">Рейтинг в системе</a>
+                </li>
+            <? } ?>
+
             <li class="cat-item cat-item-45">
-                <a href="">
-                    События (0)
-                </a>
+                <a href="">События (0)</a>
             </li>
 
             <li class="cat-item cat-item-45">
@@ -40,29 +41,19 @@
         <h3>Партнерка</h3>
         <ul>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Описание системы
-                </a>
+                <a href="">Описание системы</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Вопрос / ответ
-                </a>
+                <a href="">Вопрос / ответ</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Рекламные материалы
-                </a>
+                <a href="">Рекламные материалы</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Рефералы
-                </a>
+                <a href="">Рефералы</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Баланс в системе
-                </a>
+                <a href="">Баланс в системе</a>
             </li>
         </ul>
 
@@ -70,19 +61,13 @@
         <h3>Магазин работ</h3>
         <ul>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Добавить работу
-                </a>
+                <a href="">Добавить работу</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Поиск работы
-                </a>
+                <a href="">Поиск работы</a>
             </li>
             <li class="cat-item cat-item-45">
-                <a href="">
-                    Статистика по работам
-                </a>
+                <a href="">Статистика по работам</a>
             </li>
         </ul>
     </div>

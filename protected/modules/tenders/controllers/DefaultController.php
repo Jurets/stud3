@@ -176,8 +176,11 @@ class DefaultController extends Controller
 	}
 
     /**
-     * Управление статусом заявки
-     */
+    * Управление статусом заявки
+    * 
+    * @param mixed $id - ИД заявки (ответа на заказ)
+    * @param mixed $action - действие (accept - принять исполнителем, decline - отклонить)
+    */
 	function actionBidManagement($id, $action)
 	{
 		$bid = Bids::model()->findByPk($id);

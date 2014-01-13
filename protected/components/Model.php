@@ -14,7 +14,9 @@ class Model extends CActiveRecord
 			$user_id = Yii::app()->user->id;
 		}
         $this->getDbCriteria()->mergeWith(array(
-            'condition' => 'user_id='.$user_id
+            //'condition' => 'user_id='.$user_id,
+            'condition' => 'user_id=:user_id',
+            'params'=>array(':user_id'=>$user_id),
         ));
         return $this;
     }

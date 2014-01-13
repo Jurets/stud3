@@ -232,10 +232,14 @@ class DefaultController extends Controller
         $form = new LoginForm;
         if (Yii::app()->request->isPostRequest && !empty($_POST['LoginForm'])) {
             $form->setAttributes($_POST['LoginForm']);
-            if ($form->validate()) {
+            if ($form->validate()) { //если успешный логин
                 Yii::log('Пользователь ' . $form->username . ' авторизовался!', CLogger::LEVEL_INFO);
                 $redirect = (Yii::app()->user->isSuperUser()) ? '/administrator/default/pages' : '/users/' . $form->username;
-                $this->redirect('/account/profile');
+                //$this->redirect('/account/profile');
+                if (!$username = Yii::app()->user->getState('username')) {
+                    $username = User::model()->findAllByPk(Yii::app()->user->id)->username;
+                }
+                $this->redirect('/users/'.$username);  //редиректим на кабинет юзера
             } else {
                 Yii::log('Ошибка авторизации! email => ' . $form->username . ', password => ' . $form->password . '!', CLogger::LEVEL_ERROR);
             }

@@ -207,10 +207,17 @@
                                     <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказать от проекта</a>
                                 <? } ?>
 
-                                <? if (Yii::app()->user->id == $model->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
+                                <? // -------- КНОПКИ управления заказом (если юзер - хозяин) ?>
+                                <? if ($is_owner) { //если юзер - хозяин и статус заказа=активен ?>
                                     <div class="payd-link">
-                                        <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
-                                        <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
+                                        <? if ($row->status == Bids::STATUS_ACTIVE) { //если статус заказа = активен ?>
+                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
+                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
+                                        <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
+                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
+                                        <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_REJECT) {?>
+                                            <p>Исполнитель отказался о твыполнения проекта</p> 
+                                        <? } ?>
                                     </div>
                                 <? } ?>
                                 
