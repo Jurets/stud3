@@ -20,7 +20,7 @@
                 ?>
                 <? foreach ($categories as $key => $item) { ?>
                     <div class="catline" style="margin-left: <?=24*($item['level']-1)?>px;">
-                        <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[categories][]" value="<?=$item['id']?>" type="checkbox" <? if (in_array($item['id'], $model->categories)) { ?> checked="checked"<? } ?>>
+                        <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[categories][]" value="<?=$item['id']?>" type="checkbox" <? if (isset($model->categories) && in_array($item['id'], $model->categories)) { ?> checked="checked"<? } ?>>
                         <label style="font-weight: normal; text-decoration: none; text-transform: none; overflow: hidden;" for="category_<?=$item['id']?>"><?=$item['name']?></label>
                     </div>
                 <? } ?>

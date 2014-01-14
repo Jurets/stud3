@@ -45,7 +45,7 @@
                     <? } else { ?>
                         <div class="catline" style="margin-left: <?=24*($item['level']-1)?>px;">
                             <? if ($item['ischeck']) { ?>
-                                <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[specializations][]" value="<?=$item['id']?>" type="checkbox" <? if (in_array($item['id'], $model->specializations)) { ?> checked="checked"<? } ?>>
+                                <input style="float: left; margin-right: 10px;" id="category_<?=$item['id']?>" class="checkbox" name="PerformerRegForm[specializations][]" value="<?=$item['id']?>" type="checkbox" <? if (isset($model->specializations) && in_array($item['id'], $model->specializations)) { ?> checked="checked"<? } ?>>
                                 <label style="font-weight: normal; text-decoration: none; text-transform: none; overflow: hidden;" for="category_<?=$item['id']?>"><?=$item['name']?></label>
                             <? } else {?>
                                 <p class="spec-subheader"><?=$item['name']?></p>

@@ -107,17 +107,21 @@ class DefaultController extends Controller
                             $perfomer->user_id = $user->id;
                             $success = $perfomer->save(false);
                             if ($success) {  //сохранить специализации
-                                foreach($form->specializations as $item) {
-                                    Yii::app()->db->createCommand()->insert('ci_performer_specializations', array(
-                                        'performer_id'=>$perfomer->id,
-                                        'specialization_id'=>$item,
-                                    ));
+                                if (isset($form->specializations)) {
+                                    foreach($form->specializations as $item) {
+                                        Yii::app()->db->createCommand()->insert('ci_performer_specializations', array(
+                                            'performer_id'=>$perfomer->id,
+                                            'specialization_id'=>$item,
+                                        ));
+                                    }
                                 } //сохранить категории
-                                foreach($form->categories as $item) {
-                                    Yii::app()->db->createCommand()->insert('ci_performer_categories', array(
-                                        'performer_id'=>$perfomer->id,
-                                        'category_id'=>$item,
-                                    ));
+                                if (isset($form->categories)) {
+                                    foreach($form->categories as $item) {
+                                        Yii::app()->db->createCommand()->insert('ci_performer_categories', array(
+                                            'performer_id'=>$perfomer->id,
+                                            'category_id'=>$item,
+                                        ));
+                                    }
                                 }
                             }
                         }
@@ -152,6 +156,8 @@ class DefaultController extends Controller
             }
         } else {
             $form->step = 1;
+            $sform = $form->attributes;
+            Yii::app()->user->setState('userPerformer', $sform);
         } 
         $this->pageTitle = 'Регистрация';
         $this->render('registration' . $form->step, array('model' => $form));
