@@ -12,11 +12,15 @@
 
                         <div><a class="btn" href="/tenders/publication"><strong>Опубликовать проект</strong></a></div><br />
 
-                        <?php //DebugBreak();
+                        <?php 
                         $this->widget('zii.widgets.CListView', 
                         array(
                             'dataProvider' => $dataProvider,
-                            'itemView' => 'tenders/_view',
+                            //'itemView' => 'tenders/_view',
+                            'itemView' => '../../tenders/default/_view',
+                            //'itemView' => 'themes/default/views/tenders/default/_view',
+                            //'itemView' => 'themes.default.views.tenders.default._view',
+                            //'itemView' => Yii::app()->theme->basePath . '\views\tenders\default\_view.php',
                             'ajaxUpdate' => true,
                             'emptyText' => '<div class="alert alert-error">Ничего не найдено</div>',
                             'template'           => '

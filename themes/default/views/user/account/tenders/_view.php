@@ -1,3 +1,5 @@
+<!--   Вместо этой вьюшки используем общую - \themes\default\views\tenders\default\_view.php   -->
+
 <article class="testimonial clearfix">
     <blockquote class="testimonial_bq">
         <div class="testimonial_content">

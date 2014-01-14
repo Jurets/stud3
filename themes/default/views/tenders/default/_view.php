@@ -1,11 +1,14 @@
-<article class="testimonial clearfix">
+<?php
+     //DebugBreak();#CDFEE3 #D5FFFB #FFFFFF#E2FEC7
+ ?>
+<article class="testimonial clearfix" <? if (isset($data->winner)) { ?>style="background-color: #E2FEC7;"<? } ?>>
     <blockquote class="testimonial_bq">
         <div class="testimonial_content">
             <div class="post_meta meta_type_line">
 
                 <div class="post_author">
                     <i class="icon-user"></i>
-                    <a href="../author/alone/index.html" title="Заказчик " rel="author"><?= $data->userdata->nickname ?></a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('users/'.$data->userdata->username)?>" title="Личная страница" rel="author"><?= $data->userdata->nickname ?></a>
                 </div>
                 <div class="post_date">
                     <i class="icon-calendar"></i>
@@ -38,6 +41,11 @@
             <p>&nbsp;</p>
 
             <p>предложений: <?= $data->BidCount ?></p>
+            <? if (isset($data->winner)) { ?>
+                <p>исполнитель определен: 
+                    <font class="frlname11"><a href="/users/<?=$data->winner->userdata->username?>"><?=$data->winner->userdata->username?></a></font>
+                </p>
+            <? } ?>
 
             <p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>
         </div>

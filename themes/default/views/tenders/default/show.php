@@ -106,7 +106,7 @@
                         <br />
                         <div class="alert alert-block">
                             <h4>Исполнитель определен</h4>
-                        <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
+                            <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
                         </div>
                     <? } ?>
                     
