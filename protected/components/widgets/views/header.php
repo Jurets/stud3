@@ -1,4 +1,7 @@
 <?php 
+    $moduleid = Yii::app()->controller->module->id;
+    $controllerid = Yii::app()->controller->id;
+    $actionid = Yii::app()->controller->action->id;
     $status = Yii::app()->request->getParam('status');
 ?>
 <div class="row">
@@ -21,8 +24,13 @@
         <div class="filter-wrapper clearfix">
             <strong>Заказы: </strong>
             <ul id="filters" class="filter nav nav-pills">
+
+                <li <? if ($moduleid == 'sbs' && $actionid == 'index') { ?> class="active"<? } ?>>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('sbs')?>" data-count="13" data-filter>СБС</a>
+                </li>
+            
                 <? if ($user->usertype == User::USERTYPE_CUSTOMER) { ?>
-                    <li class="active">
+                    <li <? if ($moduleid == 'tenders' && $actionid == 'index') { ?> class="active"<? } ?>>
                         <a href="index.html#" data-count="13" data-filter>Лента заказов</a>
                     </li>
                 <? } ?>

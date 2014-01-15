@@ -47,6 +47,10 @@
                 </p>
             <? } ?>
 
+            <? if( $data->status == Tenders::STATUS_OPEN ) { ?>
+                <a href="/sbs/publication?id=<?=$data->id?>" class="btn btn-mini">Начать СБС</a> 
+            <? } ?>
+            
             <p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>
         </div>
     </blockquote>

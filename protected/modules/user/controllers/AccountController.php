@@ -295,7 +295,7 @@ class AccountController extends Controller
     /**
      * Проекты
      */
-	public function actionTenders($status = '')
+	public function actionTenders($status = 'auction')
 	{//DebugBreak();
 		Yii::app()->getModule('tenders');
         $model = New Tenders();
@@ -312,6 +312,8 @@ class AccountController extends Controller
             $criteria = $model->auction()->getDBCriteria();
         } else if( $status == 'closed' ) {
             $criteria = $model->closed()->getDBCriteria();
+        } else {  //если status не задано
+            $criteria = $model->auction()->getDBCriteria();
         }
 
 		$dataProvider = new CActiveDataProvider($model, array(
