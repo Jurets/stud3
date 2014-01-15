@@ -1,3 +1,6 @@
+<?php 
+    $status = Yii::app()->request->getParam('status');
+?>
 <div class="row">
     <div class="row-fluid">
         <div class="span6 offset6">
@@ -24,17 +27,17 @@
                     </li>
                 <? } ?>
 
-                <li class="active">
-                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders')?>" data-count="13" data-filter>В аукционе (<?=$auctionCount?>)</a>
+                <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="13" data-filter>В аукционе (<?=$auctionCount?>)</a>
                 </li>
-                <li>
+                <li <? if ($status == 'warranty') { ?> class="active"<? } ?>>
                     <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
                 </li>
                 <li>
                     <a href="index.html#" data-count="4" class="academic">В арбитраже (0)</a>
                 </li>
-                <li>
-                    <a href="index.html#" data-count="4" class="academic">Завершенные (0)</a>
+                <li <? if ($status == 'closed') { ?> class="active"<? } ?>>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="4" class="academic">Завершенные (<?=$countClosed?>)</a>
                 </li>            
             </ul>
             <div class="clear"></div>

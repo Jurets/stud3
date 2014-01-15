@@ -298,7 +298,8 @@ class AccountController extends Controller
 	public function actionTenders($status = '')
 	{//DebugBreak();
 		Yii::app()->getModule('tenders');
-		$model = Tenders::model()->user();
+        $model = New Tenders();
+		$model = $model->user();
 		/*if( $status == Tenders::STATUS_OPEN ) {
 			$model = $model->opened();
 		} elseif( $status == Tenders::STATUS_CLOSE ) {
@@ -306,10 +307,15 @@ class AccountController extends Controller
         } elseif( $status == Tenders::STATUS_CLOSE ) {
             $model = $model->closed();
         }*/ 
-        $model = $model->auction();
+        
+        if( $status == 'auction' ) {
+            $criteria = $model->auction()->getDBCriteria();
+        } else if( $status == 'closed' ) {
+            $criteria = $model->closed()->getDBCriteria();
+        }
 
 		$dataProvider = new CActiveDataProvider($model, array(
-            'criteria'=>$model->getDBCriteria(),
+            'criteria'=>$criteria, //$model->getDBCriteria(),
 			'sort' => array(
 				'sortVar' => 's',
 				'defaultOrder' => array(

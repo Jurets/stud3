@@ -196,6 +196,8 @@ return array(
 
                 '/account/<_a:(purchased|favorites|skills|resume|notify|guests|items|myinvitations|invitations|contacts|notice|logo|tenders|bids|payments|portfolio|tariff|services|balance|withdraw|addwithdraw|history|purses|addpurse|deletepurse|events|event|rating|index|userpic|profile|contact|changepassword|blogs)>' => 'user/account/<_a>',
                 '/account/payments/<id:\d+>.html' => 'user/account/viewpayment',
+                
+                '/account/tenders/<status>' => 'user/account/tenders',
 
                 '/users/<username:>' => 'user/profile/index/<_a>',
 

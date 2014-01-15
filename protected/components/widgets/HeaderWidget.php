@@ -20,10 +20,15 @@ class HeaderWidget extends CWidget
             $user = new User;
             $user = $user->with('static')->findbyPk(Yii::app()->user->id);
             $auctionCount = $user->bidCountAuction;
+            $countClosed = Tenders::model()->user()->closed()->count();
             
             $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
             
-            $this->render('header', array('user'=>$user, 'auctionCount'=>$auctionCount));
+            $this->render('header', array(
+                'user'=>$user, 
+                'auctionCount'=>$auctionCount,
+                'countClosed'=>$countClosed,
+            ));
 		}
     } 
 }
