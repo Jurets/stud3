@@ -132,7 +132,7 @@ class DefaultController extends Controller
      * Подать жалобу в арбитраж
      */
 	public function actionArbitration($id = '')
-	{
+	{//DebugBreak();
 		Yii::app()->getModule('tenders');
     	$model = Sbs::model()->findByPk($id);
 		$user = $this->loadModel();

@@ -43,6 +43,7 @@ return array(
         'application.modules.user.components.*',  
         
         'application.modules.tenders.models.*',
+        'application.modules.sbs.models.*',
 
 		'application.extensions.swiftMailer.YiiMailMessage',// YiiMailMessage
 		'application.extensions.markitup.EMarkitupWidget',// YiiMailMessage

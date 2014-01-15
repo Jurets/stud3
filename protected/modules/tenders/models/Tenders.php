@@ -130,6 +130,7 @@ class Tenders extends Model
             'DeclinedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_DECLINE),
             'AcceptedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_ACCEPT),
             'RejectedCount' => array(self::STAT, 'Bids', 'project_id', 'condition' => 'status=' . Bids::STATUS_REJECT),
+            'sbs'           => array(self::HAS_ONE, 'Sbs', 'project_id'),
         );
     }
 

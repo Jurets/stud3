@@ -312,6 +312,9 @@ class AccountController extends Controller
             $criteria = $model->auction()->getDBCriteria();
         } else if( $status == 'closed' ) {
             $criteria = $model->closed()->getDBCriteria();
+        } else if ($status == 'arbitration') {
+            $criteria = $model->with(array('sbs'=>array('scopes'=>'disputed', 'condition'=>'sbs.status = :status')));
+            $criteria = $criteria->getDBCriteria();
         } else {  //если status не задано
             $criteria = $model->auction()->getDBCriteria();
         }

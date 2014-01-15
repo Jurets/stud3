@@ -36,16 +36,16 @@
                 <? } ?>
 
                 <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
-                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="13" data-filter>В аукционе (<?=$auctionCount?>)</a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="<?=$auctionCount?>" data-filter>В аукционе (<?=$auctionCount?>)</a>
                 </li>
                 <li <? if ($status == 'warranty') { ?> class="active"<? } ?>>
                     <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
                 </li>
-                <li>
-                    <a href="index.html#" data-count="4" class="academic">В арбитраже (0)</a>
+                <li <? if ($status == 'arbitration') { ?> class="active"<? } ?>>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/arbitration')?>" data-count="<?=$countArbitration?>" class="academic">В арбитраже (<?=$countArbitration?>)</a>
                 </li>
                 <li <? if ($status == 'closed') { ?> class="active"<? } ?>>
-                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="4" class="academic">Завершенные (<?=$countClosed?>)</a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="<?=$countClosed?>" class="academic">Завершенные (<?=$countClosed?>)</a>
                 </li>            
             </ul>
             <div class="clear"></div>

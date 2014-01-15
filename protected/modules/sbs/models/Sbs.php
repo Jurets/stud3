@@ -20,16 +20,11 @@ class Sbs extends Model
 
 	protected function beforeSave()
     {
-		if( $this->isNewRecord )// если новая запись
-		{		
+		if( $this->isNewRecord ) {// если новая запись
 			$this->customer_id = Yii::app()->user->id;  
-
 			$this->status = self::STATUS_NEW;
-
 			$this->date = time();
 		}
-
-
 		return parent::beforeSave();
     }
 
@@ -54,7 +49,6 @@ class Sbs extends Model
 	public function getStatus()
 	{
 		$data = $this->getStatusList();
-
 		return array_key_exists($this->status, $data) ? $data[$this->status] : '*неизвестно*';
 	}
 
@@ -84,7 +78,6 @@ class Sbs extends Model
 				'condition' => 'customer_id = :user_id or performer_id = :user_id',
 				'params'    => array(':user_id' => Yii::app()->user->id)
 			),
-
 			'renewed' => array(
 				'condition' => $this->getTableAlias().'.status = :status',
 				'params'    => array(':status' => self::STATUS_NEW)
@@ -101,6 +94,10 @@ class Sbs extends Model
 				'condition' => $this->getTableAlias().'.status = :status',
 				'params'    => array(':status' => self::STATUS_CLOSE)
 			),
+            'disputed' => array(
+                'condition' => $this->getTableAlias().'.status = :status',
+                'params'    => array(':status' => self::STATUS_DISPUTE)
+            ),
 		);
 	}
 }
