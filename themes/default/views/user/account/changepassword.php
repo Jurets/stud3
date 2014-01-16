@@ -1,53 +1,67 @@
-		<div id="container">
-			<div id="content">
+<div class="motopress-wrapper content-holder clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
 
-<h1>Пароль</h1>
+                <? $this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
 
-<?php $this->widget('FlashMessages'); ?>
+                <div class="row">
+                    <div class="span8">
 
-<?php $form = $this->beginWidget('CActiveForm', array(
-	'enableClientValidation'=>true,
-	'errorMessageCssClass'=>'alert alert-error',
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-		'validateOnChange'=>true,
-	),
-)); 
-?>
+                        <h3 class="title">Пароль</h3>
+                        <?php $this->widget('FlashMessages'); ?>
 
-<table class="profile">
+                        <?php echo $this->renderPartial('head'); ?>
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'password'); ?></td>
-<td>
-<?php echo $form->passwordField($model,'password'); ?>
-<?php echo $form->error($model,'password'); ?>
-</td>
-</tr>
+                        <div id="container">
+                            <div id="content">
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'password2'); ?></td>
-<td>
-<?php echo $form->passwordField($model,'password2'); ?>
-<?php echo $form->error($model,'password2'); ?>
-</td>
-</tr>
+                                <?php $form = $this->beginWidget('CActiveForm', array(
+                                        'enableClientValidation'=>true,
+                                        'errorMessageCssClass'=>'alert alert-error',
+                                        'clientOptions'=>array(
+                                            'validateOnSubmit'=>true,
+                                            'validateOnChange'=>true,
+                                        ),
+                                    )); 
+                                ?>
 
-</table>
+                                <table class="profile">
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'password'); ?></td>
+                                        <td>
+                                            <?php echo $form->passwordField($model,'password'); ?>
+                                            <?php echo $form->error($model,'password'); ?>
+                                        </td>
+                                    </tr>
 
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'password2'); ?></td>
+                                        <td>
+                                            <?php echo $form->passwordField($model,'password2'); ?>
+                                            <?php echo $form->error($model,'password2'); ?>
+                                        </td>
+                                    </tr>
 
-<button type="submit" class="btn">Сохранить</button>
+                                </table>
 
+                                <button type="submit" class="btn">Сохранить</button>
 
-<?php $this->endWidget(); ?>
+                                <?php $this->endWidget(); ?>
 
+                            </div><!-- #content-->
+                        </div><!-- #container-->
 
+                        <!-- <div class="sidebar" id="sideLeft">
+                            <?php //echo $this->renderPartial('block'); ?>
+                        </div> -->
 
-			</div><!-- #content-->
-		</div><!-- #container-->
+                    </div>
+                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                </div>
 
-		<div class="sidebar" id="sideLeft">
-<?php echo $this->renderPartial('block'); ?>
-			
-            
-		</div><!-- .sidebar#sideLeft -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--End #motopress-main-->        

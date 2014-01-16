@@ -1,83 +1,104 @@
-<?php echo $this->renderPartial('head'); ?>
+<div class="motopress-wrapper content-holder clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
 
-<div id="yui-main">
-<div class="yui-b">
+                <? $this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
 
-<h1>Оповещения</h1>
+                <div class="row">
+                    <div class="span8">
 
-<?php $this->widget('FlashMessages'); ?>
+                        <?php $this->widget('FlashMessages'); ?>
+                        <?php echo $this->renderPartial('head'); ?>
 
-<?php $form = $this->beginWidget('CActiveForm', array(
-	'enableClientValidation'=>true,
-	'errorMessageCssClass'=>'alert alert-error',
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-		'validateOnChange'=>true,
-	),
-)); 
-?>
+                        <div id="yui-main">
+                            <div class="yui-b">
 
-<table class="setting">
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'mailer'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'mailer'); ?>
-</td>
-</tr>
+                                <h3>Оповещения</h3>
 
-</table>
+                                <?php $this->widget('FlashMessages'); ?>
 
-<p class="subtitle">Уведомления о событиях</p>
-<table class="setting">
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'invite'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'invite'); ?>
-</td>
-</tr>
+                                <?php $form = $this->beginWidget('CActiveForm', array(
+                                        'enableClientValidation'=>true,
+                                        'errorMessageCssClass'=>'alert alert-error',
+                                        'clientOptions'=>array(
+                                            'validateOnSubmit'=>true,
+                                            'validateOnChange'=>true,
+                                        ),
+                                    )); 
+                                ?>
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'blogs'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'blogs'); ?>
-</td>
-</tr>
+                                <table class="setting">
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'mailer'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'mailer'); ?>
+                                        </td>
+                                    </tr>
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'projects'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'projects'); ?>
-</td>
-</tr>
+                                </table>
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'items'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'items'); ?>
-</td>
-</tr>
+                                <p class="subtitle">Уведомления о событиях</p>
+                                <table class="setting">
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'invite'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'invite'); ?>
+                                        </td>
+                                    </tr>
 
-<tr>
-<td class="caption"><?php echo $form->labelEx($model, 'messages'); ?></td>
-<td>
-<?php echo $form->checkBox($model, 'messages'); ?>
-</td>
-</tr>
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'blogs'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'blogs'); ?>
+                                        </td>
+                                    </tr>
 
-</table>
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'projects'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'projects'); ?>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'items'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'items'); ?>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="caption"><?php echo $form->labelEx($model, 'messages'); ?></td>
+                                        <td>
+                                            <?php echo $form->checkBox($model, 'messages'); ?>
+                                        </td>
+                                    </tr>
+
+                                </table>
 
 
 
-<div class="form-actions">
-<button type="submit" class="btn">Сохранить</button>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn">Сохранить</button>
+                                </div>
+
+                                <?php $this->endWidget(); ?>
+
+
+
+                            </div>
+                        </div>
+                        <!--/yui-main-->
+
+                        <?php //echo $this->renderPartial('block'); ?>
+
+                    </div>
+                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-
-<?php $this->endWidget(); ?>
-
-
-
-</div>
-</div>
-<!--/yui-main-->
-
-<?php echo $this->renderPartial('block'); ?>
+<!--End #motopress-main-->

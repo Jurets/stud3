@@ -30,6 +30,48 @@ class AccountController extends Controller
 	}
 
     /**
+     * Тарифный план
+     */
+    public function actionTariff()
+    {
+        $user = $this->loadModel();
+        if( $user->tariff == Tariffs::PRO ) {
+            $UsersTariff = UsersTariff::model()->findByPk($user->id);
+        }
+        $SetTariff = new SetTariff;
+        $model = new Tariffs;
+        if( Yii::app()->request->isPostRequest && !empty($_POST['SetTariff']) ) {
+            $SetTariff->setAttributes($_POST['SetTariff']);       
+            if( $SetTariff->validate() )// если прошли валидацию - минусуем баланс
+            {
+                $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+                try {
+                    $tariff = Tariffs::model()->findbyPk(Tariffs::PRO);
+                    $amount = $tariff->getPrice($SetTariff->period);
+                    Balance_helper::change(Yii::app()->user->id, -$amount, 'Оплата PRO');
+                    Tariffs_helper::changeTariff(Yii::app()->user->id, $SetTariff->period);
+                    $transaction->commit();
+                    $this->redirect('/account/tariff');
+                } catch(Exception $e) {
+                    $transaction->rollback();
+                    Yii::log("При установке тарифного плана произошла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+                    $model->addError('period', 'При установке тарифного плана произошла ошибка!');
+                }
+            }
+        }
+        $data = Tariffs::model()->getAll();
+        $this->pageTitle = 'Тарифный план';
+        $renderdata = array(
+            'user' => $user,
+            'model' => $model,
+            'SetTariff' => $SetTariff,
+            'data' => $data,
+            'UsersTariff' => $UsersTariff
+        );
+        $this->render('tariff', $renderdata);
+    }
+
+    /**
      * Специализации 
      */
 	public function actionServices()
@@ -37,30 +79,19 @@ class AccountController extends Controller
 		if( Yii::app()->request->isPostRequest )
         {
 			Services::deleteServices();
-
 			$services = $_POST['services'];
-
-			if( !empty($services) )
-			{
-				foreach ( $services as $row => $value )
-				{
+			if( !empty($services) ) {
+				foreach ( $services as $row => $value ) {
 					$model = new Services;
-	
 					$model->category = $value;
-	
 					$model->save();
 				}
 			}
-			
 			$this->refresh();// обновляем страницу
 		}
-
 		$categories = Categories::getCategories();
-
 		$services = Services::getServices();
-
 		$this->pageTitle = 'Услуги';
-
 		$this->render('services', array('categories' => $categories, 'services' => $services));
 	}
 
@@ -114,96 +145,141 @@ class AccountController extends Controller
     //
 	public function actionJson()
 	{
-		if( isset($_GET['tag']) )
-		{
+		if( isset($_GET['tag']) ) {
 			$criteria = new CDbCriteria(array(
 				'limit' => 10
 			));
-         
 			$criteria->addSearchCondition('name', $_GET['tag']);
- 
 			$tags = Interests::model()->findAll($criteria);            
- 
 			$this->renderPartial('json', array('tags' => $tags));
 		}
 	}
-
+    
+    //Тариф
+    /*public function actionExpiredTariffs()
+    {
+        $start = time() - 604800;// неделю назад
+        $end = time();// сейчас
+        $query =
+            " SELECT id, email, name, surname".
+            " FROM `ci_users`".
+            " WHERE ci_users.`id` IN (SELECT user_id FROM ci_guests WHERE `update` > $start and `update` < $end)".
+            " GROUP BY ci_users.`id`;";
+        $command = Yii::app()->db->createCommand($query);
+        $users = $command->queryAll();
+        return $users;
+    }*/
+        
+    /**
+     * Оповещение
+     */
+    public function actionNotify()
+    {
+        $model = UsersNotify::model()->user()->find();
+        if( !$model ) { // ЗАГЛУША, В БАЗЕ НЕТУ ОПОВЕЩЕНИЙ
+            $notify = new UsersNotify; // оповещения
+            $notify->user_id = Yii::app()->user->id;
+            $notify->save();
+            $this->refresh();
+        }
+        if( Yii::app()->request->isPostRequest && !empty($_POST['UsersNotify']) ) {
+            $model->setAttributes($_POST['UsersNotify']);
+            if( $model->validate() ) {
+                $model->save();
+                Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
+                $this->refresh();
+            }
+        }
+        $this->pageTitle = 'Оповещения';
+        $this->render('notify', array('model' => $model));
+    }
+        
+        
+    /**
+     * Резюме
+     */
+    public function actionResume()
+    {
+        $model = $this->loadModel();
+        $model->setScenario('profile');
+        if( Yii::app()->request->isPostRequest && !empty($_POST['User']) )
+        {
+            $model->attributes = $_POST['User'];
+            if( $model->validate() )
+            {
+                $model->full_descr_v = Yii::app()->decoda->parse($model->full_descr);
+                $model->save();
+                Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
+                $this->refresh();
+            }
+        }
+        $country = Country::model()->findAll();
+        $city = City::model()->findAll('country_id = :country_id', array(':country_id' => $model->country));
+        $this->pageTitle = 'Личные данные';
+        $this->render('resume', array('model' => $model, 'country' => $country, 'city' => $city));
+    }    
+    
+    /**
+     * Навыки
+     */
+    public function actionSkills()
+    {
+        $model = $this->loadModel();
+        if( Yii::app()->request->isPostRequest ) {
+            $model->setTags($_POST['Tags']);// сохраняем интерены
+            $model->save();
+            Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
+            $this->refresh();
+        }
+        $this->pageTitle = 'Навыки';
+        $this->render('skills', array('model' => $model));
+    }    
+    
     /**
      * Загрузка юзерпика
      */
 	public function actionUserpic()
 	{
 		header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-
 		$model = $this->loadModel();
-
 		$model->setScenario('userpic');
-
 		$oldUserpic_f = $model->userpic_f;
-
 		$oldUserpic = $model->userpic;
-					
 		if( Yii::app()->request->isPostRequest && !empty($_POST['User']) )
 		{
 			$model->_userpic = CUploadedFile::getInstance($model, 'userpic');
-
 			if( $model->validate() and $model->_userpic )// если форма прошла валидацию и загружен юзерпик
 			{
 				$extension = pathinfo($model->_userpic->getName(), PATHINFO_EXTENSION);
-	
 				$fileName = md5(time()).'.'.$extension;
-
 				$name = Yii::app()->getModule('user')->userpicPrefix.Randomness::randomString(10).'.'.$extension;
-
 				$model->userpic_f = $fileName;// полный юзерпик в профиль
-
 				$model->userpic = $name;// уменьшенная копия
-
-				if( $model->save() )
-				{
+				if( $model->save() ) {
 					// юзерпик в профиль
 					$path = '.'.Yii::app()->getModule('user')->userpicsDir.$fileName;
-
 					$model->_userpic->saveAs($path);
-
 					$image = Yii::app()->image->load($path);
-
-					if( $image->width > 200 )// если ширина больше 200, то сжимаем до 200
-					{
+					if( $image->width > 200 ) {// если ширина больше 200, то сжимаем до 200
 						$image->resize(200, NULL, Image::AUTO)->quality(100);
 					}
-
 					$image->save();
-
-
-
 					// миниатюра
 					$image = Yii::app()->image->load($path);
-			
 					$image->crop(100, 100, TRUE);
-			
 					$cropPath = '.'.Yii::app()->getModule('user')->userpicsDir.$name;
-			
 					$image->save($cropPath);
-
 					// удаляем прошлый юзерпик и миниатюру
-					if( $oldUserpic != Yii::app()->getModule('user')->standartUserpic )
-					{
+					if( $oldUserpic != Yii::app()->getModule('user')->standartUserpic ) {
 						@unlink('.'.Yii::app()->getModule('user')->userpicsDir.$oldUserpic_f);
-
 						@unlink('.'.Yii::app()->getModule('user')->userpicsDir.$oldUserpic);
 					}
-
 					Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Изменения успешно сохранены');
-
 					$this->redirect('/account/userpic#crop');
-
 				}
 			}
 		}
-
 		$this->pageTitle = 'Фотография';
-
 		$this->render('userpic', array('model' => $model));
 	}
 
@@ -793,7 +869,6 @@ class AccountController extends Controller
 	public function actionWithdraw()
 	{
 		$model = Withdraw::model()->user();
-
 		$dataProvider = new CActiveDataProvider($model, array(
 			'sort' => array(
 				'sortVar' => 's',
@@ -810,9 +885,7 @@ class AccountController extends Controller
 				'pageSize' => 20,
 			),
 		));
-
 		$this->pageTitle = 'Вывод средств';
-
 		$this->render('withdraw', array('dataProvider' => $dataProvider));
 	}
 
@@ -822,45 +895,27 @@ class AccountController extends Controller
 	public function actionAddWithdraw()
 	{
 		$model = new Withdraw;
-
 		if( Yii::app()->request->isPostRequest && !empty($_POST['Withdraw']) )
         {				
 			$model->setAttributes($_POST['Withdraw']);       
-
-			if( $model->validate() )
-            {
-				$transaction = Yii::app()->db->beginTransaction();// начало транзакции
-
-				try
-				{
+			if( $model->validate() ) {
+				$transaction = Yii::app()->db->beginTransaction();// начало транзакции 
+				try {
 					$model->save();// сохраняем вывод
-
-
 					Balance_helper::change(Yii::app()->user->id, -$model->amount, 'Вывод средств');
-
-
 					$transaction->commit();
-
 					Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Заявка на вывод добавлена');
-	
 					$this->redirect('/account/withdraw');
 
-				}
-				catch(Exception $e)
-				{
+				} catch(Exception $e) {
 					$transaction->rollback();
-
 					Yii::log("При выводе средств произошла ошибка!", CLogger::LEVEL_ERROR);  
-
 					$model->addError('amount', 'При выводе средств произошла ошибка!');
 				}
 			}
 		}
-
 		$purses =  Purses::model()->user()->findAll();
-
 		$this->pageTitle = 'Добавить заявку на вывод';
-
 		$this->render('addwithdraw', array('model' => $model, 'purses' => $purses));
 	}
 
@@ -870,18 +925,14 @@ class AccountController extends Controller
 	public function actionFavorites()
 	{
 		$model = UsersFavorites::model()->user();
-
 		$criteria = new CDbCriteria(array(
 			'with' => array(
 				'favoritedata'
 			)
 		));
-
-		if( isset($_GET['online']) )
-		{
+		if( isset($_GET['online']) ) {
 			$criteria->addSearchCondition('online', 1);
 		}
-
 		$dataProvider = new CActiveDataProvider($model, array(   
 			'criteria' => $criteria,
 			'sort' => array(
@@ -899,22 +950,16 @@ class AccountController extends Controller
 				'pageSize' => 20,
 			),
 		));
-
 		$this->pageTitle = 'Подписан';
-
 		$this->render('favorites', array('dataProvider' => $dataProvider));
 	}
 
 	public function actionRating()
 	{
 		$user = $this->loadModel();
-
 		$model = new UsersRating;
-
 		$data = $model->findByPk(Yii::app()->user->id);
-
 		$this->pageTitle = 'Рейтинг';
-
 		$this->render('rating', array('model' => $model, 'user' => $user, 'data' => $data));
 	}
 
@@ -927,9 +972,7 @@ class AccountController extends Controller
 		$renderdata = array(
 			'purse' => 'R951805365035'
 		);
-
 		$this->pageTitle = 'Баланс';
-
 		$this->render('balance', $renderdata);
 	}
 
@@ -939,13 +982,9 @@ class AccountController extends Controller
 	public function actionLoadCrop() 
 	{
 		$user = $this->loadModel();
-
-		if( $user->userpic != Yii::app()->getModule('user')->standartUserpic )
-		{
+		if( $user->userpic != Yii::app()->getModule('user')->standartUserpic ) {
 			$this->renderPartial('LoadCrop', array('user' => $user));
-		}
-		else// если у пользователя стандартный юзерпик, то запрещаем редактировать миниатюру
-		{
+		} else {// если у пользователя стандартный юзерпик, то запрещаем редактировать миниатюру
 			$this->renderPartial('LoadCropError', array('user' => $user));
 		}
 	}

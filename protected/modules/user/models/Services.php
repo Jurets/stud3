@@ -17,7 +17,7 @@ class Services extends Model
 			->delete('{{services}}', 'user_id = :user_id', array(':user_id' => Yii::app()->user->id));
 	}
 
-	public function getServices()
+	public static function getServices()
   	{
 		$query = Yii::app()->db->createCommand()
 			->select('category')
@@ -25,23 +25,19 @@ class Services extends Model
 			->where('user_id = :user_id', array(':user_id' => Yii::app()->user->id))
 			->queryAll();
 
-		if( !$query ) return array();
-
-		foreach($query as $row)
-		{ 
+		if( !$query ) 
+            return array();
+		foreach($query as $row) { 
 			$array[] = $row['category'];
 		}
-
 		return $array;
   	}
 
     public function beforeSave()
     {        
-		if( $this->isNewRecord )
-		{
+		if( $this->isNewRecord ) {
 			$this->user_id = Yii::app()->user->id;  
 		}
-
         return parent::beforeSave();     
     }
 }

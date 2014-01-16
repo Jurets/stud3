@@ -21,18 +21,15 @@ class Categories extends Model
 		);
 	}
 
-	public function getCategories()
+	public static function getCategories()
 	{
 		$categories = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{categories}}')
 			->queryAll();
-
-		foreach( $categories as $row )
-		{
+		foreach( $categories as $row ){
 			$result[$row['parent_id']][$row['id']] = $row['name'];
 		}
-
 		return $result;
 	}
 }

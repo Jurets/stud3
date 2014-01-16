@@ -10,6 +10,8 @@
                         <h3>Личные данные</h3>
                         <?php $this->widget('FlashMessages'); ?>
 
+                        <?php echo $this->renderPartial('head'); ?>
+                        
                         <?php $form = $this->beginWidget('CActiveForm', array(
                                 'enableClientValidation'=>true,
                                 'errorMessageCssClass'=>'alert alert-error',

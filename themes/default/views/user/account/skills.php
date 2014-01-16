@@ -1,42 +1,55 @@
-<?php echo $this->renderPartial('head'); ?>
+<div class="motopress-wrapper content-holder clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
 
-<div id="yui-main">
-<div class="yui-b">
+                <? $this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
 
-<?php $this->widget('FlashMessages'); ?>
+                <div class="row">
+                    <div class="span8">
 
-<?php $form = $this->beginWidget('CActiveForm'); ?>
+                        <h3 class="title">Навыки</h3>
+                        <?php $this->widget('FlashMessages'); ?>
 
-<h1>Навыки</h1>
+                        <?php echo $this->renderPartial('head'); ?>
 
-<p class="subtitle">Укажите через запятую ваши навыки, по которым вас смогут найти в каталоге</p>
+                        <div id="yui-main">
+                            <div class="yui-b">
+                                <?php $this->widget('FlashMessages'); ?>
 
-<table class="profile">
+                                    <?php $form = $this->beginWidget('CActiveForm'); ?>
+                                    <p class="subtitle">Укажите через запятую ваши навыки, по которым вас смогут найти в каталоге</p>
 
-<tr>
-<td class="caption">Навыки:</td>
-<td class="frnt">
-<?php
-$this->widget('application.extensions.tag.TagWidget', array(
-	'url'=> '/user/account/json/',
-	'tags' => $model->getTags(),
-));
-?>
-</td>
-</tr>
+                                    <table class="profile">
+                                        <tr>
+                                            <td class="caption">Навыки:</td>
+                                            <td class="frnt">
+                                                <?php
+                                                    $this->widget('application.extensions.tag.TagWidget', array(
+                                                        'url'=> '/user/account/json/',
+                                                        'tags' => $model->getTags(),
+                                                    ));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    </table>
 
-</table>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn">Сохранить</button>
+                                    </div>
 
-<div class="form-actions">
-<button type="submit" class="btn">Сохранить</button>
+                                <?php $this->endWidget(); ?>
+
+                            </div>
+                        </div>
+                        <!--/yui-main-->
+
+                    </div>
+                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-
-<?php $this->endWidget(); ?>
-
-
-
-</div>
-</div>
-<!--/yui-main-->
-
-<?php echo $this->renderPartial('block'); ?>
+<!--End #motopress-main-->

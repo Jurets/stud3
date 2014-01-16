@@ -1,38 +1,58 @@
-<?php echo $this->renderPartial('head'); ?>
+<div class="motopress-wrapper content-holder clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
 
-<div id="yui-main">
-<div class="yui-b">
+                <? $this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
 
-<h1>Резюме</h1>
+                <div class="row">
+                    <div class="span8">
 
-<p class="subtitle">Подробное описание</p>
+                        <?php $this->widget('FlashMessages'); ?>
+                        <?php echo $this->renderPartial('head'); ?>
 
-<?php $this->widget('FlashMessages'); ?>
+                        <div id="yui-main">
+                            <div class="yui-b">
 
-<?php $form = $this->beginWidget('CActiveForm', array(
-	'enableClientValidation'=>true,
-	'errorMessageCssClass'=>'alert alert-error',
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-		'validateOnChange'=>true,
-	),
-)); 
-?>
+                                <h3 class="title">Резюме</h3>
+                                <p class="subtitle">Подробное описание</p>
 
-<?php $this->widget('EMarkitupWidget',array('attribute' => 'full_descr', 'model' => $model));?>
+                                <?php $this->widget('FlashMessages'); ?>
 
-<?php echo $form->error($model,'full_descr'); ?>
+                                <?php $form = $this->beginWidget('CActiveForm', array(
+                                        'enableClientValidation'=>true,
+                                        'errorMessageCssClass'=>'alert alert-error',
+                                        'clientOptions'=>array(
+                                            'validateOnSubmit'=>true,
+                                            'validateOnChange'=>true,
+                                        ),
+                                    )); 
+                                ?>
 
-<div class="form-actions">
-<button type="submit" class="btn">Сохранить</button>
+                                <?php $this->widget('EMarkitupWidget',array('attribute' => 'full_descr', 'model' => $model));?>
+
+                                <?php echo $form->error($model,'full_descr'); ?>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn">Сохранить</button>
+                                </div>
+
+                                <?php $this->endWidget(); ?>
+
+
+
+                            </div>
+                        </div>
+                        <!--/yui-main-->
+
+                        <?php //echo $this->renderPartial('block'); ?>
+
+                    </div>
+                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-
-<?php $this->endWidget(); ?>
-
-
-
-</div>
-</div>
-<!--/yui-main-->
-
-<?php echo $this->renderPartial('block'); ?>
+<!--End #motopress-main-->
