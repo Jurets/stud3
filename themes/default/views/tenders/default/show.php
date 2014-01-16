@@ -1,4 +1,4 @@
-<?php
+<?php //DebugBreak();
     //инициализация параметров
     $userBid = $model->checkBid();     //есть ли заявка от текущего юзера (если он исполнитель) (вернёт ИД)
     $acceptBid = $model->checkABid();  //есть ли принятая заявка
@@ -95,7 +95,7 @@
                     </article>
                     
                     <? //неавторизированные пользователи и заказчики видят вместо формы надпись ?>
-                    <? if (!$isLoggedUser || $is_performer) {?>
+                    <? if (!$isLoggedUser || ($is_customer && !$is_owner)) {?>
                         <div class="alert alert-block">
                             <h4>Чтобы ответить на заказ необходимо зарегистрироваться как исполнитель</h4>
                         </div>
@@ -110,7 +110,7 @@
                         </div>
                     <? } ?>
                     
-                    <? //------------- Проверить: отображать ли форму добавления -------------?>
+                    <? //------------- Проверить: отображать ли форму добавления ответа от исполнителей -------------?>
                     <? //проверка: не определен ли исполнитель ($acceptBid), не гость ли юзер и является ли он исполнителем 
                     if (!$acceptBid && $isLoggedUser && $is_performer) { ?>
                     <div id="respond">
@@ -129,8 +129,8 @@
                         )); ?>
                             <?php echo $form->errorSummary($bid); ?>
                             <p><b class="btn"><strong>Стоимость</strong></b></p>
-                                от <?php echo $form->textField($bid, 'budget_start', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_start'); ?>
-                                до <?php echo $form->textField($bid, 'budget_end', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_end'); ?>
+                                <?php echo /*'от ' . */ $form->textField($bid, 'budget_start', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_start'); ?>
+                                <?php //echo 'до ' . $form->textField($bid, 'budget_end', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_end'); ?>
                                 <?php echo $form->dropDownList($bid, 'currency', $bid->getTenderCurrencyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Срок</strong></b></p>
                                 от <?php echo $form->textField($bid, 'period_start', array('class' => 'text', 'size' => 3)); ?>
