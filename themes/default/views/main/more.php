@@ -95,13 +95,15 @@
                 <?php echo $form->textField($model, 'percent', array('class' => 'inp_text', 'placeholder' => '')); ?>
             </div>
         </div>
-        <div class="row-fluid">
+        
+        <!--<div class="row-fluid">
             <div class="span4">
-                <?php echo $form->labelEx($rmodel, 'captcha'); ?>
-                <?php $this->widget('CCaptcha'); ?>
-                <?php echo $form->textField($rmodel, 'captcha', array('size' => 5, 'class' => 'row-fluid')); /*выводим текстовое поле для ввода каптчи*/ ?>
+                <?php //echo $form->labelEx($rmodel, 'captcha'); ?>
+                <?php //$this->widget('CCaptcha'); ?>
+                <?php //echo $form->textField($rmodel, 'captcha', array('size' => 5, 'class' => 'row-fluid')); /*выводим текстовое поле для ввода каптчи*/ ?>
             </div>
-        </div>
+        </div>-->
+        
         <div class="row-fluid">
             <div class="span6"></div>
             <div class="span6">

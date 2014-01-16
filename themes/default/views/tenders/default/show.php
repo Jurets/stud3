@@ -133,9 +133,9 @@
                                 <?php //echo 'до ' . $form->textField($bid, 'budget_end', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_end'); ?>
                                 <?php echo $form->dropDownList($bid, 'currency', $bid->getTenderCurrencyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Срок</strong></b></p>
-                                от <?php echo $form->textField($bid, 'period_start', array('class' => 'text', 'size' => 3)); ?>
-                                до <?php echo $form->textField($bid, 'period_end', array('class' => 'text', 'size' => 3)); ?>
-                                 <?php echo $form->dropDownList($bid, 'periodby', $bid->getPeriodbyList(), array('style' => 'width:150px')); ?>
+                                от <?php echo $form->textField($bid, 'period_start', array('class' => 'inp_text datepicker'/*, 'size' => 3*/)); ?>
+                                до <?php echo $form->textField($bid, 'period_end', array('class' => 'inp_text datepicker'/*, 'size' => 3*/)); ?>
+                                <?php //echo $form->dropDownList($bid, 'periodby', $bid->getPeriodbyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Введите сообщение</strong></b></p>
                             <?php echo $form->textArea($bid, 'text', array(
                                 'class' => 'area',

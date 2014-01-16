@@ -23,7 +23,7 @@ class FastRegistrationForm extends CFormModel
 			array('email', 'email'), 
 			array('username', 'checkUsername'),
 //			array('email', 'checkEmail'),
-            array('captcha', 'captcha', 'on' => 'insert'),
+            //array('captcha', 'captcha', 'on' => 'insert'),   //капчу пока ОТМЕНЯЕМ!!!!!! (исправление № 7 в гугль-доке)
 		);
 	}
 
