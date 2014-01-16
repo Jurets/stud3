@@ -89,13 +89,13 @@
                                     </tbody></table>
                                 <p>&nbsp;</p>
                                 <p>предложений: <?= $model->BidCount ?></p>
-                                <p style="text-align:right;"><a href="">подробнее...</a></p>
+                                <!--<p style="text-align:right;"><a href="">подробнее...</a></p>-->
                             </div>
                         </blockquote>
                     </article>
                     
                     <? //неавторизированные пользователи и заказчики видят вместо формы надпись ?>
-                    <? if (!$isLoggedUser || $is_customer) {?>
+                    <? if (!$isLoggedUser || $is_performer) {?>
                         <div class="alert alert-block">
                             <h4>Чтобы ответить на заказ необходимо зарегистрироваться как исполнитель</h4>
                         </div>

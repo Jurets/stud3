@@ -25,11 +25,11 @@
             <strong>Заказы: </strong>
             <ul id="filters" class="filter nav nav-pills">
 
-                <li <? if ($moduleid == 'sbs' && $actionid == 'index') { ?> class="active"<? } ?>>
-                    <a href="<?=Yii::app()->createAbsoluteUrl('sbs')?>" data-count="13" data-filter>СБС</a>
-                </li>
+                <!--<li <? //if ($moduleid == 'sbs' && $actionid == 'index') { ?> class="active"<? //} ?>>
+                    <a href="<? /*echo Yii::app()->createAbsoluteUrl('sbs')*/?>" data-count="13" data-filter>СБС</a>
+                </li>-->
             
-                <? if ($user->usertype == User::USERTYPE_CUSTOMER) { ?>
+                <? if ($user->usertype == User::USERTYPE_PERFORMER) { ?>
                     <li <? if ($moduleid == 'tenders' && $actionid == 'index') { ?> class="active"<? } ?>>
                         <a href="index.html#" data-count="13" data-filter>Лента заказов</a>
                     </li>
