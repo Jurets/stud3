@@ -270,25 +270,57 @@
     
 </header>
 
+
+
 <div class="motopress-wrapper content-holder clearfix">
     <div class="container">
     
         <!--<div id="auth" style="width: auto; height: auto; float: left; position: absolute; z-index: 999; margin-left: 600px;">-->
-        <!--<div id="auth" style="width: auto; height: auto; position: absolute; z-index: 999; margin-left: 600px;">
+        <!--<div id="auth" style="width: auto; height: auto; position: absolute; z-index: 999; margin-left: 600px;">-->
             <?php 
-            if (!Yii::app()->user->isGuest)  {
-                $user = User::model()->findByPk(Yii::app()->user->id);
+                $isAuthenticated = Yii::app()->user->isAuthenticated();
+                if ($isAuthenticated)  {
+                    $user = User::model()->findByPk(Yii::app()->user->id);
+                
+                    $this->widget('TopMenuWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета)
             ?>
-                <p>Пользователь: <?= $user->username?></p>
-                <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>
+                <!--<p>Пользователь: <?= $user->username?></p>
+                <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>-->
+
+                <style type="text/css">
+                    .span8 {
+                        margin-left: 0 !important;
+                    }
+                    .row {
+                        margin-left: 0 !important;
+                    }
+                    .title-section {
+                        padding-top: 0 !important;
+                    }
+                </style>
+                
+                <div class="span8">
+                
             <? } else { ?>
-                <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('login') ?>">Вход</a>
+                <!--<a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('login') ?>">Вход</a>-->
             <?php } ?>
-        </div>-->        
+        <!--</div>-->        
     
-        <?php echo $content; ?>
+        <?php 
+            /////////////// Основной контент ////////////////
+            echo $content; 
+        
+            if ($isAuthenticated)  { ?>
+                </div>
+
+                <? $this->widget('MenuWidget');  //правый сайд бар - менюшка (повторяется на страницах кабинета)  ?>
+            
+        <? } ?>
+        
     </div>
 </div>
+
+
 
 <footer class="motopress-wrapper footer">
     <div class="container">

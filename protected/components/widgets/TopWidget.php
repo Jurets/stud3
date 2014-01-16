@@ -5,23 +5,17 @@ class TopWidget extends CWidget
 
     public function run()// если пользователь уже проголосовал, то выводим результаты
     {
-		if( $specialization = $_POST['specialization'] )
-		{
-			if( array_key_exists($specialization, User::model()->getSpecializationList() ) )
-			{
+		if( $specialization = $_POST['specialization'] ) {
+			if( array_key_exists($specialization, User::model()->getSpecializationList() ) ) {
 				$this->specialization = $specialization;
 			}
 		}
 
-		if( $this->specialization == FALSE )// если не задан то берем случайный элемент
-		{
+		if( $this->specialization == FALSE ) {// если не задан то берем случайный элемент
 			$this->specialization = array_rand(self::getTitleList());
 		}
-
 		$users = self::getTop($this->specialization);
-
 		$title = self::getTitle();
-
 		$this->render('top', array('title' => $title, 'users' => $users));
     }
 

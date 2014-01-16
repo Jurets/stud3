@@ -1,15 +1,15 @@
-<div class="motopress-wrapper content-holder clearfix">
+<!--<div class="motopress-wrapper content-holder clearfix">
     <div class="container">
         <div class="row">
             <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
                 
                 <? // вьюшка хедера кабинета (повторяется на разных страницах кабинета)
                    //$this->renderPartial('head', array('model' => $model)) 
-                   $this->widget('HeaderWidget');
+                   //$this->widget('HeaderWidget');
                    ?>
                 
                 <div class="row">
-                    <div class="span8">
+                    <div class="span8">-->
                         <h3>Новости системы</h3>
 
                         <div class="post_meta meta_type_line">
@@ -46,14 +46,14 @@
                         </p>
                         <div class="clear"></div><!-- .clear (end) -->
                         <a href="../portfolio/index.html" title="read more" class="btn btn-default btn-normal btn-inline " target="_self">Читать подробнее</a><!-- .btn -->
-
+<!--
                     </div>
                     
-                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                    <? //$this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
 
                 </div>
             </div>
         </div>
     </div>
-</div>
+</div>-->
 <!--End #motopress-main-->

@@ -1,13 +1,13 @@
-<div class="motopress-wrapper content-holder clearfix">
+<!--<div class="motopress-wrapper content-holder clearfix">
     <div class="container">
         <div class="row">
             <div class="span12" data-motopress-wrapper-file="page-testi.php" data-motopress-wrapper-type="content">
 
-                <? $this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
+                <? //$this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета) ?>
 
                 <div class="row">
                     <div class="span8">
-
+-->
                         <h3>Сервис безопасной сделки</h3>
                         <?php $this->widget('FlashMessages'); ?>
 
@@ -44,13 +44,13 @@
 	                        ),
                         ));
                         ?>
-
+<!--
                     </div>
-                    <? $this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
+                    <? //$this->widget('MenuWidget'); //правый сайд бар - менюшка (повторяется на страницах кабинета) ?>
                 </div>
 
             </div>
         </div>
     </div>
-</div>
+</div>-->
 <!--End #motopress-main-->                                    

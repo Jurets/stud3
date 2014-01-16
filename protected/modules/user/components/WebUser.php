@@ -5,45 +5,36 @@ class WebUser extends CWebUser
 
 	function getRole()
 	{
-		if( $user = $this->getModel() )
-		{
+		if( $user = $this->getModel() ) {
 			return $user->role;
         }
     }
 
 	function getType()
 	{
-		if( $user = $this->getModel() )
-		{
+		if( $user = $this->getModel() ) {
 			return $user->type;
         }
     }
 
 	private function getModel()
 	{
-		if( !$this->isGuest && $this->_model === null )
-		{
+		if( !$this->isGuest && $this->_model === null ) {
 			$this->_model = User::model()->findByPk($this->id, array('select' => 'role, type'));
 		}
-
 		return $this->_model;
     }
 
 
     public function isAuthenticated()
     {
-        if( Yii::app()->user->isGuest )
-		{        
+        if( Yii::app()->user->isGuest )	{        
 			return false;
 		}
-
         $authData = $this->getAuthData();
-
-		if( $authData['username'] && $authData['loginTime'] && $authData['id'] )
-		{
+		if( $authData['username'] && $authData['loginTime'] && $authData['id'] ) {
 			return true;        
 		}
-
         return false;
     }
 
@@ -58,13 +49,12 @@ class WebUser extends CWebUser
 
     public function isSuperUser()
     {
-		if( !$this->isAuthenticated() ) return false;
-
+		if( !$this->isAuthenticated() ) 
+            return false;
 		$loginAdmTime = Yii::app()->user->getState('loginAdmTime');
 		$isAdmin      = Yii::app()->user->getState('isAdmin');
-
-		if( $isAdmin == User::ROLE_ADMIN && $loginAdmTime ) return true;
-
+		if( $isAdmin == User::ROLE_ADMIN && $loginAdmTime ) 
+            return true;
 		return false;
     }
 }

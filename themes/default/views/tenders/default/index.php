@@ -73,14 +73,14 @@
             </div>
             <div class="span4">
 
-                <div class="sidebar" id="sideLeft">
-                    <? $this->widget('MenuWidget') ?>
+                <!--<div class="sidebar" id="sideLeft">
+                    <? //$this->widget('MenuWidget') ?>
 
 
-                    <? $this->widget('SidebarWidget') ?>
+                    <? //$this->widget('SidebarWidget') ?>
 
 
-                </div><!-- .sidebar#sideLeft -->
+                </div> .sidebar#sideLeft -->
             </div>
         </div>
     </div>
