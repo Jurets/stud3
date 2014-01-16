@@ -20,7 +20,8 @@ class FastRegistrationForm extends CFormModel
 			array('email', 'required'),// обязательные поля
 //			array('username', 'length', 'max' => 20),// логин пользователя длина
 			array('email', 'length', 'max' => 50),// email максимальная длина
-			array('email', 'email'), 
+            array('email', 'email'), 
+			array('email', 'checkForCustomer', 'on'=>'checkuser'), 
 			array('username', 'checkUsername'),
 //			array('email', 'checkEmail'),
             //array('captcha', 'captcha', 'on' => 'insert'),   //капчу пока ОТМЕНЯЕМ!!!!!! (исправление № 7 в гугль-доке)
@@ -56,7 +57,20 @@ class FastRegistrationForm extends CFormModel
 		}
     }
 
-	/**
+    /**
+    * проверка - является ли юзер ЗАКАЗЧИКОМ (исполнитель не может оставлять заказы)
+    * 
+    * @param mixed $attribute
+    * @param mixed $params
+    */
+    public function checkForCustomer($attribute, $params) {
+        $user = User::model()->find('email = :email', array(':email' => $this->email));
+        if ($user->usertype == User::USERTYPE_PERFORMER) {     
+            $this->addError('email', 'Извините, данный email занят исполнителем, укажите другой адрес для регистрации в роли заказчика');
+        }
+    }
+    
+    /**
 	* метки
 	*/
 	public function attributeLabels()

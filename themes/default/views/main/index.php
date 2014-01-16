@@ -1,3 +1,14 @@
+<?php 
+    if (!Yii::app()->user->isGuest)  {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_email = $user->email;
+    } else {
+        $user = null;
+        $user_email = '';
+    }
+?>
+
+
 <div class="row">
 <div class="span12" data-motopress-wrapper-file="page-home.php" data-motopress-wrapper-type="content">
 <div class="row">
@@ -205,7 +216,11 @@
                 </div>
                 <div class="row-fluid">
                     <div class="span12">
-                        <?php echo $form->textField($rmodel, 'email', array('class' => 'inp_text row-fluid', 'placeholder' => 'example@axample.com')); ?>
+                        <?php echo $form->textField($rmodel, 'email', array(
+                            'value' => $user_email,
+                            'class' => 'inp_text row-fluid', 
+                            'placeholder' => 'example@axample.com'
+                            )); ?>
                     </div>
                 </div>
             </div>
@@ -251,8 +266,7 @@
             <!--<div id="auth" style="width: auto; height: auto; position: absolute; z-index: 999; margin-left: 600px;">-->
             <div id="auth" style="width: auto; height: auto; z-index: 999; margin-left: 600px;">
                 <?php 
-                if (!Yii::app()->user->isGuest)  {
-                    $user = User::model()->findByPk(Yii::app()->user->id);
+                if (isset($user))  {
                 ?>
                     <p>Пользователь: <?= $user->username?></p>
                     <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>

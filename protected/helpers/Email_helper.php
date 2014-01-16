@@ -3,7 +3,13 @@ class Email_helper {
 
 	public static function send($email, $subject, $view, $data, $file = '')
 	{
-		if( !$email ) {
+		////////// ЗАГЛУШКА для предотвращения отсылки емейла -- <
+        if (is_file(Yii::app()->basePath . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'noemailsending')) { //наличие файла - признак того, чтобы емейл не отсылать
+            Yii::log("Отсылка сообщения на ". $email .", тема: " . $subject, CLogger::LEVEL_INFO);  //только запись в лог
+            return false;
+        }
+        ////////// >-- 
+        if( !$email ) {
 			return FALSE;
 		} else if ( $email == 'webtail@mail.ru' ) {
 			return FALSE;

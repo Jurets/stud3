@@ -54,6 +54,7 @@
         <?php echo $form->error($model, 'title'); ?>
         <?php echo $form->error($model, 'text'); ?>
         <?php echo $form->error($model, 'budget'); ?>
+        <?php echo $form->error($model, 'speciality'); ?>
 
         <div class="row-fluid">
             <div class="span12">
