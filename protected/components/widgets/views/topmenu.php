@@ -3,6 +3,10 @@
     $controllerid = Yii::app()->controller->id;
     $actionid = Yii::app()->controller->action->id;
     $status = Yii::app()->request->getParam('status');
+    
+    $is_customer = ($user->usertype == User::USERTYPE_CUSTOMER);    //признак юзер=заказчик
+    $is_performer = ($user->usertype == User::USERTYPE_PERFORMER);  //признак юзер=исполнитель
+    
 ?>
 <div class="row">
     <div class="row-fluid">
@@ -15,7 +19,7 @@
         </div>
     </div>
     
-    <div class="span12" data-motopress-type="static" data-motopress-static-file="static/static-title.php">
+    <!--<div class="span12" data-motopress-type="static" data-motopress-static-file="static/static-title.php">-->
         
         <div class="filter-wrapper clearfix">
             <strong>Заказы: </strong>
@@ -25,15 +29,28 @@
                     <a href="<? /*echo Yii::app()->createAbsoluteUrl('sbs')*/?>" data-count="13" data-filter>СБС</a>
                 </li>-->
             
-                <? if ($user->usertype == User::USERTYPE_PERFORMER) { ?>
+                <? if ($is_performer) { ?>
+                    <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
+                        <a href="<? echo Yii::app()->createAbsoluteUrl('sbs')?>" data-count="<?=$offerCount?>" data-filter>Предложение (<?=$offerCount?>)</a>
+                    </li>
+                <? } ?>
+            
+                <? /*if ($is_performer) { ?>
                     <li <? if ($moduleid == 'tenders' && $actionid == 'index') { ?> class="active"<? } ?>>
                         <a href="index.html#" data-count="13" data-filter>Лента заказов</a>
                     </li>
-                <? } ?>
+                <? }*/ ?>
 
-                <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
-                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="<?=$auctionCount?>" data-filter>В аукционе (<?=$auctionCount?>)</a>
-                </li>
+                <? if ($is_customer) { ?>
+                    <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
+                        <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="<?=$auctionCount?>" data-filter>В аукционе (<?=$auctionCount?>)</a>
+                    </li>
+                <? } else if ($is_performer) { ?>
+                    <li <? if ($status == 'working') { ?> class="active"<? } ?>>
+                        <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/working')?>" data-count="<?=$workingCount?>" data-filter>В работе (<?=$workingCount?>)</a>
+                    </li>
+                <? } ?>
+                
                 <li <? if ($status == 'warranty') { ?> class="active"<? } ?>>
                     <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
                 </li>
@@ -43,8 +60,15 @@
                 <li <? if ($status == 'closed') { ?> class="active"<? } ?>>
                     <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="<?=$countClosed?>" class="academic">Завершенные (<?=$countClosed?>)</a>
                 </li>            
+                
+                <? if ($is_performer) { ?>
+                    <li <? if ($status == 'declined') { ?> class="active"<? } ?>>
+                        <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/working')?>" data-count="<?=$declinedCount?>" data-filter>Отклоненные (<?=$declinedCount?>)</a>
+                    </li>
+                <? } ?>
+                
             </ul>
             <div class="clear"></div>
         </div>
-    </div>
+    <!--</div>-->
 </div>

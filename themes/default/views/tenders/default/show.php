@@ -266,15 +266,11 @@
                     </div>
                 </div>
                 
-                
-                
-                
-                
-                
-                
-                <div data-motopress-sidebar-file="sidebar.php" data-motopress-type="static-sidebar" id="sidebar" class="span4 sidebar">
+                <!--<div data-motopress-sidebar-file="sidebar.php" data-motopress-type="static-sidebar" id="sidebar" class="span4 sidebar">
 
-                    <div class="widget" id="categories-2"><h3>Categories</h3>        <ul>
+                    <div class="widget" id="categories-2">
+                    <h3>Categories</h3>        
+                    <ul>
                             <li class="cat-item cat-item-45"><a title="Просмотреть все записи в рубрике «Aenean auctor wisi et urn»" href="category/aenean-auctor-wisi-et-urn/index.html">Aenean auctor wisi et urn</a>
                             </li>
                             <li class="cat-item cat-item-3"><a title="Просмотреть все записи в рубрике «Aenean nonummy hendrerit mauris»" href="category/aenean-nonummy-hendrerit-mauris/index.html">Aenean nonummy hendrerit mauris</a>
@@ -298,14 +294,17 @@
                             <li class="cat-item cat-item-44"><a title="Просмотреть все записи в рубрике «Ut tellus dolor dapibus eget»" href="category/ut-tellus-dolor-dapibus-eget/index.html">Ut tellus dolor dapibus eget</a>
                             </li>
                         </ul>
-                    </div><div class="widget" id="archives-2"><h3>Archives</h3>        <ul>
+                    </div>
+                    <div class="widget" id="archives-2"><h3>Archives</h3>        
+                        <ul>
                             <li><a href="2013/03/index.html">Март 2013</a></li>
                             <li><a href="2013/02/index.html">Февраль 2013</a></li>
                             <li><a href="2013/01/index.html">Январь 2013</a></li>
                             <li><a href="2012/12/index.html">Декабрь 2012</a></li>
                             <li><a href="2012/05/index.html">Май 2012</a></li>
                         </ul>
-                </div>                    </div>
+                    </div>                    
+                </div>-->
             </div>
         </div>
     </div>

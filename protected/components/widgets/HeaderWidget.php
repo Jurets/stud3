@@ -1,4 +1,4 @@
-<?php
+<?php   //ЗАГЛУШКА!!!!!
 class HeaderWidget extends CWidget
 {
     public function run()

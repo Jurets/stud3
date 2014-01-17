@@ -34,16 +34,15 @@
                         'itemView'           => '_view',
                         'ajaxUpdate'         => false, //отключаем обновлениея аяксом (так хочет PM )))
                         'emptyText'          => '<div class="alert alert-error">Ничего не найдено</div>',
-                        'template'           => '
-<div class="row-fluid">
-<div class="span6">
-{sorter}
-</div><div class="span6">
-</div>
-</div>
-{items}
-<div class="row-fluid"><div class="span12">
-{pager}</div></div>',
+                        'template'           => '<div class="row-fluid">
+                                                <div class="span6">
+                                                {sorter}
+                                                </div><div class="span6">
+                                                </div>
+                                                </div>
+                                                {items}
+                                                <div class="row-fluid"><div class="span12">
+                                                {pager}</div></div>',
                         'sorterCssClass'     => 'offers-stateline',
                         'sorterHeader'       => 'Сортировать по: ',
                         'pager'              => array(

@@ -16,11 +16,20 @@ class TopMenuWidget extends CWidget
             
             $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
             
+            $offerCount = 0; //заглушка
+            $workingCount = 0; //заглушка
+            $declinedCount = 0; //заглушка
+            
             $this->render('topmenu', array(
                 'user'=>$user, 
+                //для всех
                 'auctionCount'=>$auctionCount,
                 'countClosed'=>$countClosed,
                 'countArbitration'=>$countArbitration,
+                //для исполнителя
+                'offerCount'=>$offerCount,
+                'workingCount'=>$workingCount,
+                'declinedCount'=>$declinedCount,
             ));
 		}
     } 

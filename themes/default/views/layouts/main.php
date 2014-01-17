@@ -282,6 +282,7 @@
                 if ($isAuthenticated)  {
                     $user = User::model()->findByPk(Yii::app()->user->id);
                 
+                    //$this->widget('HeaderWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета)
                     $this->widget('TopMenuWidget');  // вьюшка хедера кабинета (повторяется на разных страницах кабинета)
             ?>
                 <!--<p>Пользователь: <?= $user->username?></p>
