@@ -10,11 +10,16 @@
 ?>
 <div class="row">
     <div class="row-fluid">
-        <div class="span6 offset6">
+        <div class="span6 offset5">
+            
             <p>&nbsp;</p>
             <p>
                 <a href=""><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/05_blog3.jpg"></a>
                 <a href=""><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/05_blog.jpg"></a>
+
+                <span style="margin-left: 20px;"><?= $user->username?>
+                    <a class="green-submit" href="<?= Yii::app()->createAbsoluteUrl('logout') ?>">Выход</a>
+                </span>
             </p>
         </div>
     </div>
