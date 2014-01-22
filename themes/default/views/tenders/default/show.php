@@ -133,8 +133,16 @@
                                 <?php //echo 'до ' . $form->textField($bid, 'budget_end', array('class' => 'inp_text')); ?> <?php echo $form->error($bid, 'budget_end'); ?>
                                 <?php echo $form->dropDownList($bid, 'currency', $bid->getTenderCurrencyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Срок</strong></b></p>
-                                от <?php echo $form->textField($bid, 'period_start', array('class' => 'inp_text datepicker'/*, 'size' => 3*/)); ?>
-                                до <?php echo $form->textField($bid, 'period_end', array('class' => 'inp_text datepicker'/*, 'size' => 3*/)); ?>
+                                период: с 
+                                <?php //echo $form->textField($bid, 'period_start', array('class' => 'inp_text datepicker')); ?>
+                                <?php echo CHtml::textField('Bids[period_start]', date('d.m.Y', $bid->period_start), array(
+                                    'class' => 'inp_text datepicker'/*, 'size' => 3*/   
+                                    )); ?>
+                                по 
+                                <?php //echo $form->textField($bid, 'period_end', array('class' => 'inp_text datepicker')); ?>
+                                <?php echo CHtml::textField('Bids[period_end]', date('d.m.Y', $bid->period_end), array(
+                                    'class' => 'inp_text datepicker'/*, 'size' => 3*/   
+                                    )); ?>
                                 <?php //echo $form->dropDownList($bid, 'periodby', $bid->getPeriodbyList(), array('style' => 'width:150px')); ?>
                             <p><b class="btn"><strong>Введите сообщение</strong></b></p>
                             <?php echo $form->textArea($bid, 'text', array(
@@ -211,7 +219,8 @@
                                 <? if ($is_owner) { //если юзер - хозяин и статус заказа=активен ?>
                                     <div class="payd-link">
                                         <? if ($row->status == Bids::STATUS_ACTIVE) { //если статус заказа = активен ?>
-                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
+                                            <!--<a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> -->
+                                            <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/publication', array('id'=>$model->id))?>" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
                                             <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
                                         <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
                                             <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 

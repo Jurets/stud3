@@ -132,8 +132,10 @@ class Bids extends Model
 		return array(
 			array('text', 'required'),
 			array('currency', 'currency'),
-			array('periodby', 'periodby'),
-			array('budget_start, budget_end, period_start, period_end', 'numerical')
+			//array('periodby', 'periodby'),  //убираем тип периода (часы, дни)
+            //array('period_start, period_end', 'numerical'), //нач. и кон. дата будут датами, а не числами
+			array('budget_start, budget_end', 'numerical'),
+            array('text, budget_start, budget_end, period_start, period_end', 'safe'),
 		);
 	}
 
@@ -198,6 +200,10 @@ class Bids extends Model
 			$this->date = time();
     		$this->text = htmlspecialchars($this->text);
 		}
+        if (isset($this->period_start))
+            $this->period_start = strtotime($this->period_start);
+        if (isset($this->period_end))
+            $this->period_end = strtotime($this->period_end);
 		return parent::beforeSave();
     }
 

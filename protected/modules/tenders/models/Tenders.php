@@ -11,6 +11,8 @@ class Tenders extends Model
     const STATUS_TRASH      = 5;
 
     const STATUS_ENDED = 4; // конкурс завершен
+    
+    const STATUS_WAITCONFIRM = 6; //ждёт подтверждения исполнителем
 
     const PRICEBY_HOUR    = 1;
     const PRICEBY_DAY     = 2;
@@ -166,7 +168,7 @@ class Tenders extends Model
     public function auction()
     {//DebugBreak();
         $criteria = New CDbCriteria;
-        $criteria->addInCondition('status', array(self::STATUS_OPEN/*, Bids::STATUS_ACCEPT*/));
+        $criteria->addInCondition('status', array(self::STATUS_OPEN, self::STATUS_WAITCONFIRM/*, Bids::STATUS_ACCEPT*/));
         $criteria->order = 'status ASC, date DESC';
         
         //$this->getDbCriteria()->scopes = 'user';

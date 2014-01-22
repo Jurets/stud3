@@ -7,6 +7,8 @@ class Sbs extends Model
 	const STATUS_CLOSE = 3;// сделка отменена
 
 	const STATUS_DISPUTE = 5;// возник спор, арбитраж
+    
+    //const STATUS_WAIT = 6; //ждёт подтверждения исполнителем
 
 	public function tableName()
 	{

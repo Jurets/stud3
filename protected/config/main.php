@@ -260,6 +260,13 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'info',
+                    'categories'=>'testmail',
+                    'logFile'=>'testmail.log',
+                ),
+                
 				// uncomment the following to show log messages on web pages
 				/*
 				array(

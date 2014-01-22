@@ -260,12 +260,41 @@ class DefaultController extends Controller
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
 		$model = new Sbs;
-		if( Yii::app()->request->isPostRequest && !empty($_POST['Sbs']) ) {				
-			$model->setAttributes($_POST['Sbs']);       
-			if( $model->validate() ) {
-				$model->project_id = $id;
-				$model->save();
-				$this->redirect('/sbs');
+		if( Yii::app()->request->isPostRequest && !empty($_POST['Sbs']) ) {DebugBreak(); //если был сабмит формы
+			$model->setAttributes($_POST['Sbs']);     //занести атрибуты  
+			if( $model->validate() ) {     //если проверка модели УСПЕШНА
+                $performer = null;
+                $model->project_id = $id;   //ссылка на проект
+                //разбираемся с заявками 
+                if( $accept = $tender->checkABid() ) {// если уже была принята заявка, то прошлую заявку в статус актив
+                    $accept->status = Bids::STATUS_ACTIVE;
+                    $accept->save();
+                }
+                foreach($tender->bidslist as $bid) { //находим выбранную заявку
+                    if ($bid->user_id == $_POST['Sbs']['performer_id']) {
+                        $bid->status = Bids::STATUS_ACCEPT;  //для новой заявки ставим статус ПРИНЯТО
+                        $bid->update();
+                        $performer = $bid->userdata;
+                        break;
+                    }
+                }
+                //у заказа (проекта) ставим статус "ОЖИДАНИЕ ответа исполнителя"
+                $tender->status = Tenders::STATUS_WAITCONFIRM;
+                $success = $tender->save();
+                //сохраняем СБС
+				if ($success = $model->save()) {
+                    if (!isset($performer)) {  //определить юзера - исполнителя
+                         $performer = User::model()->findByPk($_POST['Sbs']['performer_id']);
+                    }
+                    //запись события
+                    new Events_helper($customer->id, $performer->id, Events_helper::NOTIFY_NEWSBSOFFER, $model->id);
+                    //отсылка емейла
+                    Email_helper::send($performer->email, 'Вам предложена сделка по проекту на сайте ' . Yii::app()->name . '', 'newSbsOffer', array('sbs'=>$model));
+                    //вывести страничку о начале сделки
+                    $this->render('waitoffer', array('sbs'=>$model));   
+                    Yii::app()->end();
+                    //$this->redirect('/sbs');
+                }
 			}
 		}
 		$this->pageTitle = 'Новая сделка';

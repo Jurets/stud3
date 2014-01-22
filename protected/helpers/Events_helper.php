@@ -29,6 +29,9 @@ class Events_helper
 	// сообщества
 	const INVINTATION = 'приглашает вступить в сообщество';
 
+    //новые (Jurets)
+    const NOTIFY_NEWSBSOFFER = 'предлагает вам сделку по проекту';
+    
 	function __construct($user_id, $object, $title, $id = '')
 	{
 		$this->create($user_id, $object, $title, $id);
@@ -55,7 +58,10 @@ class Events_helper
 			self::BUY_ITEMS => FALSE,
 			self::COMPLETED_ITEMS => FALSE,
 
-			self::INVINTATION => '/commune/default/management?id='.$this->id.'&action=enter',
+            self::INVINTATION => '/commune/default/management?id='.$this->id.'&action=enter',
+			
+            //новые (Jurets)
+            self::NOTIFY_NEWSBSOFFER => '/sbs/show?id='.$this->id,
         );
     }
 
@@ -83,6 +89,9 @@ class Events_helper
 			self::PAYMENT_ITEMS => 'Перейти к платежу',
 
 			self::INVINTATION => 'Вступить в сообщество',
+
+            //новые (Jurets)
+            self::NOTIFY_NEWSBSOFFER => 'Перейти к сделке',
         );
     }
 
@@ -113,6 +122,9 @@ class Events_helper
 			self::COMPLETED_ITEMS => Events::TYPE_ITEMS,
 
 			self::INVINTATION => Events::TYPE_COMMUNE,
+
+            //новые (Jurets)
+            self::NOTIFY_NEWSBSOFFER => Events::TYPE_SBS,
         );
     }
 

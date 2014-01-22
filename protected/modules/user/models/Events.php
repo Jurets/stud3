@@ -4,20 +4,22 @@ class Events extends Model
 	const STATUS_OPEN   = 1;
 	const STATUS_CLOSE  = 2;
 
-	// типы событий
-	// приглашения
-	// блоги
-	// удаленная работа
-	// каталог товаров
-	// личные сообщения
-	// сообщества
+	// С‚РёРїС‹ СЃРѕР±С‹С‚РёР№
+	// РїСЂРёРіР»Р°С€РµРЅРёСЏ
+	// Р±Р»РѕРіРё
+	// СѓРґР°Р»РµРЅРЅР°СЏ СЂР°Р±РѕС‚Р°
+	// РєР°С‚Р°Р»РѕРі С‚РѕРІР°СЂРѕРІ
+	// Р»РёС‡РЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ
+	// СЃРѕРѕР±С‰РµСЃС‚РІР°
 	const TYPE_INVITE = 1;
 	const TYPE_BLOGS = 2;
 	const TYPE_PROJECTS = 3;
 	const TYPE_ITEMS = 4;
 	const TYPE_MESSAGES = 5;
 	const TYPE_COMMUNE = 6;
-
+    
+    const TYPE_SBS = 7;  //РЅРѕРІ (Jurets)
+    
 	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);

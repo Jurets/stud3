@@ -35,17 +35,14 @@
                 </li>-->
             
                 <? if ($is_performer) { ?>
-                    <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
+                    <li <? if ($moduleid == 'tenders' && $actionid == 'index') { ?> class="active"<? } ?>>
+                        <a href="<?=Yii::app()->createAbsoluteUrl('tenders')?>" data-count="13" data-filter>Лента заказов</a>
+                    </li>
+                    <li <? if ($status == 'offer') { ?> class="active"<? } ?>>
                         <a href="<? echo Yii::app()->createAbsoluteUrl('sbs')?>" data-count="<?=$offerCount?>" data-filter>Предложение (<?=$offerCount?>)</a>
                     </li>
                 <? } ?>
             
-                <? /*if ($is_performer) { ?>
-                    <li <? if ($moduleid == 'tenders' && $actionid == 'index') { ?> class="active"<? } ?>>
-                        <a href="index.html#" data-count="13" data-filter>Лента заказов</a>
-                    </li>
-                <? }*/ ?>
-
                 <? if ($is_customer) { ?>
                     <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
                         <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="<?=$auctionCount?>" data-filter>В аукционе (<?=$auctionCount?>)</a>
