@@ -102,11 +102,30 @@
                     <? } ?>
                     
                     <? //------------- Проверить наличие исполнителя -------------?>
-                    <? if ($acceptBid) {?>
+                    <? //if ($acceptBid) {?>
+                    <? if (isset($model->sbs)) {?>
                         <br />
                         <div class="alert alert-block">
-                            <h4>Исполнитель определен</h4>
-                            <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
+                            <? // ---------------- Кнопки управления ответом исполнителя на заказ ---------- ?>
+                            <? if ($user->id == $model->sbs->performer->id) { ?>
+                                <h4>Сведения о сделке</h4>
+                                <p>сумма сделки (рублей): <?=$model->sbs->amount?></p>
+                                <p>период (дней): <?=$model->sbs->period?></p>
+
+                                <? if ($model->sbs->status == Sbs::STATUS_NEW) { ?>
+                                    <p>
+                                        <i class="icon-pencil"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/confirm', array('id'=>$model->sbs->id))?>">Принять предложение</a> 
+                                        <i class="icon-remove"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/reject', array('id'=>$model->sbs->id))?>" class="red">Отказаться</a>
+                                    </p>
+                                <? } else if ($model->sbs->status == Sbs::STATUS_WAITRESERV) {?>
+                                    <p>Ожидание пополнения денег заказчиком</p>
+                                <? }  else if ($model->sbs->status == Sbs::STATUS_REJECT) {?>
+                                    <p>Вы отказались от выполнения проекта</p>
+                                <? } ?>
+                            <? } else { ?>
+                                <h4>Исполнитель определен</h4>
+                                <font class="frlname11"><a href="/users/<?=$acceptBid->userdata->username?>"><?=$acceptBid->userdata->username?></a></font>
+                            <? } ?>
                         </div>
                     <? } ?>
                     
@@ -210,10 +229,11 @@
                                 </article>
 
                                 <? // ---------------- Кнопки управления ответом исполнителя на заказ ----------?>
-                                <? if (Yii::app()->user->id == $row->user_id && $row->status == Bids::STATUS_ACTIVE) { ?>
-                                    <i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> 
-                                    <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказать от проекта</a>
-                                <? } ?>
+                                <? /*if (Yii::app()->user->id == $row->user_id && ($row->status == Bids::STATUS_ACCEPT && isset($model->sbs))) { ?>
+                                    <!--<i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> -->
+                                    <i class="icon-pencil"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/confirm', array('id'=>$model->sbs->id))?>">Принять предложение</a> 
+                                    <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказаться</a>
+                                <? }*/ ?>
 
                                 <? // -------- КНОПКИ управления заказом (если юзер - хозяин) ?>
                                 <? if ($is_owner) { //если юзер - хозяин и статус заказа=активен ?>
@@ -225,7 +245,7 @@
                                         <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
                                             <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
                                         <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_REJECT) {?>
-                                            <p>Исполнитель отказался о твыполнения проекта</p> 
+                                            <p>Исполнитель отказался от выполнения проекта</p> 
                                         <? } ?>
                                     </div>
                                 <? } ?>
@@ -275,45 +295,6 @@
                     </div>
                 </div>
                 
-                <!--<div data-motopress-sidebar-file="sidebar.php" data-motopress-type="static-sidebar" id="sidebar" class="span4 sidebar">
-
-                    <div class="widget" id="categories-2">
-                    <h3>Categories</h3>        
-                    <ul>
-                            <li class="cat-item cat-item-45"><a title="Просмотреть все записи в рубрике «Aenean auctor wisi et urn»" href="category/aenean-auctor-wisi-et-urn/index.html">Aenean auctor wisi et urn</a>
-                            </li>
-                            <li class="cat-item cat-item-3"><a title="Просмотреть все записи в рубрике «Aenean nonummy hendrerit mauris»" href="category/aenean-nonummy-hendrerit-mauris/index.html">Aenean nonummy hendrerit mauris</a>
-                            </li>
-                            <li class="cat-item cat-item-1"><a title="Просмотреть все записи в рубрике «Cum sociis natoque penatibus etm»" href="category/cum-sociis-natoque-penatibus-etm/index.html">Cum sociis natoque penatibus etm</a>
-                            </li>
-                            <li class="cat-item cat-item-42"><a title="Просмотреть все записи в рубрике «Donec accumsan malesuada orci»" href="category/donec-accumsan-malesuada-orci/index.html">Donec accumsan malesuada orci</a>
-                            </li>
-                            <li class="cat-item cat-item-5"><a title="Просмотреть все записи в рубрике «Fusce feugiat malesuada odio»" href="category/fusce-feugiat-malesuada-odio/index.html">Fusce feugiat malesuada odio</a>
-                            </li>
-                            <li class="cat-item cat-item-4"><a title="Просмотреть все записи в рубрике «Fusce suscipit varius mi»" href="category/fusce-suscipit-varius-mi/index.html">Fusce suscipit varius mi</a>
-                            </li>
-                            <li class="cat-item cat-item-46"><a title="Просмотреть все записи в рубрике «Integer rutrum ante eu lacus»" href="category/integer-rutrum-ante-eu-lacus/index.html">Integer rutrum ante eu lacus</a>
-                            </li>
-                            <li class="cat-item cat-item-43"><a title="Просмотреть все записи в рубрике «Lorem ipsum dolor sit amet consecte»" href="category/lorem-ipsum-dolor-sit-amet-consecte/index.html">Lorem ipsum dolor sit amet consecte</a>
-                            </li>
-                            <li class="cat-item cat-item-41"><a title="Просмотреть все записи в рубрике «Morbi nunc odio gravida at cursus nec»" href="category/morbi-nunc-odio-gravida-at-cursus-nec/index.html">Morbi nunc odio gravida at cursus nec</a>
-                            </li>
-                            <li class="cat-item cat-item-2"><a title="Просмотреть все записи в рубрике «Praesent vestibulum molestie la»" href="category/praesent-vestibulum-molestie-la/index.html">Praesent vestibulum molestie la</a>
-                            </li>
-                            <li class="cat-item cat-item-44"><a title="Просмотреть все записи в рубрике «Ut tellus dolor dapibus eget»" href="category/ut-tellus-dolor-dapibus-eget/index.html">Ut tellus dolor dapibus eget</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="widget" id="archives-2"><h3>Archives</h3>        
-                        <ul>
-                            <li><a href="2013/03/index.html">Март 2013</a></li>
-                            <li><a href="2013/02/index.html">Февраль 2013</a></li>
-                            <li><a href="2013/01/index.html">Январь 2013</a></li>
-                            <li><a href="2012/12/index.html">Декабрь 2012</a></li>
-                            <li><a href="2012/05/index.html">Май 2012</a></li>
-                        </ul>
-                    </div>                    
-                </div>-->
             </div>
         </div>
     </div>

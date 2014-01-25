@@ -39,7 +39,7 @@
                         <a href="<?=Yii::app()->createAbsoluteUrl('tenders')?>" data-count="13" data-filter>Лента заказов</a>
                     </li>
                     <li <? if ($status == 'offer') { ?> class="active"<? } ?>>
-                        <a href="<? echo Yii::app()->createAbsoluteUrl('sbs')?>" data-count="<?=$offerCount?>" data-filter>Предложение (<?=$offerCount?>)</a>
+                        <a href="<? echo Yii::app()->createAbsoluteUrl('account/tenders/offer')?>" data-count="<?=$offerCount?>" data-filter>Предложение (<?=$offerCount?>)</a>
                     </li>
                 <? } ?>
             

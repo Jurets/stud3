@@ -5,15 +5,19 @@ class Tenders extends Model
     const TYPE_TENDER  = 2;
     const TYPE_VACANCY = 3;
 
+    //---------------------------
     const STATUS_OPEN       = 1;
     const STATUS_CLOSE      = 2;
     const STATUS_MODERATION = 3;
     const STATUS_TRASH      = 5;
 
-    const STATUS_ENDED = 4; // конкурс завершен
+    const STATUS_ENDED = 4; // конкурс завершен (!TODO Возможно при создании сделки ставить этот статус заказа, а три следующие не использовать)
     
     const STATUS_WAITCONFIRM = 6; //ждёт подтверждения исполнителем
-
+    const STATUS_WAITRESERV = 7;  //ждёт пополнения денег
+    const STATUS_REJECT = 8;      //исполнитель отказался
+    //---------------------------
+    
     const PRICEBY_HOUR    = 1;
     const PRICEBY_DAY     = 2;
     const PRICEBY_MONTH   = 3;
@@ -157,7 +161,16 @@ class Tenders extends Model
             'vacancy' => array(
                 'condition' => 'type = :type',
                 'params'    => array(':type' => self::TYPE_VACANCY)
-            )
+            ),
+            'offer' => array(
+                //'with' => array('sbs' => array('select'=>false, 'scopes'=>array('my','renewed'))),
+                'with' => array(
+                    'sbs' => array(
+                        'select'=>false, 
+                        'condition' => 'customer_id = :user_id or performer_id = :user_id',
+                        'params' => array(':user_id' => Yii::app()->user->id),
+                    )),
+            ),
         );
     }
 

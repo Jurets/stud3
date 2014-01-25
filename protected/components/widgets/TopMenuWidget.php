@@ -7,18 +7,26 @@ class TopMenuWidget extends CWidget
 		{
             $user = new User;
             $user = $user->with('static')->findbyPk(Yii::app()->user->id);
+            
             $auctionCount = $user->bidCountAuction;
             $countClosed = Tenders::model()->user()->closed()->count();
-            //DebugBreak();
+            
             $arbitration = New Tenders();
             //!TODO - надо будет переделать - щас костыль!!!!!
             $countArbitration = $arbitration->user()->with(array('sbs'=>array('scopes'=>'disputed')))->count('sbs.status = :status');
             
             $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
             
-            $offerCount = 0; //заглушка
-            $workingCount = 0; //заглушка
-            $declinedCount = 0; //заглушка
+            if ($user->usertype == User::USERTYPE_PERFORMER) {//DebugBreak();
+                $offer = Sbs::model()->my()->offer();
+                $offerCount = $offer->count();
+                $workingCount = Sbs::model()->my()->active()->count(); 
+                $declinedCount = 0; //заглушка
+            } else {
+                $offerCount = 0; 
+                $workingCount = 0; 
+                $declinedCount = 0; 
+            }
             
             $this->render('topmenu', array(
                 'user'=>$user, 

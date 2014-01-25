@@ -31,6 +31,9 @@ class Events_helper
 
     //новые (Jurets)
     const NOTIFY_NEWSBSOFFER = 'предлагает вам сделку по проекту';
+    const NOTIFY_NEWSBSCONFIRM = 'согласился на выполнение проекта';
+    const NOTIFY_NEWSBSREJECT = 'откалзя от выполнения проекта';
+    const NOTIFY_SBSRESERVED = 'оплатил заказ';
     
 	function __construct($user_id, $object, $title, $id = '')
 	{
@@ -62,6 +65,9 @@ class Events_helper
 			
             //новые (Jurets)
             self::NOTIFY_NEWSBSOFFER => '/sbs/show?id='.$this->id,
+            self::NOTIFY_NEWSBSCONFIRM => '/sbs/reserve?id='.$this->id,
+            self::NOTIFY_NEWSBSREJECT => '/sbs/publication?id='.$this->id,
+            self::NOTIFY_SBSRESERVED => '/sbs/'.$this->id,
         );
     }
 
@@ -92,6 +98,9 @@ class Events_helper
 
             //новые (Jurets)
             self::NOTIFY_NEWSBSOFFER => 'Перейти к сделке',
+            self::NOTIFY_NEWSBSCONFIRM => 'Перейти к резервированию',
+            self::NOTIFY_NEWSBSREJECT => 'Выбрать нового исполнителя',
+            self::NOTIFY_SBSRESERVED => 'Приступить к выполнению задачи',
         );
     }
 
@@ -125,6 +134,9 @@ class Events_helper
 
             //новые (Jurets)
             self::NOTIFY_NEWSBSOFFER => Events::TYPE_SBS,
+            self::NOTIFY_NEWSBSCONFIRM => Events::TYPE_SBS,
+            self::NOTIFY_NEWSBSREJECT => Events::TYPE_SBS,
+            self::NOTIFY_SBSRESERVED => Events::TYPE_SBS,
         );
     }
 

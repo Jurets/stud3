@@ -391,7 +391,15 @@ class AccountController extends Controller
         } else if ($status == 'arbitration') {
             $criteria = $model->with(array('sbs'=>array('scopes'=>'disputed', 'condition'=>'sbs.status = :status')));
             $criteria = $criteria->getDBCriteria();
+        } else if( $status == 'offer' ) {//DebugBreak();
+            //$criteria = $model->offer()->getDBCriteria();
+            $model = New Tenders();
+            //$criteria = New CDbCriteria();
+            //$criteria->with = array('sbs', 'scopes'=>'my,renewed');
+            $criteria = $model->offer()->getDBCriteria();
+            //$criteria->addCondition('rrrr=1');
         } else {  //если status не задано
+            $criteria = $model->closed()->getDBCriteria();
             $criteria = $model->auction()->getDBCriteria();
         }
 

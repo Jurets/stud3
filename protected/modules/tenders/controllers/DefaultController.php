@@ -153,7 +153,7 @@ class DefaultController extends Controller
 		$this->pageTitle = $model->title;
     	$this->render('show', array('model' => $model, 'bid' => $bid));
 	}
-
+    
     /**
      * Удалить прикрепленный файл
      */

@@ -8,7 +8,8 @@ class Sbs extends Model
 
 	const STATUS_DISPUTE = 5;// возник спор, арбитраж
     
-    //const STATUS_WAIT = 6; //ждёт подтверждения исполнителем
+    const STATUS_WAITRESERV = 7; //ждёт пополнения денег
+    const STATUS_REJECT = 8;//исполнитель отказался
 
 	public function tableName()
 	{
@@ -77,7 +78,7 @@ class Sbs extends Model
 	{
 		return array(
 			'my' => array(
-				'condition' => 'customer_id = :user_id or performer_id = :user_id',
+				'condition' => $this->getTableAlias().'.customer_id = :user_id or '.$this->getTableAlias().'.performer_id = :user_id',
 				'params'    => array(':user_id' => Yii::app()->user->id)
 			),
 			'renewed' => array(
@@ -99,6 +100,11 @@ class Sbs extends Model
             'disputed' => array(
                 'condition' => $this->getTableAlias().'.status = :status',
                 'params'    => array(':status' => self::STATUS_DISPUTE)
+            ),
+
+            'offer' => array(
+                'condition' => $this->getTableAlias().'.status = :status1 OR ' . $this->getTableAlias().'.status = :status2',
+                'params'    => array(':status1' => self::STATUS_NEW, ':status2' => self::STATUS_WAITRESERV)
             ),
 		);
 	}

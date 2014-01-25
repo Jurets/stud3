@@ -37,7 +37,7 @@
                             <div class="clearfix">
 
                                 <? //DebugBreak();
-                                if( $model->status == Sbs::STATUS_NEW ): ?>
+                                if( $model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV): ?>
 
                                     <div class="alert alert-error">
                                         <strong>Деньги не зарезервированы</strong>

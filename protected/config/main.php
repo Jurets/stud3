@@ -141,11 +141,15 @@ return array(
                 '/commune/blog/publication/<id:\d+>' => '/commune/blog/publication',
                 '/commune/blog/delete/<id:\d+>' => '/commune/blog/delete',
 
-                '/sbs/reserve' => 'sbs/default/reserve',
-                '/sbs/publication' => 'sbs/default/publication',
+                //'/sbs/reserve' => 'sbs/default/reserve',
+                //'/sbs/publication' => 'sbs/default/publication',
                 '/sbs/arbitration' => 'sbs/default/arbitration',
                 '/sbs/complete' => 'sbs/default/complete',
                 '/sbs/close' => 'sbs/default/close',
+                
+                '/sbs/<id:\d+>' => 'sbs/default/show/',
+                '/sbs/publication/<id:\d+>' => 'sbs/default/publication/',
+                '/sbs/reserve/<id:\d+>' => 'sbs/default/reserve/',
 
                 '/articles/<id:\d+>.html' => 'articles/default/show/',
                 '/articles/publication' => 'articles/default/publication',
