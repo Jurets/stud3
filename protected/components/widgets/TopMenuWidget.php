@@ -17,14 +17,15 @@ class TopMenuWidget extends CWidget
             
             $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
             
-            if ($user->usertype == User::USERTYPE_PERFORMER) {//DebugBreak();
+            $workingCount = Sbs::model()->my()->active()->count();   //и для заказчика и для исполнителя
+            
+            if ($user->usertype == User::USERTYPE_PERFORMER) {
                 $offer = Sbs::model()->my()->offer();
                 $offerCount = $offer->count();
-                $workingCount = Sbs::model()->my()->active()->count(); 
                 $declinedCount = 0; //заглушка
             } else {
                 $offerCount = 0; 
-                $workingCount = 0; 
+                //$workingCount = 0; 
                 $declinedCount = 0; 
             }
             

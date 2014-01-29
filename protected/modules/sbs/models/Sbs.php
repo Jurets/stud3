@@ -10,6 +10,7 @@ class Sbs extends Model
     
     const STATUS_WAITRESERV = 7; //ждёт пополнения денег
     const STATUS_REJECT = 8;//исполнитель отказался
+    const STATUS_DONE = 9;    //исполнитель сдал работу (переходит на гарантию)
 
 	public function tableName()
 	{

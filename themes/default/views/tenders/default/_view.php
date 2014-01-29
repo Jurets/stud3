@@ -55,7 +55,9 @@
                 <a href="/sbs/publication?id=<?=$data->id?>" class="btn btn-mini">Начать СБС</a> 
             <? }*/ ?>
             
-            <p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>
+            <!--<p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>-->
+            <? $url = (isset($data->sbs)) ? Yii::app()->createAbsoluteUrl('sbs/' . $data->sbs->id) : Yii::app()->createAbsoluteUrl('tenders/' . $data->id . '.html')?>
+            <p style="text-align:right;"><a href="<?=$url?>">подробнее...</a></p>
         </div>
     </blockquote>
 </article>

@@ -150,6 +150,7 @@ return array(
                 '/sbs/<id:\d+>' => 'sbs/default/show/',
                 '/sbs/publication/<id:\d+>' => 'sbs/default/publication/',
                 '/sbs/reserve/<id:\d+>' => 'sbs/default/reserve/',
+                '/sbs/done/<id:\d+>' => 'sbs/default/done/',
 
                 '/articles/<id:\d+>.html' => 'articles/default/show/',
                 '/articles/publication' => 'articles/default/publication',

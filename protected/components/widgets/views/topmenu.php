@@ -47,7 +47,7 @@
                     <li <? if ($status == 'auction') { ?> class="active"<? } ?>>
                         <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/auction')?>" data-count="<?=$auctionCount?>" data-filter>В аукционе (<?=$auctionCount?>)</a>
                     </li>
-                <? } else if ($is_performer) { ?>
+                <? } /*else if ($is_performer)*/ { ?>
                     <li <? if ($status == 'working') { ?> class="active"<? } ?>>
                         <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/working')?>" data-count="<?=$workingCount?>" data-filter>В работе (<?=$workingCount?>)</a>
                     </li>

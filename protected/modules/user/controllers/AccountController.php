@@ -372,17 +372,11 @@ class AccountController extends Controller
      * Проекты
      */
 	public function actionTenders($status = 'auction')
-	{//DebugBreak();
+	{
 		Yii::app()->getModule('tenders');
         $model = New Tenders();
+        
 		$model = $model->user();
-		/*if( $status == Tenders::STATUS_OPEN ) {
-			$model = $model->opened();
-		} elseif( $status == Tenders::STATUS_CLOSE ) {
-			$model = $model->closed();
-        } elseif( $status == Tenders::STATUS_CLOSE ) {
-            $model = $model->closed();
-        }*/ 
         
         if( $status == 'auction' ) {
             $criteria = $model->auction()->getDBCriteria();
@@ -391,15 +385,19 @@ class AccountController extends Controller
         } else if ($status == 'arbitration') {
             $criteria = $model->with(array('sbs'=>array('scopes'=>'disputed', 'condition'=>'sbs.status = :status')));
             $criteria = $criteria->getDBCriteria();
-        } else if( $status == 'offer' ) {//DebugBreak();
+        } else if( $status == 'offer' ) {
+            //$model = New Tenders();
             //$criteria = $model->offer()->getDBCriteria();
             $model = New Tenders();
-            //$criteria = New CDbCriteria();
-            //$criteria->with = array('sbs', 'scopes'=>'my,renewed');
-            $criteria = $model->offer()->getDBCriteria();
-            //$criteria->addCondition('rrrr=1');
+            $criteria = New CDbCriteria;
+            $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and sbs.status = :status'));
+            $criteria->params = array(':user_id' => Yii::app()->user->id, ':status' => Sbs::STATUS_NEW);
+        } else if ($status == 'working') {
+            $model = New Tenders();
+            $criteria = New CDbCriteria;
+            $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and sbs.status = :status'));
+            $criteria->params = array(':user_id' => Yii::app()->user->id, ':status' => Sbs::STATUS_ACTIVE);
         } else {  //если status не задано
-            $criteria = $model->closed()->getDBCriteria();
             $criteria = $model->auction()->getDBCriteria();
         }
 
@@ -421,15 +419,8 @@ class AccountController extends Controller
 			),
 		));
 		$this->pageTitle = 'Мои проекты';
-		/*$countAll = new Tenders;
-		$countAll = $countAll->user()->count();
-		$countOpened = new Tenders;
-		$countOpened = $countOpened->user()->opened()->count();
-		$countClosed = new Tenders;
-		$countClosed = $countClosed->user()->closed()->count();*/
-        //DebugBreak();
 		$this->render('tenders', array(
-            'dataProvider' => $dataProvider, //'countAll' => $countAll, 'countOpened' => $countOpened, 'countClosed' => $countClosed
+            'dataProvider' => $dataProvider, 
         ));
 	}
 
@@ -439,26 +430,16 @@ class AccountController extends Controller
 	public function actionBids($status = '')
 	{
 		Yii::app()->getModule('tenders');
-	
 		$model = Bids::model()->user();
-
-		if( $status == Bids::STATUS_ACTIVE )
-		{
+		if( $status == Bids::STATUS_ACTIVE ) {
 			$model = $model->active();
-		}
-		elseif( $status == Bids::STATUS_ACCEPT )
-		{
+		} elseif( $status == Bids::STATUS_ACCEPT ) {
 			$model = $model->accepted();
-		}
-		elseif( $status == Bids::STATUS_DECLINE )
-		{
+		} elseif( $status == Bids::STATUS_DECLINE ) {
 			$model = $model->declined();
-		}
-		elseif( $status == Bids::STATUS_REJECT )
-		{
+		} elseif( $status == Bids::STATUS_REJECT ) {
 			$model = $model->rejected();
 		}
-
 		$dataProvider = new CActiveDataProvider($model, array(
 			'sort' => array(
 				'sortVar' => 's',
@@ -475,29 +456,17 @@ class AccountController extends Controller
 				'pageSize' => 20,
 			),
 		));
-
 		$this->pageTitle = 'Мои заявки';
-
 		$countAll = new Bids;
-
 		$countAll = $countAll->user()->count();
-
 		$countActive = new Bids;
-
 		$countActive = $countActive->user()->active()->count();
-
 		$countAccepted = new Bids;
-
 		$countAccepted = $countAccepted->user()->accepted()->count();
-
 		$countDeclined = new Bids;
-
 		$countDeclined = $countDeclined->user()->declined()->count();
-
 		$countRejected = new Bids;
-
 		$countRejected = $countRejected->user()->rejected()->count();
-
 		$this->render('bids', array('dataProvider' => $dataProvider, 'countAll' => $countAll, 'countActive' => $countActive, 'countAccepted' => $countAccepted, 'countDeclined' => $countDeclined, 'countRejected' => $countRejected));
 	}
 

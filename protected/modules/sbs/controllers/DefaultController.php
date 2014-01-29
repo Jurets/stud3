@@ -78,7 +78,7 @@ class DefaultController extends Controller
 	public function actionShow($id = '')
 	{
 		Yii::app()->getModule('tenders');
-    	$model = Sbs::model()->my()->findByPk($id);
+    	$model = Sbs::model()->with(array('customer', 'performer', 'project'))->my()->findByPk($id);
     	if( !$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
@@ -201,7 +201,7 @@ class DefaultController extends Controller
 			$balance = TRUE;
 			Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Вы можете зарезервировать сделку, с вашего баланса будет списано '.$model->amount.' рублей');
 		}
-		if( Yii::app()->request->isPostRequest && !empty($_POST['reserve']) && $balance == TRUE ) {DebugBreak();
+		if( Yii::app()->request->isPostRequest && !empty($_POST['reserve']) && $balance == TRUE ) {
 			$model->status = Sbs::STATUS_ACTIVE;
 			if( $model->validate() ) {
 				$transaction = Yii::app()->db->beginTransaction();// начало транзакции
@@ -229,6 +229,29 @@ class DefaultController extends Controller
     	$this->render('reserve', $renderdata);
 	}
 
+    /**
+     * Сдать работу
+     */
+    public function actionDone($id = '') {
+        //проверить: есть ли сделка с таким ИД
+        if (!$id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($id))) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        } else {
+            $model->status = Sbs::STATUS_DONE;  //поставить статус сделки "исполнитель отказался"
+            if ($success = $model->save()) {
+                //запись события
+                new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_SBSDONE, $model->id);
+                //отсылка емейла
+                Email_helper::send($model->customer->email, 'Исполнитель сдал работу на сайте ' . Yii::app()->name . '', 'newSbsDone', array('sbs'=>$model));
+                //переход на страницу заказа
+                $url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
+                $this->redirect($url);
+            } else {
+                throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');
+            }
+        }
+    }
+        
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -270,7 +293,7 @@ class DefaultController extends Controller
         if (isset($tender->sbs)) {
             if ($tender->sbs->status == Sbs::STATUS_COMPLETE) {
                 throw new CHttpException(404, 'Сделка по данному проекту завершена');
-            } else {
+            } else if ($tender->sbs->status != Sbs::STATUS_REJECT) {
                 if ($tender->sbs->status == Sbs::STATUS_NEW) {
                     $this->pageTitle = 'Ожидание подтверждения исполнителем';
                     $message = 'Исполнителю <strong>' . $tender->sbs->performer->nickName . '</strong> отправлена информация о предложенной Вами сделке. Ожидайте подтверждения в ближайшее время';
@@ -279,7 +302,7 @@ class DefaultController extends Controller
                     $message = 'Необходимо зарезервировать сумму для сделки';
                 }
                 $this->render('waitoffer', array(
-                    //'sbs'=>$tender->sbs
+                    'url'=>Yii::app()->createAbsoluteUrl('sbs/' . $tender->sbs->id),
                     'message'=>$message,
                 ));
                 Yii::app()->end();
@@ -289,7 +312,7 @@ class DefaultController extends Controller
 		$model = new Sbs;   //новый объект сделки
 		if( Yii::app()->request->isPostRequest && !empty($_POST['Sbs']) ) {//если был сабмит формы
 			$model->setAttributes($_POST['Sbs']);     //занести атрибуты  
-			if( $model->validate() ) {DebugBreak();     //если проверка модели УСПЕШНА
+			if( $model->validate() ) {//DebugBreak();     //если проверка модели УСПЕШНА
                 
                 $performer = null;
                 $model->project_id = $id;   //ссылка на проект
@@ -306,9 +329,11 @@ class DefaultController extends Controller
                         break;
                     }
                 }
-                //у заказа (проекта) ставим статус "ОЖИДАНИЕ ответа исполнителя"
-                $tender->status = Tenders::STATUS_WAITCONFIRM;
-                $success = $tender->save();
+                //у заказа (проекта) ставим статус "КОНКУРС ЗАВЕРШЁН"
+                if ($tender->status != Tenders::STATUS_ENDED) {
+                    $tender->status = Tenders::STATUS_ENDED;
+                    $success = $tender->save();
+                }
 
                 //удаляем объект сделки, связанный с данным заказом, если таковой уже есть
                 // (например, если предыдущий выбранный исполнитель отказался от предложения)
@@ -328,7 +353,10 @@ class DefaultController extends Controller
                     Email_helper::send($performer->email, 'Вам предложена сделка по проекту на сайте ' . Yii::app()->name . '', 'newSbsOffer', array('sbs'=>$model));
                     //вывести страничку о начале сделки
                     $this->pageTitle = 'Создана новая сделка по проекту ' . $tender->title;
-                    $this->render('waitoffer', array('sbs'=>$model));   
+                    $this->render('waitoffer', array(
+                        'url'=>Yii::app()->createAbsoluteUrl('sbs/' . $model->id),
+                        'sbs'=>$model
+                    ));   
                     Yii::app()->end();
                     //$this->redirect('/sbs');
                 }
@@ -337,7 +365,6 @@ class DefaultController extends Controller
 		$this->pageTitle = 'Новая сделка';
 		$this->render('publication', array('model' => $model, 'tender' => $tender));
 	}
-
 
     /**
     * -- Подтверждение исполнителем приглашения на участие в проекте (исп-ль соглашается на заказ)
@@ -353,14 +380,15 @@ class DefaultController extends Controller
         } else {
             $model->status = Sbs::STATUS_WAITRESERV;  //поставить статус сделки "ждёт пополнения денег"
             if ($success = $model->save()) {
-                $model->project->status = Tenders::STATUS_WAITRESERV;  //такой же статус поставить в модель заказа
-                $model->project->save();      //(скорее для совместимости... потом возможно убрать это для модели заказа)
+                //$model->project->status = Tenders::STATUS_WAITRESERV;  //такой же статус поставить в модель заказа
+                //$model->project->save();      //(скорее для совместимости... потом возможно убрать это для модели заказа)
                 //запись события
                 new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_NEWSBSCONFIRM, $model->id);
                 //отсылка емейла
                 Email_helper::send($model->customer->email, 'Исполнитель согласился на Ваше предложение по проекту на сайте ' . Yii::app()->name . '', 'newSbsConfirm', array('sbs'=>$model));
                 //переход на страницу заказа
-                $url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
+                $url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
+                //$url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
                 $this->redirect($url);
             } else {
                 throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');
@@ -379,14 +407,23 @@ class DefaultController extends Controller
         } else {
             $model->status = Sbs::STATUS_REJECT;  //поставить статус сделки "исполнитель отказался"
             if ($success = $model->save()) {
-                $model->project->status = Tenders::STATUS_REJECT;  //такой же статус поставить в модель заказа
+                $model->project->status = Tenders::STATUS_OPEN;  //в модель заказа поставить статус "ОТКРЫТ", чтобы другие иполнители могли давать ответ на заказ
                 $model->project->save();      //(скорее для совместимости... потом возможно убрать это для модели заказа) ????????
+                //разбираемся с заявками 
+                foreach($model->project->bidslist as $bid) { //находим выбранную заявку
+                    if ($bid->user_id == Yii::app()->user->id) {
+                        $bid->status = Bids::STATUS_REJECT;  //для новой заявки ставим статус ПРИНЯТО
+                        $bid->update();
+                        break;
+                    }
+                }
                 //запись события
                 new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_NEWSBSREJECT, $model->id);
                 //отсылка емейла
                 Email_helper::send($model->customer->email, 'Исполнитель отказался от проекта на сайте ' . Yii::app()->name . '', 'newSbsReject', array('sbs'=>$model));
                 //переход на страницу заказа
-                $url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
+                $url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
+                //$url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
                 $this->redirect($url);
             } else {
                 throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');

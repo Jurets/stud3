@@ -34,6 +34,7 @@ class Events_helper
     const NOTIFY_NEWSBSCONFIRM = 'согласился на выполнение проекта';
     const NOTIFY_NEWSBSREJECT = 'откалзя от выполнения проекта';
     const NOTIFY_SBSRESERVED = 'оплатил заказ';
+    const NOTIFY_SBSDONE = 'сдал работу';
     
 	function __construct($user_id, $object, $title, $id = '')
 	{
@@ -68,6 +69,7 @@ class Events_helper
             self::NOTIFY_NEWSBSCONFIRM => '/sbs/reserve?id='.$this->id,
             self::NOTIFY_NEWSBSREJECT => '/sbs/publication?id='.$this->id,
             self::NOTIFY_SBSRESERVED => '/sbs/'.$this->id,
+            self::NOTIFY_SBSDONE => '/sbs/'.$this->id,
         );
     }
 
@@ -101,6 +103,7 @@ class Events_helper
             self::NOTIFY_NEWSBSCONFIRM => 'Перейти к резервированию',
             self::NOTIFY_NEWSBSREJECT => 'Выбрать нового исполнителя',
             self::NOTIFY_SBSRESERVED => 'Приступить к выполнению задачи',
+            self::NOTIFY_SBSDONE => 'Перейти к сделке',
         );
     }
 
@@ -137,6 +140,7 @@ class Events_helper
             self::NOTIFY_NEWSBSCONFIRM => Events::TYPE_SBS,
             self::NOTIFY_NEWSBSREJECT => Events::TYPE_SBS,
             self::NOTIFY_SBSRESERVED => Events::TYPE_SBS,
+            self::NOTIFY_SBSDONE => Events::TYPE_SBS,
         );
     }
 
