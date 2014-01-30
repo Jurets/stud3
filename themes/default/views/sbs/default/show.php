@@ -55,13 +55,13 @@
 <div id="yui-main">
     <div class="clearfix">
 
-        <? if( $model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV): ?>
+        <? if( $model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV) { ?>
 
             <div class="alert alert-error">
                 <strong>Деньги не зарезервированы</strong>
             </div>
 
-            <? if( $model->customer_id == Yii::app()->user->id ): ?>
+            <? if( $model->customer_id == Yii::app()->user->id ) { ?>
                 <div class="btn-group">
                     <!--<a href="/sbs/reserve?id=<?=$model->id?>" class="btn">Зарезервировать деньги</a>-->
                     <a href="<?=Yii::app()->createAbsoluteUrl('/sbs/reserve/' . $model->id)?>" class="btn">Зарезервировать деньги</a>
@@ -70,14 +70,16 @@
                         <li style="list-style:none"><a href="/sbs/default/close?id=<?=$model->id?>">Отменить</a></li>
                     </ul>
                 </div><!-- /btn-group -->
-                <? endif; ?>
+                <? } ?>
 
-            <? endif; ?>
-
-        <? if( $model->status == Sbs::STATUS_ACTIVE ) { ?>
+        <? } else if( $model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE) { ?>
 
             <div class="alert alert-success">
-                <strong>Деньги зарезервированы</strong>
+                <? if( $model->status == Sbs::STATUS_ACTIVE) { ?>
+                    <strong>Деньги зарезервированы</strong>
+                <? } else if( $model->status == Sbs::STATUS_DONE) { ?>
+                    <strong>Исполнитель сдал работу</strong>
+                <? } ?>
             </div>
 
             <? if( $model->customer_id == Yii::app()->user->id ) { ?>

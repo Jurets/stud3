@@ -107,6 +107,10 @@ class Sbs extends Model
                 'condition' => $this->getTableAlias().'.status = :status1 OR ' . $this->getTableAlias().'.status = :status2',
                 'params'    => array(':status1' => self::STATUS_NEW, ':status2' => self::STATUS_WAITRESERV)
             ),
+            'guarantee' => array(
+                'condition' => $this->getTableAlias().'.status = :status',
+                'params'    => array(':status' => self::STATUS_DONE)
+            ),
 		);
 	}
 }

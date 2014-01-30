@@ -11,13 +11,14 @@ class TopMenuWidget extends CWidget
             $auctionCount = $user->bidCountAuction;
             $countClosed = Tenders::model()->user()->closed()->count();
             
-            $arbitration = New Tenders();
             //!TODO - надо будет переделать - щас костыль!!!!!
-            $countArbitration = $arbitration->user()->with(array('sbs'=>array('scopes'=>'disputed')))->count('sbs.status = :status');
-            
-            $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
-            
-            $workingCount = Sbs::model()->my()->active()->count();   //и для заказчика и для исполнителя
+            //$arbitration = New Tenders();
+            //$countArbitration = $arbitration->user()->with(array('sbs'=>array('scopes'=>'disputed')))->count('sbs.status = :status');
+
+            //и для заказчика и для исполнителя
+            $workingCount = Sbs::model()->my()->active()->count();
+            $guaranteeCount = Sbs::model()->my()->guarantee()->count();
+            $countArbitration = Sbs::model()->my()->disputed()->count();
             
             if ($user->usertype == User::USERTYPE_PERFORMER) {
                 $offer = Sbs::model()->my()->offer();
@@ -29,6 +30,7 @@ class TopMenuWidget extends CWidget
                 $declinedCount = 0; 
             }
             
+            $this->controller->pageTitle = $user->usertype == User::USERTYPE_CUSTOMER? 'Кабинет заказчика' : 'Кабинет исполнителя';
             $this->render('topmenu', array(
                 'user'=>$user, 
                 //для всех
@@ -39,6 +41,7 @@ class TopMenuWidget extends CWidget
                 'offerCount'=>$offerCount,
                 'workingCount'=>$workingCount,
                 'declinedCount'=>$declinedCount,
+                'guaranteeCount'=>$guaranteeCount,
             ));
 		}
     } 

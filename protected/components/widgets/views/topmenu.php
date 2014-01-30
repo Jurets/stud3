@@ -53,8 +53,8 @@
                     </li>
                 <? } ?>
                 
-                <li <? if ($status == 'warranty') { ?> class="active"<? } ?>>
-                    <a href="index.html#" data-count="4" class="academic">На гарантии (0)</a>
+                <li <? if ($status == 'guarantee') { ?> class="active"<? } ?>>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/guarantee')?>" data-count="<?=$guaranteeCount?>" class="academic">На гарантии (<?=$guaranteeCount?>)</a>
                 </li>
                 <li <? if ($status == 'arbitration') { ?> class="active"<? } ?>>
                     <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/arbitration')?>" data-count="<?=$countArbitration?>" class="academic">В арбитраже (<?=$countArbitration?>)</a>

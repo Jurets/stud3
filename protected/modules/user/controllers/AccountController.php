@@ -397,6 +397,11 @@ class AccountController extends Controller
             $criteria = New CDbCriteria;
             $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and sbs.status = :status'));
             $criteria->params = array(':user_id' => Yii::app()->user->id, ':status' => Sbs::STATUS_ACTIVE);
+        } else if ($status == 'guarantee') {
+            $model = New Tenders();
+            $criteria = New CDbCriteria;
+            $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and sbs.status = :status'));
+            $criteria->params = array(':user_id' => Yii::app()->user->id, ':status' => Sbs::STATUS_DONE);
         } else {  //если status не задано
             $criteria = $model->auction()->getDBCriteria();
         }
