@@ -84,7 +84,8 @@ class DefaultController extends Controller
 		}
 		$renderdata = array(
 			'model' => $model,
-			'comment' => new SbsLetters
+			'comment' => new SbsLetters,
+            'work' => New SbsWork,
 		);
 		$this->pageTitle = 'Сервис безопасной сделки';
     	$this->render('show', $renderdata);
@@ -132,7 +133,7 @@ class DefaultController extends Controller
      * Подать жалобу в арбитраж
      */
 	public function actionArbitration($id = '')
-	{//DebugBreak();
+	{
 		Yii::app()->getModule('tenders');
     	$model = Sbs::model()->findByPk($id);
 		$user = $this->loadModel();
@@ -229,26 +230,129 @@ class DefaultController extends Controller
     	$this->render('reserve', $renderdata);
 	}
 
+    
+    //сохранить файлы при сдаче работы / внесении правок
+    private function saveWorkFiles($sbswork) {
+        $attachments = CUploadedFile::getInstancesByName('attachments');  //извлекаем прикрепл-е файлы
+        if( isset($attachments) && count($attachments) > 0 ) {
+            $savedir = '.' . Yii::app()->getModule('sbs')->workAttachmentsDir;  //путь для сохранения файлов
+            foreach ($attachments as $attachment)    {  //цикл по файлам в аттачменте
+                $sourcePath = pathinfo($attachment->name);    
+                $fileName = md5(time()).'.'.$sourcePath['extension'];
+                $path = $savedir . $fileName;           //полный путь к загружаемому файлу
+                if($attachment->saveAs($path) ) {   //пробуем сохранить файл
+                    $attachment_add = new SbsWorkFile();
+                    $attachment_add->sbswork_id = $sbswork->id;          //ссылка на сданную работу
+                    $attachment_add->filename = $fileName;               //сгенерённое имя файла
+                    $attachment_add->origname = $attachment->name;       //оригинальное имя файла
+                    $attachment_add->type = $sourcePath['extension'];    //тип файла = расширение
+                    $attachment_add->size = $attachment->size;           //размер файла
+                    if (!$attachment_add->save()) {  //пробуем сохранить запись в БД для файла
+                        $filesSuccess = false;
+                    }
+                } else {
+                    $filesSuccess = false;
+                }
+            }
+        }
+    }
+    
     /**
      * Сдать работу
      */
     public function actionDone($id = '') {
+        $sbs_id = !empty($id) ? $id : $_POST['sbs_id'];
         //проверить: есть ли сделка с таким ИД
-        if (!$id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($id))) {
+        if (!$sbs_id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($sbs_id))) {
             throw new CHttpException(404, 'The requested page does not exist.');
         } else {
-            $model->status = Sbs::STATUS_DONE;  //поставить статус сделки "исполнитель отказался"
-            if ($success = $model->save()) {
-                //запись события
-                new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_SBSDONE, $model->id);
-                //отсылка емейла
-                Email_helper::send($model->customer->email, 'Исполнитель сдал работу на сайте ' . Yii::app()->name . '', 'newSbsDone', array('sbs'=>$model));
-                //переход на страницу заказа
-                $url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
-                $this->redirect($url);
-            } else {
-                throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');
+            //сохраняем запись в таблицу сданных работ/правок
+            $sbswork = New SbsWork();
+            $sbswork->sbs_id = $sbs_id;
+            $sbswork->type = $_POST['type'];
+            $sbswork->text = $_POST['SbsWork']['text'];
+            if ($sbswork->validate()) {
+                $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+                try {
+                    if ($success = $sbswork->save()) {  //если успешно сохранена запись о сдаче работы
+                        $this->saveWorkFiles($sbswork); //сохранить файлы
+                        /*$attachments = CUploadedFile::getInstancesByName('attachments');  //извлекаем прикрепл-е файлы
+                        if( isset($attachments) && count($attachments) > 0 ) {
+                            foreach ($attachments as $attachment)    {  //цикл по файлам в аттачменте
+                                $sourcePath = pathinfo($attachment->name);    
+                                $fileName = md5(time()).'.'.$sourcePath['extension'];
+                                $path = '.'.Yii::app()->getModule('sbs')->workAttachmentsDir.$fileName;
+                                if($attachment->saveAs($path) ) {   //пробуем сохранить файл
+                                    $attachment_add = new SbsWorkFile();
+                                    $attachment_add->sbswork_id = $sbswork->id;          //ссылка на сданную работу
+                                    $attachment_add->filename = $fileName;               //сгенерённое имя файла
+                                    $attachment_add->origname = $attachment->name;       //оригинальное имя файла
+                                    $attachment_add->type = $sourcePath['extension'];    //тип файла = расширение
+                                    $attachment_add->size = $attachment->size;           //размер файла
+                                    if (!$attachment_add->save()) {  //пробуем сохранить запись в БД для файла
+                                        $filesSuccess = false;
+                                    }
+                                } else {
+                                    $filesSuccess = false;
+                                }
+                            }
+                        } */
+                    }
+                    //сохраняем новый статус сделки
+                    $model->status = Sbs::STATUS_DONE;  //поставить статус сделки "работа выполнена"
+                    $success = $model->save();          //сохраняем модель
+                    if ($success) {
+                        new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_SBSDONE, $model->id); //запись события
+                        Email_helper::send($model->customer->email, 'Исполнитель сдал работу на сайте ' . Yii::app()->name . '', 'newSbsDone', array('sbs'=>$model)); //отсылка емейла
+                    } else {
+                        throw new CException(404, 'Ошибка сохранения сделки');
+                    }
+
+                    $transaction->commit();
+                    //$this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id)); //переход на страницу сделки (заказа)
+                } catch(Exception $e) {
+                    $transaction->rollback();
+                    Yii::app()->user->setFlash(FlashMessages::ERROR, 'При сдаче работы возникла ошибка!');
+                    Yii::log("При сдаче работы возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+                }
             }
+            $this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id)); //переход на страницу сделки (заказа)
+        }
+    }
+
+    /**
+     * Внести правки / выслать правки
+     */
+    public function actionSendWork($id = '') {
+        $sbs_id = !empty($id) ? $id : $_POST['sbs_id'];
+        //проверить: есть ли сделка с таким ИД
+        if (!$sbs_id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($sbs_id))) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        } else {
+            //сохраняем запись в таблицу сданных работ/правок
+            $sbswork = New SbsWork();
+            $sbswork->sbs_id = $sbs_id;
+            $sbswork->type = $_POST['type'];
+            $sbswork->text = $_POST['SbsWork']['text'];
+            if ($sbswork->validate()) {
+                $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+                try {
+                    if ($success = $sbswork->save()) {  //если успешно сохранена запись о сдаче работы
+                        $this->saveWorkFiles($sbswork); //сохранить файлы
+                        new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_SBSDONE, $model->id); //запись события
+                        Email_helper::send($model->customer->email, 'Исполнитель сдал работу на сайте ' . Yii::app()->name . '', 'newSbsDone', array('sbs'=>$model)); //отсылка емейла
+                    } else {
+                        throw new CException(404, 'Ошибка сохранения работы');
+                    }
+                    $transaction->commit();
+                    //$this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id)); //переход на страницу сделки (заказа)
+                } catch(Exception $e) {
+                    $transaction->rollback();
+                    Yii::app()->user->setFlash(FlashMessages::ERROR, 'При завершении сделки возникла ошибка!');
+                    Yii::log("При завершении сделки возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+                }
+            }
+            $this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id)); //переход на страницу сделки (заказа)
         }
     }
         
@@ -312,7 +416,7 @@ class DefaultController extends Controller
 		$model = new Sbs;   //новый объект сделки
 		if( Yii::app()->request->isPostRequest && !empty($_POST['Sbs']) ) {//если был сабмит формы
 			$model->setAttributes($_POST['Sbs']);     //занести атрибуты  
-			if( $model->validate() ) {//DebugBreak();     //если проверка модели УСПЕШНА
+			if( $model->validate() ) {     //если проверка модели УСПЕШНА
                 
                 $performer = null;
                 $model->project_id = $id;   //ссылка на проект

@@ -125,6 +125,19 @@
                                 'style' => 'width: 758px;',
                             )); ?>
                             <?php echo $form->error($bid,'text'); ?>
+                            
+                            <?php
+                                $this->widget('CMultiFileUpload', array(
+                                    'name' => 'attachments',
+                                    'max' => $bid->getMax(),
+                                    'accept' => 'gif|jpeg|jpg|pdf|png',
+                                    'duplicate' => 'Duplicate file!',
+                                    'denied' => 'Invalid file type',
+                                    'htmlOptions' => array('disabled'=> ($bid->getMax() > 0) ? FALSE : TRUE ),
+                                ));     
+                            ?>
+                            
+                            
                             <input type="submit" class="inp_sub" value="<?=($bid->isNewRecord) ? 'Добавить' : 'Сохранить'?>" />
                         <?php $this->endWidget(); ?>
                     </div>

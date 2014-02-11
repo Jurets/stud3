@@ -1,6 +1,8 @@
 <?php
 class SbsModule extends CWebModule
 {
+    public $workAttachmentsDir = '/data/work/';
+
 	public function init()
 	{
 		// this method is called when the module is being created

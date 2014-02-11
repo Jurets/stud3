@@ -151,6 +151,7 @@ return array(
                 '/sbs/publication/<id:\d+>' => 'sbs/default/publication/',
                 '/sbs/reserve/<id:\d+>' => 'sbs/default/reserve/',
                 '/sbs/done/<id:\d+>' => 'sbs/default/done/',
+                '/sbs/sendwork/<id:\d+>' => 'sbs/default/sendwork/',
 
                 '/articles/<id:\d+>.html' => 'articles/default/show/',
                 '/articles/publication' => 'articles/default/publication',

@@ -64,6 +64,8 @@ class Sbs extends Model
             'arbitration' => array(self::HAS_ONE, 'SbsArbitration', 'sbs_id'),
             'project' => array(self::BELONGS_TO, 'Tenders', 'project_id'),
             'letters' => array(self::HAS_MANY, 'SbsLetters', 'sbs_id'),
+            'works' => array(self::HAS_MANY, 'SbsWork', 'sbs_id'),
+            'deliver' => array(self::HAS_ONE, 'SbsWork', 'sbs_id', 'condition'=>'type = '.SbsWork::TYPE_DELIVER),
         );
     }
 
@@ -113,4 +115,9 @@ class Sbs extends Model
             ),
 		);
 	}
+    
+    //показывает: есть ли в у сделки сдача работы исполнителем (т.е. есть одна запись с типом = 1)
+    public function isDeliver() {
+        return isset($this->deliver);
+    }
 }
