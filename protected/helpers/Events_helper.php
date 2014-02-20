@@ -32,9 +32,12 @@ class Events_helper
     //новые (Jurets)
     const NOTIFY_NEWSBSOFFER = 'предлагает вам сделку по проекту';
     const NOTIFY_NEWSBSCONFIRM = 'согласился на выполнение проекта';
-    const NOTIFY_NEWSBSREJECT = 'откалзя от выполнения проекта';
+    const NOTIFY_NEWSBSREJECT = 'отказался от выполнения проекта';
     const NOTIFY_SBSRESERVED = 'оплатил заказ';
     const NOTIFY_SBSDONE = 'сдал работу';
+    const NOTIFY_SBSDISPUTE = 'подал жалобу в арбитраж';
+    const NOTIFY_SBSCOMPLETE = 'сделка завершена';
+    const NOTIFY_SBSDELAY = 'сделка просрочена';
     
 	function __construct($user_id, $object, $title, $id = '')
 	{
@@ -70,6 +73,9 @@ class Events_helper
             self::NOTIFY_NEWSBSREJECT => '/sbs/publication?id='.$this->id,
             self::NOTIFY_SBSRESERVED => '/sbs/'.$this->id,
             self::NOTIFY_SBSDONE => '/sbs/'.$this->id,
+            self::NOTIFY_SBSDISPUTE => '/sbs/'.$this->id,
+            self::NOTIFY_SBSCOMPLETE => '/sbs/'.$this->id,
+            self::NOTIFY_SBSDELAY => '/sbs/'.$this->id,
         );
     }
 
@@ -104,6 +110,9 @@ class Events_helper
             self::NOTIFY_NEWSBSREJECT => 'Выбрать нового исполнителя',
             self::NOTIFY_SBSRESERVED => 'Приступить к выполнению задачи',
             self::NOTIFY_SBSDONE => 'Перейти к сделке',
+            self::NOTIFY_SBSDISPUTE => 'Перейти к сделке',
+            self::NOTIFY_SBSCOMPLETE => 'Перейти к сделке',
+            self::NOTIFY_SBSDELAY => 'Перейти к сделке',
         );
     }
 
@@ -141,6 +150,9 @@ class Events_helper
             self::NOTIFY_NEWSBSREJECT => Events::TYPE_SBS,
             self::NOTIFY_SBSRESERVED => Events::TYPE_SBS,
             self::NOTIFY_SBSDONE => Events::TYPE_SBS,
+            self::NOTIFY_SBSDISPUTE => Events::TYPE_SBS,
+            self::NOTIFY_SBSCOMPLETE => Events::TYPE_SBS,
+            self::NOTIFY_SBSDELAY => Events::TYPE_SBS,
         );
     }
 

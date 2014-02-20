@@ -143,8 +143,8 @@ return array(
 
                 //'/sbs/reserve' => 'sbs/default/reserve',
                 //'/sbs/publication' => 'sbs/default/publication',
-                '/sbs/arbitration' => 'sbs/default/arbitration',
-                '/sbs/complete' => 'sbs/default/complete',
+                //'/sbs/arbitration' => 'sbs/default/arbitration',
+                //'/sbs/complete' => 'sbs/default/complete',
                 '/sbs/close' => 'sbs/default/close',
                 
                 '/sbs/<id:\d+>' => 'sbs/default/show/',
@@ -152,6 +152,8 @@ return array(
                 '/sbs/reserve/<id:\d+>' => 'sbs/default/reserve/',
                 '/sbs/done/<id:\d+>' => 'sbs/default/done/',
                 '/sbs/sendwork/<id:\d+>' => 'sbs/default/sendwork/',
+                '/sbs/arbitration/<id:\d+>' => 'sbs/default/arbitration',
+                '/sbs/complete/<id:\d+>' => 'sbs/default/complete',
 
                 '/articles/<id:\d+>.html' => 'articles/default/show/',
                 '/articles/publication' => 'articles/default/publication',

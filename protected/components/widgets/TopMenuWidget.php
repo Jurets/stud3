@@ -9,7 +9,7 @@ class TopMenuWidget extends CWidget
             $user = $user->with('static')->findbyPk(Yii::app()->user->id);
             
             $auctionCount = $user->bidCountAuction;
-            $countClosed = Tenders::model()->user()->closed()->count();
+            //$countClosed = Tenders::model()->user()->closed()->count();
             
             //!TODO - надо будет переделать - щас костыль!!!!!
             //$arbitration = New Tenders();
@@ -19,6 +19,8 @@ class TopMenuWidget extends CWidget
             $workingCount = Sbs::model()->my()->active()->count();
             $guaranteeCount = Sbs::model()->my()->guarantee()->count();
             $countArbitration = Sbs::model()->my()->disputed()->count();
+            $completedCount = Sbs::model()->my()->disputed()->completed()->count();
+            $closedCount = Sbs::model()->my()->disputed()->closed()->count();
             
             if ($user->usertype == User::USERTYPE_PERFORMER) {
                 $offer = Sbs::model()->my()->offer();
@@ -35,13 +37,14 @@ class TopMenuWidget extends CWidget
                 'user'=>$user, 
                 //для всех
                 'auctionCount'=>$auctionCount,
-                'countClosed'=>$countClosed,
                 'countArbitration'=>$countArbitration,
                 //для исполнителя
                 'offerCount'=>$offerCount,
                 'workingCount'=>$workingCount,
                 'declinedCount'=>$declinedCount,
                 'guaranteeCount'=>$guaranteeCount,
+                'completedCount'=>$completedCount,
+                'closedCount'=>$closedCount,
             ));
 		}
     } 

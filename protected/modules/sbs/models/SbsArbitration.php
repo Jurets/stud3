@@ -37,13 +37,10 @@ class SbsArbitration extends Model
 
 	protected function beforeSave()
     {
-		if( $this->isNewRecord )// если новая запись
-		{		
+		if( $this->isNewRecord ) {// если новая запись
 			$this->user_id = Yii::app()->user->id;  
-
 			$this->date = time();
 		}
-
 		return parent::beforeSave();
     }
 }

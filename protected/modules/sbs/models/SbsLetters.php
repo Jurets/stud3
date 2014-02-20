@@ -22,6 +22,7 @@ class SbsLetters extends CActiveRecord
     {
         return array(
             'userdata' => array(self::BELONGS_TO, 'User', 'user_id'),
+            'sbs' => array(self::BELONGS_TO, 'Sbs', 'sbs_id'),
         );
     }
 
@@ -29,22 +30,17 @@ class SbsLetters extends CActiveRecord
 	{
 		return array(
 			array('text', 'required'),
-
 			array('name,sbs_id', 'safe')
 		);
 	}
 
 	public function beforeSave()
     {       
-        if( $this->isNewRecord )
-        {
+        if( $this->isNewRecord ) {
             $this->date = time();
-
             $this->user_id = Yii::app()->user->id;
-
     		$this->text = htmlspecialchars($this->text);
         }
-
         return parent::beforeSave();
     }
 

@@ -99,16 +99,18 @@ class DefaultController extends Controller
 		Yii::app()->getModule('tenders');
     	$model = Sbs::model()->findByPk($id);
     	if( !$model ) {
-			throw new CHttpException(404, 'The requested page does not exist.');
+			throw new CHttpException(410, 'Сделка не найдена!');
 		}
 		if( $model->customer_id != Yii::app()->user->id ) {
-			throw new CHttpException(404, 'The requested page does not exist.');
+			throw new CHttpException(410, 'Сделки могут завершаться только пользователем заказчиком!');
 		}
-    	if( $model->status != Sbs::STATUS_ACTIVE ) { // только начатые сделки
-			throw new CHttpException(404, 'The requested page does not exist.');
+        //if( $model->status != Sbs::STATUS_ACTIVE ) { // только начатые сделки
+    	if ($model->status != Sbs::STATUS_DONE) { // только сделки со сданной работой
+			throw new CHttpException(410, 'Завершаться могут только сделки со сданной работой!');
 		}
-		if( Yii::app()->request->isPostRequest && !empty($_POST['complete']) ) {
-			$model->status = Sbs::STATUS_COMPLETE;
+		if( Yii::app()->request->isPostRequest && !empty($_POST['complete']) ) 
+        {
+			/*$model->status = Sbs::STATUS_COMPLETE;
 			if( $model->validate() ) {
 				$transaction = Yii::app()->db->beginTransaction();// начало транзакции
 				try {
@@ -120,7 +122,12 @@ class DefaultController extends Controller
 					$transaction->rollback();
 					Yii::log("При завершении сделки возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
 				}
-			}
+			}*/
+            if ($model->complete()) {
+                $this->redirect('/sbs/' . $model->id);
+            } else {
+                throw new CHttpException(410, 'При завершении сделки возникли ошибки');
+            }
 		}
 		$renderdata = array(
 			'model' => $model
@@ -137,21 +144,20 @@ class DefaultController extends Controller
 		Yii::app()->getModule('tenders');
     	$model = Sbs::model()->findByPk($id);
 		$user = $this->loadModel();
-    	if( !$model ) {
+    	if (!$model ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-		if( $model->customer_id != Yii::app()->user->id and $model->performer_id != Yii::app()->user->id ) {
+		if ($model->customer_id != Yii::app()->user->id and $model->performer_id != Yii::app()->user->id ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-    	if( $model->status != Sbs::STATUS_ACTIVE ) { // только начатые сделки
+    	if ($model->status != Sbs::STATUS_DONE) { // только сделки на гарантии
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
-    	if( $model->status != Sbs::STATUS_ACTIVE ) { // если жалоба уже подана
+    	if ($model->status == Sbs::STATUS_DISPUTE ) { // если жалоба уже подана
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
 		$arbitration = new SbsArbitration;
-		if( Yii::app()->request->isPostRequest && !empty($_POST['SbsArbitration']))
-        {
+		if( Yii::app()->request->isPostRequest && !empty($_POST['SbsArbitration'])) {
 			$arbitration->setAttributes($_POST['SbsArbitration']);   
 			$arbitration->sbs_id = $id;
 			if( $arbitration->validate() )
@@ -160,10 +166,22 @@ class DefaultController extends Controller
 				try {
 					$arbitration->save();
 					$model->status = Sbs::STATUS_DISPUTE;
-					$model->save();
-					$transaction->commit();
-		
-					$this->redirect('/sbs');
+                    if($success = $model->save()) { // +отправить письмо автору блога, если комментарий добавлен другим пользователем
+                        $userFrom = Yii::app()->user->id == $model->customer->id ? $model->customer : $model->performer;
+                        $userTo   = Yii::app()->user->id == $model->customer->id ? $model->performer : $model->customer;
+                        new Events_helper($userTo->id, $userFrom->id, Events_helper::NOTIFY_SBSDISPUTE, $model->id);  //запись события
+                        //отсылка емейла
+                        Email_helper::send($userTo->email, 'На Вас подали жалобу в арбитраж на сайте ' . Yii::app()->name . '', 'newSbsDispute', array(
+                            'sbs'=>$model, 
+                            'userFrom'=>$userFrom,
+                            'userTo'=>$userTo,
+                        ));
+                        Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Жалоба в арбитраж подана');
+                    } else {
+                        throw new CException(410, 'При подаче жалобы в арбитраж возникла ошибка!');
+                    }
+                    $transaction->commit();
+					$this->redirect('/sbs/' . $model->id);
 				} catch(Exception $e) {
 					$transaction->rollback();
 					Yii::log("При подаче жалобы в арбитраж возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
@@ -501,7 +519,7 @@ class DefaultController extends Controller
     }
 
     /**
-    * -- Подтверждение исполнителем приглашения на участие в проекте (исп-ль соглашается на заказ)
+    * -- Отказ исполнителя от приглашения на участие в проекте (исп-ль соглашается на заказ)
     * 
     */
     public function actionReject($id = null) {
@@ -568,11 +586,21 @@ class DefaultController extends Controller
 				'sbs_id' => $sbs_id,
 				'text' => $_POST['SbsLetters']['text']
 			)); 
-			if( $model->validate()) { // +отправить письмо автору блога, если комментарий добавлен другим пользователем
-				$model->save();
+			if($success = $model->save()) { // +отправить письмо автору блога, если комментарий добавлен другим пользователем
+                $userFrom = Yii::app()->user->id == $sbs->customer->id ? $sbs->customer : $sbs->performer;
+                $userTo   = Yii::app()->user->id == $sbs->customer->id ? $sbs->performer : $sbs->customer;
+                new Events_helper($userTo->id, $userFrom->id, Events_helper::SENT_MESSAGES, $sbs->id);  //запись события
+                //отсылка емейла
+                Email_helper::send($userTo->email, 'Вам пришло Новое сообщение по проекту на сайте ' . Yii::app()->name . '', 'newSbsLetter', array(
+                    'sbsLetter'=>$model, 
+                    'userFrom'=>$userFrom,
+                    'userTo'=>$userTo,
+                ));
 				Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Комментарий добавлен');
-				$this->redirect('/sbs/default/show/?id='.$sbs_id);                   
-			}
+				$this->redirect('/sbs/'.$sbs_id);                   
+			} else {
+                throw new CHttpException(410, 'Ошибка при отправке сообщения');
+            }
 		}
 	}
 }

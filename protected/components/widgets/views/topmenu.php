@@ -60,7 +60,7 @@
                     <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/arbitration')?>" data-count="<?=$countArbitration?>" class="academic">В арбитраже (<?=$countArbitration?>)</a>
                 </li>
                 <li <? if ($status == 'closed') { ?> class="active"<? } ?>>
-                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="<?=$countClosed?>" class="academic">Завершенные (<?=$countClosed?>)</a>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('account/tenders/closed')?>" data-count="<?=$completedCount?>" class="academic">Завершенные (<?=$completedCount?>)</a>
                 </li>            
                 
                 <? if ($is_performer) { ?>

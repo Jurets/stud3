@@ -98,34 +98,36 @@
             </div>
         </div>
 
-        <?php $form = $this->beginWidget('CActiveForm', array(
-                'action' => '/sbs/default/AddComment',
-                'enableClientValidation'=>true,
-                'errorMessageCssClass'=>'alert alert-error',
-                'clientOptions'=>array(
-                    'validateOnSubmit'=>true,
-                    'validateOnChange'=>true,
-                ),
-            )); 
-        ?>
-        <?php echo CHtml::hiddenField('sbs_id', $model->id);?>
+        <? if ($model->status != Sbs::STATUS_COMPLETE && !$model->arbitration) { ?>
+            <?php $form = $this->beginWidget('CActiveForm', array(
+                    'action' => '/sbs/default/AddComment',
+                    'enableClientValidation'=>true,
+                    'errorMessageCssClass'=>'alert alert-error',
+                    'clientOptions'=>array(
+                        'validateOnSubmit'=>true,
+                        'validateOnChange'=>true,
+                    ),
+                )); 
+            ?>
+            <?php echo CHtml::hiddenField('sbs_id', $model->id);?>
 
-        <div class="comments-form">
-            <h4>Добавить комментарий</h4>
-            <div>
-                <?php echo $form->textArea($comment,'text', array('class' => 'area', 'rows' => '4', 'cols' => '58', 'style' => 'width: 758px;')); ?>
-                <?php echo $form->error($comment, 'text'); ?>
-            </div>
-            <div class="comments-send">
-                <div class="form-actions">
-                    <button type="submit" class="btn">Добавить</button>
+            <div class="comments-form">
+                <h4>Добавить комментарий</h4>
+                <div>
+                    <?php echo $form->textArea($comment,'text', array('class' => 'area', 'rows' => '4', 'cols' => '58', 'style' => 'width: 758px;')); ?>
+                    <?php echo $form->error($comment, 'text'); ?>
+                </div>
+                <div class="comments-send">
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Добавить</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <?php $this->endWidget(); ?>
+            <?php $this->endWidget(); ?>
+        <?php } ?>
 
     <!-- ----------------- Управление сделкой ------------------ -->
-        <? if( $model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV) { ?>
+        <? if ($model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV) { ?>
 
             <div class="alert alert-error">
                 <strong>Деньги не зарезервированы</strong>
@@ -142,20 +144,19 @@
                 </div><!-- /btn-group -->
                 <? } ?>
 
-        <? } else if( $model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE) { ?>
-
-            <div class="alert alert-success">
-                <? if( $model->status == Sbs::STATUS_ACTIVE) { ?>
-                    <strong>Деньги зарезервированы</strong>
-                <? } else if( $model->status == Sbs::STATUS_DONE) { ?>
-                    <strong>Исполнитель сдал работу</strong>
-                <? } ?>
-            </div>
+        <? } else if( $model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE || $model->status == Sbs::STATUS_DISPUTE || $model->status == Sbs::STATUS_COMPLETE) { ?>
 
     <!-- ----------------- Выполнение работы ------------------ -->
             
-            <? if (isset($model->works) && count($model->works)) { ?>
+            <? //выставить флаг - показывать ли форму отсылки работы
+            //showSendForm = ($is_performer && $model->status == Sbs::STATUS_ACTIVE) || ($is_customer && $model->status == Sbs::STATUS_DONE && $model->isDeliver());
+            $showSendForm = ($model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE);
+            $ifWorksExists = isset($model->works) && count($model->works);
+            if ($showSendForm || $ifWorksExists) {?>
                 <h4>Выполнение работы</h4>
+            <? } ?>
+
+            <? if ($ifWorksExists) { ?>
                 <? foreach($model->works as $sbswork) { ?>
                     <div class="answer" id="sbswork<?=$sbswork->id?>">
                         <div class="com-title">
@@ -180,9 +181,9 @@
                 <? } ?>
             <? } ?>
             
-            <? //выстваить флаг - показывать ли форму отсылки работы
+            <? //выставить флаг - показывать ли форму отсылки работы
             //showSendForm = ($is_performer && $model->status == Sbs::STATUS_ACTIVE) || ($is_customer && $model->status == Sbs::STATUS_DONE && $model->isDeliver());
-            $showSendForm = ($model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE);
+            //$showSendForm = ($model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE);
             if ($showSendForm) { 
                 if ($is_performer && $model->status == Sbs::STATUS_ACTIVE) {
                     $type = SbsWork::TYPE_DELIVER;
@@ -236,10 +237,10 @@
             <? } ?>
             
             <? if ($model->status == Sbs::STATUS_DONE) { ?>
-                <a href="/sbs/arbitration?id=<?=$model->id?>" class="btn">Подать жалобу в арбитраж</a>
-            <? } ?>
-            <? if ($is_customer) { ?>
-                <a href="/sbs/complete?id=<?=$model->id?>" class="btn">Завершить сделку</a>
+                <a href="<?=Yii::app()->createAbsoluteUrl('/sbs/arbitration/' . $model->id)?>" class="btn">Подать жалобу в арбитраж</a>
+                <? if ($is_customer) { ?>
+                    <a href="<?=Yii::app()->createAbsoluteUrl('/sbs/complete/' . $model->id)?>" class="btn">Завершить сделку</a>
+                <? } ?>
             <? } ?>
             
             <? /*if ($is_customer) { ?>
@@ -258,14 +259,29 @@
                 <br />
             <? }*/ ?>
 
-            <? if( $model->arbitration ): ?>
-                <br />
-                <div class="alert alert-error">
-                    <strong><?=$model->arbitration->userdata->username?> подал жалобу в арбитраж</strong>
-                    <br /><br />
-                    <?=$model->arbitration->text?>
-                </div>
-            <? endif; ?>
+            
+
+            <div class="alert alert-success">
+                <? if ($model->status == Sbs::STATUS_ACTIVE) { ?>
+                    <strong>Деньги зарезервированы</strong>
+                <? } else if ($model->status == Sbs::STATUS_DONE || $model->status == Sbs::STATUS_DISPUTE) { ?>
+                    <strong>Исполнитель сдал работу</strong>
+                    <p>Осталось дней до завершения: <?=$model->daysEtaComplete()?></p>
+
+                    <? if ($model->arbitration) { ?>
+                        <br />
+                        <div class="alert alert-error">
+                            <strong><?=$model->arbitration->userdata->username?> подал жалобу в арбитраж</strong>
+                            <br /><br />
+                            <?=$model->arbitration->text?>
+                        </div>
+                    <? } ?>
+
+                <? } else if ($model->status == Sbs::STATUS_COMPLETE) { ?>
+                    <strong>Сделка завершена</strong>
+                <? } ?>
+            </div>
+            
             
         <? } ?>
 

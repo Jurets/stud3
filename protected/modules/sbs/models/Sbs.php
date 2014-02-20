@@ -11,7 +11,10 @@ class Sbs extends Model
     const STATUS_WAITRESERV = 7; //ждёт пополнения денег
     const STATUS_REJECT = 8;//исполнитель отказался
     const STATUS_DONE = 9;    //исполнитель сдал работу (переходит на гарантию)
+    const STATUS_DELAY = 10;    //сделка просрочена (исполнитель не сдал работу)
 
+    const COMPLETE_ETA = 20; //сколько дней осталось до завершения сделки
+    
 	public function tableName()
 	{
 		return '{{sbs}}';
@@ -116,8 +119,112 @@ class Sbs extends Model
 		);
 	}
     
-    //показывает: есть ли в у сделки сдача работы исполнителем (т.е. есть одна запись с типом = 1)
+    //показывает: есть ли у сделки сдача работы исполнителем (т.е. есть одна запись с типом = 1)
     public function isDeliver() {
         return isset($this->deliver);
     }
+    
+    //показывает: есть ли у сделки текущее требование от заказчика внести правки (соот-но исполнитель не выслал правки)
+    public function isDemand() {DebugBreak();
+        $last_work = SbsWork::model()->findBySql('select * from {{sbs_work}} where sbs_id = :sbs_id order by id DESC limit 1', array(':sbs_id'=>$this->id));
+        return is_object($last_work) && $last_work->type == SbsWork::TYPE_DEMAND;
+    }
+
+    //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
+    public function daysEtaComplete() {
+        if ($this->isDeliver()) {//если есть сдача работы
+            $deliverDate = $this->deliver->date; //берём дату сдачи работы
+            $diff = floor((strtotime("now") - $deliverDate)/86400); //считаем разницу между сейчас и датой сдачи
+            $days = self::COMPLETE_ETA - $diff;  //считаем - сколько осталось
+            $days = $days < 0 ? 0 : $days;  //корректировка, если отрицательное число
+        } else {
+            return false;
+        }
+        return $days;
+    }
+
+    //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
+    /*public function daysEtaDone() {
+        if (!$this->isDeliver()) {//если есть сдача работы
+            //$deliverDate = $this->deliver->date; //берём дату сдачи работы
+            $diff = floor((strtotime("now") - $this->date)/86400); //считаем разницу между сейчас и датой сдачи
+            $days = $this->period - $diff;  //считаем - сколько осталось
+            $days = $days < 0 ? 0 : $days;  //корректировка, если отрицательное число
+        } else {
+            return false;
+        }
+        return $days;
+    }*/
+
+    //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
+    public function getIsExpire() {//DebugBreak();
+        if (!$this->isDeliver()) {//если НЕ БЫЛО сдачи работы
+            $diff = floor((strtotime("now") - $this->date)/86400); //считаем разницу между сейчас и датой сделки (в днях)
+            $days = $this->period - $diff;  //считаем - сколько осталось дней от заданного периода
+            return ($days <= 0);  //возвращаем ИСТИНУ, если не осталось дней
+        } else {
+            return false;         //если была сдача работы - возвращаем ЛОЖЬ (т.е. не просрочена)
+        }
+    }
+        
+    /**
+    * завершение сделки
+    * 
+    */
+    public function complete()
+    {//DebugBreak();
+        $success = false;
+        $this->status = self::STATUS_COMPLETE;
+        if ($this->validate()) {
+            $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+            try {
+                $this->save();
+                Balance_helper::change($this->performer_id, $this->amount, 'Платеж получен');
+                //запись события
+                new Events_helper($this->customer->id, $this->customer->id, Events_helper::NOTIFY_SBSCOMPLETE, $this->id);  //запись события
+                //отсылка емейлов
+                $userTo = $this->customer;
+                Email_helper::send($userTo->email, 'Завершена сделка по проекту на сайте ' . Yii::app()->name . '', 'newSbsComplete', array('sbs'=>$this, 'userTo'=>$userTo));
+                $userTo = $this->performer;
+                Email_helper::send($userTo->email, 'Завершена сделка по проекту на сайте ' . Yii::app()->name . '', 'newSbsComplete', array('sbs'=>$this, 'userTo'=>$userTo));
+                
+                $transaction->commit();
+                $success = true;
+                //$this->redirect('/sbs');
+            } catch(Exception $e) {
+                $transaction->rollback();
+                Yii::log("При завершении сделки возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+            }
+        }
+        return $success;
+    }
+ 
+    /**
+    * завершение сделки
+    * 
+    */
+    public function delay()
+    {//DebugBreak();
+        $success = false;
+        $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+        try {
+            $this->status = self::STATUS_DELAY;
+            $this->save();
+            //запись события
+            new Events_helper($this->customer->id, $this->customer->id, Events_helper::NOTIFY_SBSDELAY, $sbs->id);  //запись события
+            //отсылка емейлов
+            Email_helper::send($this->performer->email, 'Вы не сдали работу в указанные сроки на сайте ' . Yii::app()->name . '', 'newSbsDelay', array(
+                'sbs'=>$this, 'userTo'=>$this->performer,
+            ));
+            Email_helper::send($this->customer->email, 'Исполнитель не успел выполнить работу в указанные сроки на сайте ' . Yii::app()->name . '', 'newSbsDelayP', array(
+                'sbs'=>$this, 'userTo'=>$this->customer,
+            ));
+            $transaction->commit();
+            $success = true;
+        } catch(Exception $e) {
+            $transaction->rollback();
+            Yii::log("При завершении сделки возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+        }
+        return $success;
+    }    
 }
