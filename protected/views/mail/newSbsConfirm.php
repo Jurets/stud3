@@ -1,5 +1,5 @@
 <?
-    $url1 = Yii::app()->createAbsoluteUrl('sbs/reserve', array('id'=>$sbs->id));
+    $url1 = Yii::app()->createAbsoluteUrl('sbs/reserve/'.$sbs->id);
     $url2 = Yii::app()->createAbsoluteUrl('account/balance/');
 ?>
 Уважаемый(ая) <strong><?=$sbs->customer->nickName?>!</strong><br/>
@@ -7,9 +7,9 @@
 Исполнитель <strong><?=$sbs->performer->nickName?></strong> согласился на Ваше предложение по проекту <strong><?=$sbs->project->title?></strong>
 <br/><br/>
 
-Для того, чтобы зарезервировать деньги на сделку, перейдите по ссылке:<br/>
+Для того, чтобы зарезервировать деньги на сделку, выполните вход на сайте и перейдите по ссылке:<br/>
 <a target="_blank" href="<?=$url1?>"><?=$url1?></a><br/>
-Для того, чтобы пополнить свой баланс, перейдите по ссылке:<br/>
+Для того, чтобы пополнить свой баланс, выполните вход на сайте и перейдите по ссылке:<br/>
 <a target="_blank" href="<?=$url2?>"><?=$url2?></a><br/>
 <br/>
 
