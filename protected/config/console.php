@@ -19,7 +19,7 @@ return array(
         'application.models.*',
         'application.components.*',
 
-        //'application.extensions.taggable.*',
+        'application.extensions.taggable.*',
 
         'application.modules.user.UserModule',
         'application.modules.user.models.*',
@@ -55,42 +55,42 @@ return array(
         'log'=>array(
             'class'=>'CLogRouter',
             'routes'=>array(
-                /*array(
-                    'class'=>'CFileLogRoute',
-                    'logFile'=>'cron.log',
-                    'levels'=>'error, warning',
-                ),
-                array(
-                    'class'=>'CFileLogRoute',
-                    'logFile'=>'cron_trace.log',
-                    'levels'=>'trace',
-                ),
-                array( //оповещение о вебинаре
-                    'class'=>'CFileLogRoute',
-                    'logFile'=>'webinar_notify.log',
-                    'levels'=>'info',
-                    'categories'=>'notify.webinar',
-                ),
-                array( //автоматическая деактивация юзеров, у которых окончился срок активации
-                    'class'=>'CFileLogRoute',
-                    'logFile'=>'activation_notify.log',
-                    'levels'=>'info',
-                    'categories'=>'notify.activation',
-                ),
-                array( //логирование почтовой рассылки
-                    'class'=>'CFileLogRoute',
-                    'logFile'=>'mail.log',
-                    'levels'=>'info, error',
-                    'categories'=>'mail',
-                ),*/
                 array( //принудительное резервирование на вебинар
                     'class'=>'CFileLogRoute',
                     'levels'=>'info',
                     'categories'=>'sbs.autocomplete',
                     'logFile'=>'sbs_autocomplete.log',
                 ),
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'info',
+                    'categories'=>'testmail',
+                    'logFile'=>'testmail.log',
+                ),
             ),
         ),
-        
+
+         'mail' => array(
+            'class' => 'application.extensions.swiftMailer.YiiMail',
+            'transportType' => 'php',
+            'viewPath' => 'application.views.mail',
+            'logging' => true,
+            'dryRun' => false,
+         ),
+
+        'request' => array(
+            'class' => 'HttpRequest',
+            'hostInfo' => 'free-stud.my',
+            'baseUrl' => '',
+            'scriptUrl' => '',
+        ),
+          
+        'urlManager' => array(
+            'urlFormat' => 'path',
+            'showScriptName' => false,
+            'cacheID' => 'cache',
+            'rules' => require('rules.php'),
+        )
+          
 	),
 );

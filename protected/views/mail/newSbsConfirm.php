@@ -5,6 +5,8 @@
 Уважаемый(ая) <strong><?=$sbs->customer->nickName?>!</strong><br/>
 <br/>
 Исполнитель <strong><?=$sbs->performer->nickName?></strong> согласился на Ваше предложение по проекту <strong><?=$sbs->project->title?></strong>
+<br/>
+Сумма, необходимая для выполнения работы: <strong><?=$sbs->amount?></strong>
 <br/><br/>
 
 Для того, чтобы зарезервировать деньги на сделку, выполните вход на сайте и перейдите по ссылке:<br/>

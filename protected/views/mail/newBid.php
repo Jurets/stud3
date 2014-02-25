@@ -3,10 +3,10 @@
 На размещенный Вами заказ поступило новое предложение от пользователя <strong><?=$bid->userdata->nickName?></strong>
 <br/>
 Предложение<br/>
-Стоимость от <strong><?=$bid->budget_start?> до <?=$bid->budget_end?> <?=$bid->getCurrency()?></strong>
+Стоимость <strong><?=$bid->budget_start?> <?=$bid->getCurrency()?></strong>
 <br/><br/>
 
-Сроки от <strong><?=$bid->period_start?> до <?=$bid->period_end?> <?=$bid->getPeriodby()?></strong><br/>
+Сроки от <strong><?=date('d.m.Y', $bid->period_start)?></strong> до <strong><?=date('d.m.Y', $bid->period_end)?></strong><br/>
 <?=$bid->text?>
 <br/><br/>
 

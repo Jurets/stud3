@@ -204,14 +204,14 @@ class Sbs extends Model
     * 
     */
     public function delay()
-    {//DebugBreak();
+    {
         $success = false;
         $transaction = Yii::app()->db->beginTransaction();// начало транзакции
         try {
             $this->status = self::STATUS_DELAY;
             $this->save();
             //запись события
-            new Events_helper($this->customer->id, $this->customer->id, Events_helper::NOTIFY_SBSDELAY, $sbs->id);  //запись события
+            new Events_helper($this->customer->id, $this->customer->id, Events_helper::NOTIFY_SBSDELAY, $this->id);  //запись события
             //отсылка емейлов
             Email_helper::send($this->performer->email, 'Вы не сдали работу в указанные сроки на сайте ' . Yii::app()->name . '', 'newSbsDelay', array(
                 'sbs'=>$this, 'userTo'=>$this->performer,
@@ -227,4 +227,42 @@ class Sbs extends Model
         }
         return $success;
     }    
+    
+    /**
+    * продление сделки
+    * 
+    */
+    public function prolongation($date = null)
+    {
+        if (!isset($date)) {
+            return false;
+        }
+        $success = false;
+        $transaction = Yii::app()->db->beginTransaction();// начало транзакции
+        try {
+            $this->status = self::STATUS_ACTIVE;
+            $this->period = floor(($date - $this->date)/86400);
+            $this->save();
+            //запись события
+            new Events_helper($this->performer->id, $this->customer->id, Events_helper::NOTIFY_SBSPROLONGATION, $this->id);  //запись события
+            //отсылка емейлов
+            Email_helper::send($this->performer->email, 'Продление заказа на сайте ' . Yii::app()->name . '', 'newSbsProlongation', array(
+                'sbs'=>$this, 'userTo'=>$this->performer,
+            ));
+            $transaction->commit();
+            $success = true;
+        } catch(Exception $e) {
+            $transaction->rollback();
+            Yii::log("При продлении сделки возникла ошибка! - ".$e->getMessage()."", CLogger::LEVEL_ERROR);  
+        }
+        return $success;
+    }    
+        
+    /**
+    * дата сдачи работы (в unix-формате)
+    * 
+    */
+    public function getDateEnd() {
+        return $this->date + $this->period * 86400;
+    }
 }

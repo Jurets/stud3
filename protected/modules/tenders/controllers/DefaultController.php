@@ -135,18 +135,14 @@ class DefaultController extends Controller
                 $url = Yii::app()->createAbsoluteUrl(Yii::app()->request->requestUri);
                 //$url = Yii::app()->request->requestUri;
                 
-                if( $isNewRecord ) {  //если новый ответ на проект
+                //if( $isNewRecord ) {  //если новый ответ на проект
                     //отослать сообщение на почту заказчика
-                    //$result = 
                     Email_helper::send($model->userdata->email, 'Новый ответ на Ваш проект на сайте ' . Yii::app()->name . '', 'newBid', array(
                         'customer'=>$model->userdata, 
                         'bid'=>$bid, 
                         'url'=>$url,
                     ));
-                    //echo $model->userdata->email;
-                    //CVarDumper::dump($result, 20, true);
-                    //Yii::app()->end(); 
-                }
+                //}
 				$this->redirect($url/*'/tenders/'.$id.'.html'*/);
 			}
 		}
@@ -288,7 +284,7 @@ class DefaultController extends Controller
                     $userTo = $bid->userdata;
                     $userFrom = $bid->tender->userdata;
 				}
-                $url = Yii::app()->createAbsoluteUrl('tenders/' . $bid->tender->id . 'html');
+                $url = Yii::app()->createAbsoluteUrl('tenders/' . $bid->tender->id . '.html');
                 //отсылка емейла
                 Email_helper::send($userTo->email, 'Новое сообщение по проекту на сайте ' . Yii::app()->name . '', 'newBidLetter', array(
                     'userTo'=>$userTo,

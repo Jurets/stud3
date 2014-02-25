@@ -195,24 +195,18 @@
                                     </div>            
                                 </article>
 
-                                <? // ---------------- Кнопки управления ответом исполнителя на заказ ----------?>
-                                <? /*if (Yii::app()->user->id == $row->user_id && ($row->status == Bids::STATUS_ACCEPT && isset($model->sbs))) { ?>
-                                    <!--<i class="icon-pencil"></i> <a href="/tenders/<?=$row->project_id?>.html?action=edit#bid">Редактировать</a> -->
-                                    <i class="icon-pencil"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/confirm', array('id'=>$model->sbs->id))?>">Принять предложение</a> 
-                                    <i class="icon-remove"></i> <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=reject" class="red">Отказаться</a>
-                                <? }*/ ?>
-
                                 <? // -------- КНОПКИ управления заказом (если юзер - хозяин) ?>
                                 <? if ($is_owner) { //если юзер - хозяин и статус заказа=активен ?>
                                     <div class="payd-link">
-                                        <? if ($row->status == Bids::STATUS_ACTIVE) { //если статус заказа = активен ?>
-                                            <!--<a href="/tenders/bidmanagement?id=<?=$row->id?>&action=accept" class="btn btn-mini" id="all">Выбрать исполнителем</a> -->
-                                            <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/publication', array('id'=>$model->id))?>" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
-                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
-                                        <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
-                                            <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
-                                        <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_REJECT) {?>
-                                            <p>Исполнитель отказался от выполнения проекта</p> 
+                                        <? if ($model->status == Tenders::STATUS_OPEN) { //если статус заказа = активен ?>
+                                            <? if ($row->status == Bids::STATUS_ACTIVE) { //если статус заказа = активен ?>
+                                                <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/publication', array('id'=>$model->id))?>" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
+                                                <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
+                                            <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
+                                                <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
+                                            <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_REJECT) {?>
+                                                <p>Исполнитель отказался от выполнения проекта</p> 
+                                            <? } ?>
                                         <? } ?>
                                     </div>
                                 <? } ?>

@@ -1,5 +1,4 @@
 <?
-    //$url = Yii::app()->createAbsoluteUrl('sbs/show/', array('id'=>$sbs->id));
     $url = Yii::app()->createAbsoluteUrl('sbs/' . $sbs->id);
 ?>
 Уважаемый(ая) <strong><?=$sbs->performer->nickName?>!</strong><br/>
@@ -7,7 +6,7 @@
 Вам предложили сделку по проекту <strong><?=$sbs->project->title?></strong> от пользователя <strong><?=$sbs->customer->nickName?></strong>
 <ul>
     <li>сумма сделки: <?=$sbs->amount?></li>
-    <li>период (дней): <?=$sbs->period?></li>
+    <li>дата сдачи: <?=date('d.m.Y', $sbs->dateEnd)?></li>
 </ul>
 <br/><br/>
 

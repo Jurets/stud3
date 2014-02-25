@@ -21,7 +21,7 @@ class SbsCompleteCommand extends CConsoleCommand
         echo "================================================================================\n\r";
         echo "FREE-STUD console command: SBS Auto completion (20 days after work done by performer) \n\r";
         echo "================================================================================\n\r";
-        DebugBreak();
+        //DebugBreak();
         //все сделки
         //$sbs_array = Sbs::model()->findAll('status <> :status', array(':status'=>Sbs::STATUS_COMPLETE));
         $criteria = new CDbCriteria(); 
@@ -36,7 +36,7 @@ class SbsCompleteCommand extends CConsoleCommand
                 if ($success = $sbs->delay()) { //поставить для сделки статус "просрочена"
                     $this->countDelay++;
                 } else {
-                    Yii::log('--Ошибка при смене статуса сделки (ИД='.$sbs->id.')'/*.$sbs->errors*/, CLogger::LEVEL_ERROR, 'sbs.autocomplete');
+                    Yii::log('--Ошибка при смене статуса сделки (ИД='.$sbs->id.')', CLogger::LEVEL_ERROR, 'sbs.autocomplete');
                 }
             } else {
                 $daysDeliver = $sbs->daysEtaComplete(); //кол-во дней оставшихся до конца 20-ти дневного срока

@@ -218,7 +218,7 @@ class DefaultController extends Controller
 			Yii::app()->user->setFlash(FlashMessages::ERROR, 'На вашем счету недостаточно средств, пополните баланс');
 		} else {
 			$balance = TRUE;
-			Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Вы можете зарезервировать сделку, с вашего баланса будет списано '.$model->amount.' рублей');
+			//Yii::app()->user->setFlash(FlashMessages::SUCCESS, 'Вы можете зарезервировать сделку, с вашего баланса будет списано '.$model->amount.' рублей');
 		}
 		if( Yii::app()->request->isPostRequest && !empty($_POST['reserve']) && $balance == TRUE ) {
 			$model->status = Sbs::STATUS_ACTIVE;
@@ -603,4 +603,25 @@ class DefaultController extends Controller
             }
 		}
 	}
+    
+    /**
+    * -- Отказ исполнителя от приглашения на участие в проекте (исп-ль соглашается на заказ)
+    * 
+    */
+    public function actionProlongation($id = null) {//DebugBreak();
+        //проверить: есть ли сделка с таким ИД
+        if (!$id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($id))) {
+            throw new CHttpException(404, 'Не найдена сделка с таким ИД.');
+        } else {
+            if (!isset($_POST['Sbs']['period']))
+                throw new CHttpException(410, 'Не задана дата пролонгации');
+            $date = strtotime($_POST['Sbs']['period']);
+            if ($success = $model->prolongation($date)) {
+                //переход на страницу заказа
+                $this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id));
+            } else {
+                throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');
+            }
+        }
+    }    
 }

@@ -38,6 +38,7 @@ class Events_helper
     const NOTIFY_SBSDISPUTE = 'подал жалобу в арбитраж';
     const NOTIFY_SBSCOMPLETE = 'сделка завершена';
     const NOTIFY_SBSDELAY = 'сделка просрочена';
+    const NOTIFY_SBSPROLONGATION = 'продлил заказ';
     
 	function __construct($user_id, $object, $title, $id = '')
 	{
@@ -76,6 +77,7 @@ class Events_helper
             self::NOTIFY_SBSDISPUTE => '/sbs/'.$this->id,
             self::NOTIFY_SBSCOMPLETE => '/sbs/'.$this->id,
             self::NOTIFY_SBSDELAY => '/sbs/'.$this->id,
+            self::NOTIFY_SBSPROLONGATION => '/sbs/'.$this->id,
         );
     }
 
@@ -113,6 +115,7 @@ class Events_helper
             self::NOTIFY_SBSDISPUTE => 'Перейти к сделке',
             self::NOTIFY_SBSCOMPLETE => 'Перейти к сделке',
             self::NOTIFY_SBSDELAY => 'Перейти к сделке',
+            self::NOTIFY_SBSPROLONGATION => 'Перейти к сделке',
         );
     }
 
@@ -153,6 +156,7 @@ class Events_helper
             self::NOTIFY_SBSDISPUTE => Events::TYPE_SBS,
             self::NOTIFY_SBSCOMPLETE => Events::TYPE_SBS,
             self::NOTIFY_SBSDELAY => Events::TYPE_SBS,
+            self::NOTIFY_SBSPROLONGATION => Events::TYPE_SBS,
         );
     }
 
