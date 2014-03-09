@@ -21,7 +21,7 @@ class SbsCompleteCommand extends CConsoleCommand
         echo "================================================================================\n\r";
         echo "FREE-STUD console command: SBS Auto completion (20 days after work done by performer) \n\r";
         echo "================================================================================\n\r";
-        //DebugBreak();
+        DebugBreak();
         //все сделки
         //$sbs_array = Sbs::model()->findAll('status <> :status', array(':status'=>Sbs::STATUS_COMPLETE));
         $criteria = new CDbCriteria(); 
@@ -74,7 +74,8 @@ class SbsCompleteCommand extends CConsoleCommand
             } */
         
         }
-        $str = 'Авто завершение сделок. Успешно завершено: ' . $this->countComplete . "\n\r";
+        $str = "Авто обработка сделок\n\rПоставлен статус просроченной: " . $this->countDelay . "\n\r" .
+               'Успешно завершено: ' . $this->countComplete . "\n\r";
         Yii::log($str, CLogger::LEVEL_INFO, 'sbs.autocomplete');
         echo $str;
         return true;

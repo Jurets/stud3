@@ -1,17 +1,15 @@
 <?php
 class Sbs extends Model
-{
+{   //статусы сделки
 	const STATUS_NEW = 4;// новая сделка
 	const STATUS_ACTIVE = 1;// сумма зарезервирована
-	const STATUS_COMPLETE = 2;// сделка завершена
-	const STATUS_CLOSE = 3;// сделка отменена
-
-	const STATUS_DISPUTE = 5;// возник спор, арбитраж
-    
-    const STATUS_WAITRESERV = 7; //ждёт пополнения денег
     const STATUS_REJECT = 8;//исполнитель отказался
+    const STATUS_WAITRESERV = 7; //ждёт пополнения денег
     const STATUS_DONE = 9;    //исполнитель сдал работу (переходит на гарантию)
     const STATUS_DELAY = 10;    //сделка просрочена (исполнитель не сдал работу)
+	const STATUS_COMPLETE = 2;// сделка завершена
+	const STATUS_CLOSE = 3;// сделка отменена
+	const STATUS_DISPUTE = 5;// возник спор, арбитраж
 
     const COMPLETE_ETA = 20; //сколько дней осталось до завершения сделки
     
@@ -125,7 +123,7 @@ class Sbs extends Model
     }
     
     //показывает: есть ли у сделки текущее требование от заказчика внести правки (соот-но исполнитель не выслал правки)
-    public function isDemand() {DebugBreak();
+    public function isDemand() {
         $last_work = SbsWork::model()->findBySql('select * from {{sbs_work}} where sbs_id = :sbs_id order by id DESC limit 1', array(':sbs_id'=>$this->id));
         return is_object($last_work) && $last_work->type == SbsWork::TYPE_DEMAND;
     }

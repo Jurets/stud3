@@ -21,11 +21,6 @@
                     
 <div class="yui-g">
 
-        <!--<h3>Техническое задание</h3>
-        <div class="content">
-            <?=$model->project->text?>
-        </div> -->
-
     <div class="alert alert-block">
         <h4>Сведения о сделке</h4>
         <div class="desc">Создан <?=Date_helper::date_smart($model->date)?></div>
@@ -45,27 +40,80 @@
                 Исполнитель <?=$model->performer->_online?> 
                 <font class="frlname11"><a href="/users/<?=$model->performer->username?>" class="frlname11"><?=$model->performer->name?> <?=$model->performer->surname?></a> [<a href="/users/<?=$model->performer->username?>" class="frlname11"><?=$model->performer->username?></a>]</font> 
             </div>
-            <? if ($model->status == Sbs::STATUS_REJECT) { ?>
-                <div class="alert alert-error">
-                    <strong>Исполнитель отказался</strong> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/publication/'.$model->project->id)?>">Выберите другого исполнителя</a>
-                </div>
-            <? } ?>
             
         <? } else if ($is_performer) { ?>
-
             <? if ($model->status == Sbs::STATUS_NEW) { ?>
                 <p>
                     <i class="icon-pencil"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/confirm', array('id'=>$model->id))?>">Принять предложение</a> 
                     <i class="icon-remove"></i> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/reject', array('id'=>$model->id))?>" class="red">Отказаться</a>
                 </p>
-            <? } else if ($model->status == Sbs::STATUS_WAITRESERV) {?>
-                <p>Ожидание пополнения денег заказчиком</p>
-            <? }  else if ($model->status == Sbs::STATUS_REJECT) {?>
-                <p>Вы отказались от выполнения проекта</p>
             <? } ?>
         <? } ?>
     </div>
     
+    
+<!-- ----------------- Статус сделки ------------------ -->
+    <? if ($model->status == Sbs::STATUS_NEW) { ?>
+        <div class="alert alert-block">
+            <strong>Ждёт подтверждения исполнителем</strong>
+        </div>
+    <? } else if ($model->status == Sbs::STATUS_REJECT) { ?>
+        <div class="alert alert-block">
+            <? if ($is_customer) { ?>
+                <strong>Исполнитель отказался</strong> <a href="<?=Yii::app()->createAbsoluteUrl('sbs/publication/'.$model->project->id)?>">Выберите другого исполнителя</a>
+            <? } else if ($is_performer) { ?>
+                <strong>Вы отказались от выполнения проекта</strong>
+            <? } ?>
+        </div>
+    <? } else if ($model->status == Sbs::STATUS_WAITRESERV) { ?>
+        <? if ($is_customer) { ?>
+            <div class="alert alert-error">
+                <strong>Деньги не зарезервированы</strong>
+            </div>
+        <? } else if ($is_performer) { ?>
+            <div class="alert alert-block">
+                <strong>Ожидание пополнения денег заказчиком</strong>
+            </div>
+        <? } ?>
+    <? } else if ($model->status == Sbs::STATUS_ACTIVE) { ?>
+        <div class="alert alert-success">
+            <? if ($is_customer) { ?>
+                <strong>Деньги зарезервированы. Исполнитель приступил к выполению заказа</strong>
+            <? } else if ($is_performer) { ?>
+                <strong>Деньги зарезервированы. Можете приступать к выполению заказа</strong>
+            <? } ?>
+        </div>
+    <? } else if ($model->status == Sbs::STATUS_DONE || $model->status == Sbs::STATUS_DISPUTE) { ?>
+        <div class="alert alert-success">
+            <strong>Исполнитель сдал работу</strong>
+        </div>
+    <? } else if ($model->status == Sbs::STATUS_DELAY) { ?>
+        <div class="alert alert-error">
+            <strong>Заказ просрочен</strong>
+        </div>
+    <? } else if ($model->status == Sbs::STATUS_COMPLETE) { ?>
+        <div class="alert alert-success">
+            <strong>Сделка завершена</strong>
+        </div>
+    <? } ?>
+    
+    <!-- Дней до окончания 20-дневного срока после сдачи работы -->
+    <? if ($model->status == Sbs::STATUS_DONE || $model->status == Sbs::STATUS_DISPUTE) { ?>
+        <div class="alert alert-block">
+            <p>Осталось дней до завершения: <?=$model->daysEtaComplete()?></p>
+        </div>
+    <? } ?>
+    
+    <br />
+    
+    <!-- ----------------- Арбитраж ------------------ -->
+    <? if ($model->arbitration) { ?>
+        <div class="alert alert-error">
+            <strong><?=$model->arbitration->userdata->username?> подал жалобу в арбитраж</strong>
+            <br /><br />
+            <?=$model->arbitration->text?>
+        </div>
+    <? } ?>
     
     <div class="subtitle"></div>
 
@@ -128,23 +176,13 @@
     <!-- ----------------- Управление сделкой ------------------ -->
         <? if ($model->status == Sbs::STATUS_NEW || $model->status == Sbs::STATUS_WAITRESERV) { ?>
 
-            <? if ($model->status == Sbs::STATUS_NEW) { ?>
-                <div class="alert alert-block">
-                    <strong>Ждёт подтверждения исполнителем</strong>
-                </div>
-            <? } else if ($model->status == Sbs::STATUS_WAITRESERV) { ?>
-                <div class="alert alert-error">
-                    <strong>Деньги не зарезервированы</strong>
-                </div>
-            <? } ?>
-
             <? if ($is_customer) { ?>
                 <div class="btn-group">
                     <a href="<?=Yii::app()->createAbsoluteUrl('/sbs/reserve/' . $model->id)?>" class="btn">Зарезервировать деньги</a>
-                    <a class="btn dropdown-toggle" data-toggle="dropdown">или <span class="caret"></span></a>
+                    <!--<a class="btn dropdown-toggle" data-toggle="dropdown">или <span class="caret"></span></a>
                     <ul class="dropdown-menu" style="list-style:none">
                         <li style="list-style:none"><a href="/sbs/default/close?id=<?=$model->id?>">Отменить</a></li>
-                    </ul>
+                    </ul>-->
                 </div><!-- /btn-group -->
                 <? } ?>
 
@@ -247,78 +285,29 @@
                 <? } ?>
             <? } ?>
             
-            <? /*if ($is_customer) { ?>
-                <div class="btn-group">
-                    <button class="btn">Завершить сделку</button>
-                    <button class="btn dropdown-toggle" data-toggle="dropdown">или <span class="caret"></span></button>
-                    <ul class="dropdown-menu" style="list-style:none">
-                        <li style="list-style:none"><a href="/sbs/arbitration?id=<?=$model->id?>">подать жалобу в арбитраж</a></li>
-                    </ul>
-                </div><!-- /btn-group -->
-            <? } else { ?>
-                
-                <br>
-                <a href="/sbs/arbitration?id=<?=$model->id?>" class="btn">Подать жалобу в арбитраж</a>
-                
-                <br />
-            <? }*/ ?>
-
-            
-            <? if ($model->status == Sbs::STATUS_DELAY) { ?>
-                <div class="alert alert-error">
-                    <strong>Заказ просрочен</strong>
-                </div>
-                
-                <? if ($is_customer) { ?>
-                        <?php $form = $this->beginWidget('CActiveForm', array(
-                            'id' => 'prolongation', 
-                            'action' => 'prolongation/'.$model->id,
-                            'enableClientValidation'=>false,
-                            'errorMessageCssClass'=>'alert alert-error',
-                            'clientOptions'=>array(
-                                'validateOnSubmit'=>true,
-                                'validateOnChange'=>true,
-                                'validateOnType' => false,
-                            ),
-                            'htmlOptions' => array('enctype' => 'multipart/form-data'),
-                        )); ?>
-                            <?php //echo $form->errorSummary($bid); ?>
-                            <p><b class="btn"><strong>Срок</strong></b></p>
-                                <?php echo CHtml::textField('Sbs[period]', date('d.m.Y'), array(
-                                    'class' => 'inp_text datepicker'/*, 'size' => 3*/   
-                                    )); ?>
-                            <?php //echo $form->error($bid,'text'); ?>
-                            <input type="submit" class="inp_sub" value="Продлить" />
-                        <?php $this->endWidget(); ?>
-                <? } ?>
-                
-            <? } else { ?>
-
-                <div class="alert alert-success">
-                    <? if ($model->status == Sbs::STATUS_ACTIVE) { ?>
-                        <strong>Деньги зарезервированы. Исполнитель пристул к выполению заказа</strong>
-                    <? } else if ($model->status == Sbs::STATUS_DELAY) { ?>
-                        <strong>Деньги зарезервированы</strong>
-                    <? } else if ($model->status == Sbs::STATUS_DONE || $model->status == Sbs::STATUS_DISPUTE) { ?>
-                        <strong>Исполнитель сдал работу</strong>
-                        <p>Осталось дней до завершения: <?=$model->daysEtaComplete()?></p>
-
-                        <? if ($model->arbitration) { ?>
-                            <br />
-                            <div class="alert alert-error">
-                                <strong><?=$model->arbitration->userdata->username?> подал жалобу в арбитраж</strong>
-                                <br /><br />
-                                <?=$model->arbitration->text?>
-                            </div>
-                        <? } ?>
-
-                    <? } else if ($model->status == Sbs::STATUS_COMPLETE) { ?>
-                        <strong>Сделка завершена</strong>
-                    <? } ?>
-                </div>
-            
+            <? if ($model->status == Sbs::STATUS_DELAY && $is_customer) { ?>
+                <?php $form = $this->beginWidget('CActiveForm', array(
+                    'id' => 'prolongation', 
+                    'action' => 'prolongation/'.$model->id,
+                    'enableClientValidation'=>false,
+                    'errorMessageCssClass'=>'alert alert-error',
+                    'clientOptions'=>array(
+                        'validateOnSubmit'=>true,
+                        'validateOnChange'=>true,
+                        'validateOnType' => false,
+                    ),
+                    'htmlOptions' => array('enctype' => 'multipart/form-data'),
+                )); ?>
+                    <?php //echo $form->errorSummary($bid); ?>
+                    <p><b class="btn"><strong>Срок</strong></b></p>
+                        <?php echo CHtml::textField('Sbs[period]', date('d.m.Y'), array(
+                            'class' => 'inp_text datepicker'/*, 'size' => 3*/   
+                            )); ?>
+                    <?php //echo $form->error($bid,'text'); ?>
+                    <input type="submit" class="inp_sub" value="Продлить" />
+                <?php $this->endWidget(); ?>
+                <a href="<?=Yii::app()->createAbsoluteUrl('/sbs/close/' . $model->id)?>" class="btn">Отказаться от заказа</a>
             <? } ?>
-            
         <? } ?>
 
         <br clear="all" />

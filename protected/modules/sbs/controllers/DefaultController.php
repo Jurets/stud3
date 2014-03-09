@@ -560,14 +560,22 @@ class DefaultController extends Controller
 	{
 		$model = Sbs::model()->findByPk($id);
 		if( !$model ) {
-			throw new CHttpException(404, 'The requested page does not exist.');
-		}
-		if( $model->customer_id != Yii::app()->user->id ) {
-			throw new CHttpException(404, 'The requested page does not exist.');
+			throw new CHttpException(410, 'Сделка с таким ИД не найдена.');
+		} else if( $model->customer_id != Yii::app()->user->id ) {
+			throw new CHttpException(410, 'Данная операция доступна только для заказчика.');
 		}
 		$model->status = Sbs::STATUS_CLOSE;
-		$model->update();
-		$this->redirect('/sbs');
+		if ($model->save()) {DebugBreak();
+            //запись события
+            new Events_helper($model->performer->id, $model->customer->id, Events_helper::NOTIFY_SBSCLOSE, $model->id);  //запись события
+            //отсылка емейлов
+            Email_helper::send($model->performer->email, 'Отказ от сделки на сайте ' . Yii::app()->name . '', 'newSbsClose', array(
+                'sbs'=>$model, 'userTo'=>$model->performer,
+            ));
+            $this->redirect(Yii::app()->createAbsoluteUrl('sbs/' . $model->id));
+        } else {
+            throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');
+        }
 	}
 
     /**
