@@ -124,11 +124,21 @@
     <div class="clearfix">
 
     <!-- ----------------- Переписка ------------------ -->
+
+        <h4>Переписка</h4>
+        <?php 
+        // отобразить переписку по заказу (если есть) - то, что было до заключения сделки
+            if (isset($model->project) && isset($model->project->winner) && $model->project->winner->LettersCount) { 
+                 foreach($model->project->winner->letters as $letter)  { //пройтись по письмам 
+                    $this->renderPartial('../../tenders/default/_bidletter', array('letter'=>$letter));
+                 } 
+            }            
+        ?>
+
         <div class="rnd comments-body">
             <div>
                 <div>
                     <div>
-                        <h4>Переписка</h4>
                         <? foreach($model->letters as $row) { ?>
                             <div class="answer" id="comment<?=$row->id?>">
                                 <div class="com-title">
@@ -223,6 +233,7 @@
                 <? } ?>
             <? } ?>
             
+            <h4>Сдать работу</h4>
             <? //выставить флаг - показывать ли форму отсылки работы
             //showSendForm = ($is_performer && $model->status == Sbs::STATUS_ACTIVE) || ($is_customer && $model->status == Sbs::STATUS_DONE && $model->isDeliver());
             //$showSendForm = ($model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE);
@@ -255,6 +266,7 @@
                 )); 
                     echo CHtml::hiddenField('sbs_id', $model->id);
                     echo $form->errorSummary($work); ?>
+                    
                     
                     <p><b class="btn"><strong>Введите сообщение</strong></b></p>
                     <?php echo $form->textArea($work, 'text', array('class' => 'area', 'rows' => '4', 'cols' => '58', 'style' => 'width: 758px;')); ?>

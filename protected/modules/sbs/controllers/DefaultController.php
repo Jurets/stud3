@@ -145,7 +145,7 @@ class DefaultController extends Controller
     	$model = Sbs::model()->findByPk($id);
 		$user = $this->loadModel();
     	if (!$model ) {
-			throw new CHttpException(404, 'The requested page does not exist.');
+			throw new CHttpException(410, 'Страница не существует или нет прав на просмотр');
 		}
 		if ($model->customer_id != Yii::app()->user->id and $model->performer_id != Yii::app()->user->id ) {
 			throw new CHttpException(404, 'The requested page does not exist.');
@@ -294,27 +294,6 @@ class DefaultController extends Controller
                 try {
                     if ($success = $sbswork->save()) {  //если успешно сохранена запись о сдаче работы
                         $this->saveWorkFiles($sbswork); //сохранить файлы
-                        /*$attachments = CUploadedFile::getInstancesByName('attachments');  //извлекаем прикрепл-е файлы
-                        if( isset($attachments) && count($attachments) > 0 ) {
-                            foreach ($attachments as $attachment)    {  //цикл по файлам в аттачменте
-                                $sourcePath = pathinfo($attachment->name);    
-                                $fileName = md5(time()).'.'.$sourcePath['extension'];
-                                $path = '.'.Yii::app()->getModule('sbs')->workAttachmentsDir.$fileName;
-                                if($attachment->saveAs($path) ) {   //пробуем сохранить файл
-                                    $attachment_add = new SbsWorkFile();
-                                    $attachment_add->sbswork_id = $sbswork->id;          //ссылка на сданную работу
-                                    $attachment_add->filename = $fileName;               //сгенерённое имя файла
-                                    $attachment_add->origname = $attachment->name;       //оригинальное имя файла
-                                    $attachment_add->type = $sourcePath['extension'];    //тип файла = расширение
-                                    $attachment_add->size = $attachment->size;           //размер файла
-                                    if (!$attachment_add->save()) {  //пробуем сохранить запись в БД для файла
-                                        $filesSuccess = false;
-                                    }
-                                } else {
-                                    $filesSuccess = false;
-                                }
-                            }
-                        } */
                     }
                     //сохраняем новый статус сделки
                     $model->status = Sbs::STATUS_DONE;  //поставить статус сделки "работа выполнена"
@@ -395,11 +374,12 @@ class DefaultController extends Controller
     /**
      * Новая сделка
      */
-	public function actionPublication($id = '')
+	public function actionPublication($id = ''/*, $user = ''*/)
 	{
+        $user = Yii::app()->request->getParam('user');
 		Yii::app()->getModule('tenders');
 		//проверить: есть ли проект с таким ИД
-        if( $id ) { // проект
+        if ($id) { // проект
 	    	$tender = Tenders::model()->with(array('bidslist', 'sbs'))->findByPk($id);
 			if( !$tender ) {
 				throw new CHttpException(404, 'The requested page does not exist.');
@@ -485,7 +465,7 @@ class DefaultController extends Controller
 			}
 		}
 		$this->pageTitle = 'Новая сделка';
-		$this->render('publication', array('model' => $model, 'tender' => $tender));
+		$this->render('publication', array('model' => $model, 'tender' => $tender, 'userid'=>$user));
 	}
 
     /**
@@ -525,7 +505,7 @@ class DefaultController extends Controller
     public function actionReject($id = null) {
         //проверить: есть ли сделка с таким ИД
         if (!$id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($id))) {
-            throw new CHttpException(404, 'The requested page does not exist.');
+            throw new CHttpException(410, 'Сделка не найдена или доступ запрещен');
         } else {
             $model->status = Sbs::STATUS_REJECT;  //поставить статус сделки "исполнитель отказался"
             if ($success = $model->save()) {
@@ -544,8 +524,8 @@ class DefaultController extends Controller
                 //отсылка емейла
                 Email_helper::send($model->customer->email, 'Исполнитель отказался от проекта на сайте ' . Yii::app()->name . '', 'newSbsReject', array('sbs'=>$model));
                 //переход на страницу заказа
-                $url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
-                //$url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
+                //$url = Yii::app()->createAbsoluteUrl('sbs/' . $model->id);
+                $url = Yii::app()->createAbsoluteUrl('tenders/' . $model->project->id . '.html');
                 $this->redirect($url);
             } else {
                 throw new CHttpException(410, 'Ошибка при сохранении статуса сделки');

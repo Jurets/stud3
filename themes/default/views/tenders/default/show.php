@@ -200,7 +200,7 @@
                                     <div class="payd-link">
                                         <? if ($model->status == Tenders::STATUS_OPEN) { //если статус заказа = активен ?>
                                             <? if ($row->status == Bids::STATUS_ACTIVE) { //если статус заказа = активен ?>
-                                                <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/publication', array('id'=>$model->id))?>" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
+                                                <a href="<?=Yii::app()->createAbsoluteUrl('sbs/default/publication', array('id'=>$model->id, 'user'=>$row->userdata->id))?>" class="btn btn-mini" id="all">Выбрать исполнителем</a> 
                                                 <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 
                                             <? } else if ($row->status == Bids::STATUS_ACCEPT || $row->status == Bids::STATUS_ACTIVE) { // ?>
                                                 <a href="/tenders/bidmanagement?id=<?=$row->id?>&action=decline" class="btn btn-mini">Отклонить</a> 

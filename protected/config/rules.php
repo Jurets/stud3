@@ -13,6 +13,7 @@ return array(
     '/commune/blog/delete/<id:\d+>' => '/commune/blog/delete',
 
     '/sbs/<id:\d+>' => 'sbs/default/show/',
+    //'/sbs/publication/id/<id:\d+>/user/<user:\d+>' => 'sbs/default/publication/',
     '/sbs/publication/<id:\d+>' => 'sbs/default/publication/',
     '/sbs/reserve/<id:\d+>' => 'sbs/default/reserve/',
     '/sbs/done/<id:\d+>' => 'sbs/default/done/',
