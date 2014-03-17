@@ -15,7 +15,8 @@ class DefaultController extends Controller
      */
 	public function actionIndex($type = '', $category = '')
 	{
-		$model = Tenders::model()->opened();
+        //$model = Tenders::model()->opened();
+		$model = Tenders::model()->auction();
 		$criteria = new CDbCriteria;
 		
 		$dataProvider = new CActiveDataProvider($model, array( 

@@ -1,4 +1,6 @@
-<? $url = Yii::app()->params['site'].'/activation?code='.$data->activation_code; ?>
+<?
+    $url = Yii::app()->createAbsoluteUrl('/activation?code='.$data->activation_code);
+?>
 
 Здравствуйте, <?=$data->surname?> <?=$data->name?>.<br/>
 <br/>

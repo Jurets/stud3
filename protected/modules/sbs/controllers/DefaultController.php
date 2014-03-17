@@ -372,7 +372,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Новая сделка
+     * Новая сделка - выбор исполнителя заказчиком, определение условий сделки
      */
 	public function actionPublication($id = ''/*, $user = ''*/)
 	{
@@ -381,20 +381,20 @@ class DefaultController extends Controller
 		//проверить: есть ли проект с таким ИД
         if ($id) { // проект
 	    	$tender = Tenders::model()->with(array('bidslist', 'sbs'))->findByPk($id);
-			if( !$tender ) {
-				throw new CHttpException(404, 'The requested page does not exist.');
+			if (!$tender) {
+				throw new CHttpException(410, 'Заказ не существует или доступ запрещен');
 			}
 			if( !Yii::app()->user->checkAccess('deleteContact', array('contact' => $tender)) ) {
-				throw new CHttpException(404, 'The requested page does not exist.');
+				throw new CHttpException(410, 'Заказ не существует или доступ запрещен');
 			}
 		} else  {
-			throw new CHttpException(404, 'The requested page does not exist.');
+			throw new CHttpException(410, 'Заказ не существует или доступ запрещен');
 		}
         
         //проверить: выбрал ли заказчик исполнителя на проект 
         if (isset($tender->sbs)) {
             if ($tender->sbs->status == Sbs::STATUS_COMPLETE) {
-                throw new CHttpException(404, 'Сделка по данному проекту завершена');
+                throw new CHttpException(410, 'Сделка по данному проекту завершена');
             } else if ($tender->sbs->status != Sbs::STATUS_REJECT) {
                 if ($tender->sbs->status == Sbs::STATUS_NEW) {
                     $this->pageTitle = 'Ожидание подтверждения исполнителем';

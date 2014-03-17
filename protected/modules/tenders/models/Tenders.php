@@ -10,12 +10,8 @@ class Tenders extends Model
     const STATUS_CLOSE      = 2;
     const STATUS_MODERATION = 3;
     const STATUS_TRASH      = 5;
-
     const STATUS_ENDED = 4; // конкурс завершен (!TODO Возможно при создании сделки ставить этот статус заказа, а три следующие не использовать)
     
-    //const STATUS_WAITCONFIRM = 6; //ждёт подтверждения исполнителем
-    //const STATUS_WAITRESERV = 7;  //ждёт пополнения денег
-    //const STATUS_REJECT = 8;      //исполнитель отказался
     //---------------------------
     
     const PRICEBY_HOUR    = 1;
@@ -171,6 +167,22 @@ class Tenders extends Model
                         'params' => array(':user_id' => Yii::app()->user->id),
                     )),
             ),
+            'auction' => array(
+                /*'with' => array(
+                    'sbs' => array(
+                        'select'=>false, 
+                        //'join' => 'LEFT JOIN sbs ON sbs.project_id = t.id',
+                        'condition' => 'sbs.status = :status',
+                        'params' => array(':status' => Sbs::STATUS_NEW),
+                    )),*/
+                //'condition' => '(t.status = :status_open) OR (select status from {{sbs}} where {{sbs}}.project_id = t.id and {{sbs}}.status = :status_s)',
+                'condition' => '(t.status = :status_open) OR (t.status = :status_ended AND (select status from {{sbs}} where {{sbs}}.project_id = t.id) = :status_s)',
+                'params' => array(
+                    ':status_open' => self::STATUS_OPEN, 
+                    ':status_ended' => self::STATUS_ENDED,
+                    ':status_s' => Sbs::STATUS_NEW,
+                ),
+            ),
         );
     }
 
@@ -178,10 +190,10 @@ class Tenders extends Model
     * условие (скоуп): заказы в аукционе
     * 
     */
-    public function auction()
+    /*public function auction()
     {//DebugBreak();
         $criteria = New CDbCriteria;
-        $criteria->addInCondition('status', array(self::STATUS_OPEN, /*self::STATUS_WAITCONFIRM, Bids::STATUS_ACCEPT*/));
+        $criteria->addInCondition('status', array(self::STATUS_OPEN, ));
         $criteria->order = 'status ASC, date DESC';
         
         //$this->getDbCriteria()->scopes = 'user';
@@ -199,7 +211,7 @@ class Tenders extends Model
             //)
         );
         return $this;
-    }    
+    }*/    
     
     /**
      * Проверка на существование заявки (от текущего юзера) в проекте (возвращается ИД ответа)

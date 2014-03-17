@@ -1,6 +1,8 @@
 <div id="container">
 	<div id="content">
-		<div class="page_title"><h1>Благодарим за регистрацию</h1></div>
+		<div class="page_title" style="margin-top: 40px;">
+            <h1>Благодарим за регистрацию</h1>
+        </div>
 		<div class="cabinet">
             <p>В ближайшее время вам на почту придёт ссылка для подтверждения регистрации</p>
             <p>Теперь вы можете</p>

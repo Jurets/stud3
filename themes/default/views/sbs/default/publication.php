@@ -12,6 +12,13 @@
 ?>
 <div class="rnd">
     <table class="order-form">
+        <?php if (!empty($userid) && $user = User::model()->findByPk($userid)) { ?>
+            <tr>
+                <td>Исполнитель: <a rel="performer" title="Исполнитель" href="/users/<?=$user->username?>"><?=$user->username?></a></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr> 
+        <?php }?>
+        
         <tr<?php if (!empty($userid)) echo ' style="display: none;"' ?>>
             <td class="caption">Выберите исполнителя</td>
             <td>

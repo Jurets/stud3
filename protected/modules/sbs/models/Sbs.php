@@ -170,7 +170,7 @@ class Sbs extends Model
     * 
     */
     public function complete()
-    {//DebugBreak();
+    {
         $success = false;
         $this->status = self::STATUS_COMPLETE;
         if ($this->validate()) {

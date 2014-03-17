@@ -1,7 +1,9 @@
 <h3><?=$this->pageTitle?></h3>
 <?php $this->widget('FlashMessages'); ?>
 
-<!--<p class="caption">Исполнителю <strong><?=$sbs->performer->nickName?></strong> отправлена информация о предложенной Вами сделке. Ожидайте подтверждения в ближайшее время</p>-->
+<div class="alert alert-success">
+    Исполнителю <strong><?=$sbs->performer->nickName?></strong> отправлена информация о предложенной Вами сделке. Ожидайте подтверждения в ближайшее время
+</div>
 <p class="caption"><?=$message?></p>
 
 <div class="rnd">

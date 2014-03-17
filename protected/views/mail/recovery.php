@@ -1,4 +1,6 @@
-<? $url = Yii::app()->params['site'].'/user/recoveryPassword/?code='.$recovery->code; ?>
+<?
+    $url = Yii::app()->createAbsoluteUrl('/user/recoveryPassword/?code='.$recovery->code);
+?>
 
 Уважаемый(ая) <?=$data->name?> <?=$data->surname?>!<br/>
 <br/>

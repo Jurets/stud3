@@ -56,7 +56,13 @@
             <? }*/ ?>
             
             <!--<p style="text-align:right;"><a href="/tenders/<?= $data->id ?>.html">подробнее...</a></p>-->
-            <? $url = (isset($data->sbs)) ? Yii::app()->createAbsoluteUrl('sbs/' . $data->sbs->id) : Yii::app()->createAbsoluteUrl('tenders/' . $data->id . '.html')?>
+            <? if (isset($data->sbs) && $data->sbs->status != Sbs::STATUS_NEW && $data->sbs->status != Sbs::STATUS_REJECT) {
+                $url = Yii::app()->createAbsoluteUrl('sbs/' . $data->sbs->id);
+            } else {
+                $url = Yii::app()->createAbsoluteUrl('tenders/' . $data->id . '.html');
+            }
+                
+            ?>
             <p style="text-align:right;"><a href="<?=$url?>">подробнее...</a></p>
         </div>
     </blockquote>

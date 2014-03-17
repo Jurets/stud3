@@ -1,6 +1,6 @@
 <div id="container">
 	<div id="content">
-		<div class="page_title">
+		<div class="page_title" style="margin-top: 40px;">
             <h1>Доброго Вам времени суток</h1>
             <p>Рады приветствовать вас на образовательном портале obuchaem.com созданного для тех, кто хочет учить, и для тех, кто хочет учиться</p>
             <p>Просим Вас представиться:</p>
