@@ -130,29 +130,30 @@ class Sbs extends Model
 
     //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
     public function daysEtaComplete() {
-        if ($this->isDeliver()) {//если есть сдача работы
-            $deliverDate = $this->deliver->date; //берём дату сдачи работы
-            $diff = floor((strtotime("now") - $deliverDate)/86400); //считаем разницу между сейчас и датой сдачи
-            $days = self::COMPLETE_ETA - $diff;  //считаем - сколько осталось
-            $days = $days < 0 ? 0 : $days;  //корректировка, если отрицательное число
-        } else {
-            return false;
+        $daysGarantee = 0;
+        $isDeliver = false;
+        foreach($this->works as $work) {
+            if ($work->type == SbsWork::TYPE_DELIVER || $work->type == SbsWork::TYPE_REWORK) {
+                if (!$isDeliver) {
+                    $isDeliver = true;
+                    $dateB = $work->date;
+                }
+            } else if ($work->type == SbsWork::TYPE_DEMAND) {
+                if ($isDeliver) {  //считаем только секунды между сдачей работы и внесением правок
+                    $daysGarantee = $daysGarantee + $work->date - $dateB;
+                    $isDeliver = false;
+                    $dateB = null;
+                }
+            }
         }
-        return $days;
-    }
-
-    //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
-    /*public function daysEtaDone() {
-        if (!$this->isDeliver()) {//если есть сдача работы
-            //$deliverDate = $this->deliver->date; //берём дату сдачи работы
-            $diff = floor((strtotime("now") - $this->date)/86400); //считаем разницу между сейчас и датой сдачи
-            $days = $this->period - $diff;  //считаем - сколько осталось
-            $days = $days < 0 ? 0 : $days;  //корректировка, если отрицательное число
-        } else {
-            return false;
+        if ($isDeliver) {    // - это будет период нахождения на гарантии
+            $daysGarantee = $daysGarantee + strtotime("now") - $dateB;
         }
+        $diff = floor($daysGarantee/86400); //затем переводим в дни
+        $days = self::COMPLETE_ETA - $diff;  //считаем - сколько осталось
+        $days = $days < 0 ? 0 : $days;  //корректировка, если отрицательное число
         return $days;
-    }*/
+    }    
 
     //сколько дней осталось до завершения сделки (20 дней после сдачи работы)
     public function getIsExpire() {//DebugBreak();

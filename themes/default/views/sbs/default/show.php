@@ -238,7 +238,7 @@
             //showSendForm = ($is_performer && $model->status == Sbs::STATUS_ACTIVE) || ($is_customer && $model->status == Sbs::STATUS_DONE && $model->isDeliver());
             //$showSendForm = ($model->status == Sbs::STATUS_ACTIVE || $model->status == Sbs::STATUS_DONE);
             if ($showSendForm) { 
-                if ($is_performer && $model->status == Sbs::STATUS_ACTIVE) {
+                if ($is_performer && $model->status == Sbs::STATUS_ACTIVE && !$model->isDeliver()) {
                     $type = SbsWork::TYPE_DELIVER;
                     $action = '/sbs/done/';
                     $label = 'Сдать работу';

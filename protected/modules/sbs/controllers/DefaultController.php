@@ -320,7 +320,7 @@ class DefaultController extends Controller
     /**
      * Внести правки / выслать правки
      */
-    public function actionSendWork($id = '') {
+    public function actionSendWork($id = '') {//DebugBreak();
         $sbs_id = !empty($id) ? $id : $_POST['sbs_id'];
         //проверить: есть ли сделка с таким ИД
         if (!$sbs_id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($sbs_id))) {
@@ -334,7 +334,13 @@ class DefaultController extends Controller
             if ($sbswork->validate()) {
                 $transaction = Yii::app()->db->beginTransaction();// начало транзакции
                 try {
-                    if ($success = $sbswork->save()) {  //если успешно сохранена запись о сдаче работы
+                    //сохраняем новый статус сделки
+                    if ($sbswork->type == SbsWork::TYPE_DEMAND) {
+                        $model->status = Sbs::STATUS_ACTIVE;  //поставить статус сделки "в работе"
+                    } else if ($sbswork->type == SbsWork::TYPE_REWORK) {
+                        $model->status = Sbs::STATUS_DONE;  //поставить статус сделки "работа выполнена"
+                    }
+                    if ($success = $model->save() && $sbswork->save()) {  //если успешно сохранена запись о сдаче работы
                         $this->saveWorkFiles($sbswork); //сохранить файлы
                         new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_SBSDONE, $model->id); //запись события
                         Email_helper::send($model->customer->email, 'Исполнитель сдал работу на сайте ' . Yii::app()->name . '', 'newSbsDone', array('sbs'=>$model)); //отсылка емейла
