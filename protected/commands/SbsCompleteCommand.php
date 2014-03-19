@@ -21,7 +21,7 @@ class SbsCompleteCommand extends CConsoleCommand
         echo "================================================================================\n\r";
         echo "FREE-STUD console command: SBS Auto completion (20 days after work done by performer) \n\r";
         echo "================================================================================\n\r";
-        DebugBreak();
+        
         //все сделки
         //$sbs_array = Sbs::model()->findAll('status <> :status', array(':status'=>Sbs::STATUS_COMPLETE));
         $criteria = new CDbCriteria(); 

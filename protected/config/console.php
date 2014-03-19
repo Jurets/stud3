@@ -80,7 +80,7 @@ return array(
 
         'request' => array(
             'class' => 'HttpRequest',
-            'hostInfo' => 'free-stud.my',
+            'hostInfo' => 'free-stud.ru',
             'baseUrl' => '',
             'scriptUrl' => '',
         ),
@@ -93,4 +93,10 @@ return array(
         )
           
 	),
+    'params'=>array(
+        // this is used in contact page
+        'adminEmail'=>'webmaster@example.com',
+        'site'=>'http://free-stud.ru',
+    ),
+    
 );

@@ -320,7 +320,7 @@ class DefaultController extends Controller
     /**
      * Внести правки / выслать правки
      */
-    public function actionSendWork($id = '') {//DebugBreak();
+    public function actionSendWork($id = '') {
         $sbs_id = !empty($id) ? $id : $_POST['sbs_id'];
         //проверить: есть ли сделка с таким ИД
         if (!$sbs_id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($sbs_id))) {
@@ -486,10 +486,9 @@ class DefaultController extends Controller
             //    throw new CHttpException(404, 'The requested page does not exist.');
             //}
         } else {
+            $model->confirmdate = time();    //поставить время подтверждения от исполнителя
             $model->status = Sbs::STATUS_WAITRESERV;  //поставить статус сделки "ждёт пополнения денег"
             if ($success = $model->save()) {
-                //$model->project->status = Tenders::STATUS_WAITRESERV;  //такой же статус поставить в модель заказа
-                //$model->project->save();      //(скорее для совместимости... потом возможно убрать это для модели заказа)
                 //запись события
                 new Events_helper($model->customer->id, $model->performer->id, Events_helper::NOTIFY_NEWSBSCONFIRM, $model->id);
                 //отсылка емейла
@@ -551,7 +550,7 @@ class DefaultController extends Controller
 			throw new CHttpException(410, 'Данная операция доступна только для заказчика.');
 		}
 		$model->status = Sbs::STATUS_CLOSE;
-		if ($model->save()) {DebugBreak();
+		if ($model->save()) {
             //запись события
             new Events_helper($model->performer->id, $model->customer->id, Events_helper::NOTIFY_SBSCLOSE, $model->id);  //запись события
             //отсылка емейлов
@@ -602,7 +601,7 @@ class DefaultController extends Controller
     * -- Отказ исполнителя от приглашения на участие в проекте (исп-ль соглашается на заказ)
     * 
     */
-    public function actionProlongation($id = null) {//DebugBreak();
+    public function actionProlongation($id = null) {
         //проверить: есть ли сделка с таким ИД
         if (!$id || !($model = Sbs::model()->with(array('project', 'customer', 'performer'))->findByPk($id))) {
             throw new CHttpException(404, 'Не найдена сделка с таким ИД.');
