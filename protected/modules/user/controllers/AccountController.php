@@ -390,8 +390,8 @@ class AccountController extends Controller
             //$criteria = $model->offer()->getDBCriteria();
             $model = New Tenders();
             $criteria = New CDbCriteria;
-            $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and sbs.status = :status'));
-            $criteria->params = array(':user_id' => Yii::app()->user->id, ':status' => Sbs::STATUS_NEW);
+            $criteria->with = array('sbs'=>array('condition'=>'(sbs.customer_id = :user_id or sbs.performer_id = :user_id) and (sbs.status = :status1 or sbs.status = :status2)'));
+            $criteria->params = array(':user_id' => Yii::app()->user->id, ':status1' => Sbs::STATUS_NEW, ':status2' => Sbs::STATUS_WAITRESERV);
         } else if ($status == 'working') {
             $model = New Tenders();
             $criteria = New CDbCriteria;
